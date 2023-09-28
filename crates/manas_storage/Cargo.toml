@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 anyhow = "1.0.71"
-dyn-clone = "1.0.11"
+dyn-clone = "1.0.14"
 dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = [
     "ext-typed-record",
 ] }

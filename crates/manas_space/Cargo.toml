@@ -16,7 +16,7 @@ thiserror = "1.0.43"
 once_cell = "1.18.0"
 iri-string = "0.7.0"
 smallvec = "1.11.0"
-dyn-clone = "1.0.11"
+dyn-clone = "1.0.14"
 if_chain = "1.0.2"
 gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs" }
 headers = "0.3.8"

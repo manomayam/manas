@@ -18,7 +18,7 @@ dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features 
 futures = "0.3.28"
 hyper = "0.14.27"
 tower = {version = "0.4.13", features=["util"]}
-dyn-clone = "1.0.11"
+dyn-clone = "1.0.14"
 if_chain = "1.0.2"
 smallvec = "1.11.0"
 gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs" }
