@@ -30,6 +30,7 @@ members = [
     "crates/manas_server",
     "crates/manas_server/recipies/single_fs_wac",
     "crates/manas_server/recipies/single_s3_wac",
+    "crates/manas"
     # "crates/manas_tauri"
 ]
 

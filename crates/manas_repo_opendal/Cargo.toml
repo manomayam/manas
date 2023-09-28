@@ -104,7 +104,7 @@ backend-embedded = ["dep:rust-embed"]
 backend-fs = ["opendal/services-fs"]
 backend-s3 = ["opendal/services-s3"]
 backend-gcs = ["opendal/services-gcs"]
-test-utils = ["dep:rstest", "dep:claims", "manas_repo/test-utils", "manas_http/test-utils", "manas_space/test-utils", 'opendal/services-memory']
+test-utils = ["dep:rstest", "dep:claims", "manas_repo/test-utils", "manas_http/test-utils", "manas_space/test-utils", "manas_semslot/test-utils", 'opendal/services-memory']
 access-prp = ["dep:manas_access_control", "dep:acp"]
 
 [dev-dependencies]

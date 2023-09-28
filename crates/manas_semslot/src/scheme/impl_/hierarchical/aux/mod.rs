@@ -80,7 +80,7 @@ where
 }
 
 #[cfg(feature = "test-utils")]
-///This mosule provides utils for mocking with [`AuxLinkEncodingScheme`].
+///This module provides utils for mocking with [`AuxLinkEncodingScheme`].
 pub mod mock {
     use manas_http::uri::component::segment::invariant::NonEmptyCleanSegmentStr;
     use manas_space::resource::slot_rel_type::aux_rel_type::{
