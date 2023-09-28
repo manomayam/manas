@@ -1,0 +1,35 @@
+// THIS FILE IS GENERATED. ONE SHOULD NOT MODIFY IT
+//! I define statics for `{{{title}}}` specification.
+//!
+
+#![allow(clippy::needless_raw_string_hashes)]
+
+use crate::spec_mod;
+
+spec_mod! {
+    /// {{{title}}}.
+    Spec: (
+        {{{rid}}},
+        "{{{title}}}",
+        "{{{id}}}"
+    );
+
+    Subjects: [
+        {{#each subjects}}
+        ({{{rid}}}, "{{{id}}}"),
+        {{/each}}
+    ];
+
+    Requirements: [
+        {{#each requirements}}
+        (
+            {{{rid}}},
+            "{{{id}}}",
+            {{{level_rid}}},
+            [{{#each subject_rids}}{{{this}}},{{/each}}],
+            r###"{{{statement}}}"###
+        ),
+        {{/each}}
+    ];
+}
+

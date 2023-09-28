@@ -1,0 +1,40 @@
+[package]
+name = "acp"
+version = "0.1.0"
+edition = "2021"
+description = "An implementation of [access control policy](https://solid.github.io/authorization-panel/acp-specification/) concepts and engine for rust."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+rdf_utils = { version = "0.2.1", path = "../rdf_utils" }
+rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl"] }
+paste = { version = "1.0.13" }
+sophia_api = { version = "0.8.0-alpha.1" }
+
+# feature: engine
+dyn-clone = { version = "1.0.11", optional = true }
+dyn_problem = { version = "0.1.0", path = "../dyn_problem", optional = true }
+futures = { version = "0.3.28", optional = true }
+ghost = { version = "0.1.13", optional = true }
+rand = { version = "0.8.5", optional = true }
+tower = { version = "0.4.13", optional = true, features = ["util"]}
+tracing = { version = "0.1.37", optional = true }
+unwrap-infallible = { version = "0.1.5", optional = true }
+
+
+[features]
+engine = [
+    "dep:dyn-clone",
+    "dep:dyn_problem",
+    "dep:unwrap-infallible",
+    "dep:tracing",
+    "dep:tower",
+    "dep:rand",
+    "dep:ghost",
+    "dep:futures",
+]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

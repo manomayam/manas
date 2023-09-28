@@ -1,0 +1,10 @@
+
+vscode:
+  extensions:
+    - swellaby.vscode-rust-test-adapter
+    - ms-vscode.test-adapter-converter
+    - Swellaby.rust-pack
+    - stardog-union.vscode-stardog-languages
+    - tamasfe.even-better-toml
+    - streetsidesoftware.code-spell-checker
+    

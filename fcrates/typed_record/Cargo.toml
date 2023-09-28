@@ -1,0 +1,25 @@
+[package]
+name = "typed_record"
+version = "0.0.0"
+edition = "2021"
+description = "Util trait for using typed extensions(like `http::Extensions`, `AnyMap`) as typed kv record."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+
+# feature: ext-anymap
+anymap2 = { version = "0.13.0", optional = true }
+
+# feature: ext-http
+http = { version = "0.2.9", optional = true }
+
+
+[features]
+ext-anymap = ["dep:anymap2"]
+ext-http = ["dep:http"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

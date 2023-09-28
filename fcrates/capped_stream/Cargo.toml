@@ -1,0 +1,17 @@
+[package]
+name = "capped_stream"
+version = "0.1.0"
+edition = "2021"
+description = "This crate provides types for size capped streams."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+futures = "0.3.28"
+pin-project-lite = "0.2.13"
+thiserror = "1.0.48"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

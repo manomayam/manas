@@ -1,0 +1,37 @@
+# Should dev mode be enabled.
+dev_mode = true
+
+# Storage space config.
+[storage.space]
+# Uri of the storage root.
+root_uri = "http://localhost:3000/"
+
+# Id of the storage owner.
+owner_id = "https://damodara.solidcommunity.net/profile/card#me"
+
+# Repo config.
+[storage.repo]
+# Whether to enable databrowser frontend.
+databrowser_enabled = true
+
+# Repo backend config.
+# Refer <https://docs.rs/opendal/latest/opendal/services/struct.S3.html> for full range of configuration.
+[storage.repo.backend]
+endpoint ="https://s3.amazonaws.com"
+bucket = "bkt1"
+root = "/path/to/root"
+access_key_id = "access_key_id"
+secret_access_key = "secret_access_key"
+
+# Server configuration.
+[server]
+# Address at which server should listen.
+addr = "127.0.0.1:3000"
+
+# # Server's tls configuration. If provided, it server will use https.
+# [server.tls]
+# # Cert pem file path.
+# cert_path = "/path/to/cert.pem"
+
+# # Key pem file path.
+# key_path = "/path/to/key.pem"

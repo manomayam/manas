@@ -1,0 +1,58 @@
+[package]
+name = "rdf_utils"
+version = "0.2.1"
+edition = "2021"
+description = "This crate provides utilities to deal with rdf data.."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+once_cell = "1.18.0"
+sophia_api = "0.8.0-alpha.1"
+tracing = { version = "0.1.37", features = ["attributes"] }
+thiserror = "1.0.43"
+unwrap-infallible = "0.1.5"
+paste = "1.0.13"
+
+# feature: query
+resiter = { version = "0.5.0", optional = true }
+
+# feature: solid-insert-delete-patch
+oxilangtag = { version = "0.1.3", optional = true }
+oxiri = { version = "0.2.2", optional = true }
+rdf_vocabularies = { version = "0.2.0", features = [
+    "ns-xsd",
+    "ns-rdf",
+    "ns-solid",
+] }
+rio_api = { version = "0.8.4", optional = true, features = ["generalized"] }
+sophia_rio = { version = "0.8.0-alpha.1", optional = true }
+mime = { version = "0.3.17", optional = true }
+rand = { version = "0.8.5", optional = true }
+itertools = { version = "0.11.0", optional = true }
+rio_turtle = { version = "0.8.4", optional = true, features = ["generalized"] }
+
+# feature: compat-chrono
+chrono = { version = "0.4.26", optional = true, default-features = false }
+
+# feature: compat-iri-string
+iri-string = { version = "0.7.0", optional = true }
+
+# feature: inmem
+sophia_inmem = { version = "0.8.0-alpha.1", optional = true }
+
+# feature: compat-ecow
+ecow = { version = "0.1.2", optional = true }
+
+
+[features]
+solid-insert-delete-patch = ["dep:oxilangtag", "dep:oxiri", "dep:mime", "dep:rand", "dep:itertools", "dep:rio_api", "dep:rio_turtle", "dep:sophia_rio", "query"]
+compat-chrono = ["dep:chrono"]
+compat-iri-string = ["dep:iri-string"]
+compat-ecow = ["dep:ecow"]
+query = ["dep:resiter"]
+inmem = ["dep:sophia_inmem"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

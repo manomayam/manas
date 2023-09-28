@@ -1,0 +1,24 @@
+# Default root ACL resource for the user account
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# The homepage is readable by the public
+<#public>
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;
+    acl:accessTo <{{storage_root_res_uri}}>;
+    acl:mode acl:Read.
+
+# The owner has full access to every resource in their pod.
+# Other agents have no access rights,
+# unless specifically authorized in other .acl resources.
+<#owner>
+    a acl:Authorization;
+    acl:agent <{{owner_id}}>;
+    # Set the access to the root storage folder itself
+    acl:accessTo <{{storage_root_res_uri}}>;
+    # All resources will inherit this authorization, by default
+    acl:default <{{storage_root_res_uri}}>;
+    # The owner has all of the access modes allowed
+    acl:mode
+        acl:Read, acl:Write, acl:Control.

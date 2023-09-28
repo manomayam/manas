@@ -1,0 +1,233 @@
+<!doctype html><html>
+
+<head>
+    <meta charset="utf-8"/><title>SolidOS Web App</title>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+        
+            let UM = UI.rdf.UpdateManager.prototype;
+            let isStore = UI.rdf.isStore;
+            let Util = UI.rdf.Util;
+
+            Object.assign(UM, {
+                editable(uri) {
+                    return "N3_PATCH";
+                },
+
+                update(
+                    deletions,
+                    insertions,
+                    callback,
+                    secondTry,
+                    options,
+                ) {
+
+                    if (!callback) {
+                        var thisUpdater = this
+                        return new Promise(function (resolve, reject) { // Promise version
+                            thisUpdater.update(deletions, insertions, function (uri, ok, errorBody) {
+                                if (!ok) {
+                                    reject(new Error(errorBody))
+                                } else {
+                                    resolve()
+                                }
+                            }, secondTry, options) // callbackFunction
+                        }) // promise
+                    } // if
+
+                    try {
+                        var kb = this.store;
+                        var ds = !deletions ? []
+                            : isStore(deletions) ? deletions.statements
+                                : deletions instanceof Array ? deletions : [deletions];
+                        var is = !insertions ? []
+                            : isStore(insertions) ? insertions.statements
+                                : insertions instanceof Array ? insertions : [insertions];
+
+                        if (!(ds instanceof Array)) {
+                            throw new Error('Type Error ' + (typeof ds) + ': ' + ds);
+                        }
+
+                        if (!(is instanceof Array)) {
+                            throw new Error('Type Error ' + (typeof is) + ': ' + is);
+                        }
+
+                        if (ds.length === 0 && is.length === 0) {
+                            return callback(null, true) // success -- nothing needed to be done.
+                        }
+                        var doc = ds.length ? ds[0].graph : is[0].graph
+                        if (!doc) {
+                            let message = 'Error patching: statement does not specify which document to patch:' + ds[0] + ', ' + is[0]
+                            // console.log(message)
+                            throw new Error(message)
+                        }
+                        if (doc.termType !== 'NamedNode') {
+                            let message = 'Error patching: document not a NamedNode:' + ds[0] + ', ' + is[0]
+                            // console.log(message)
+                            throw new Error(message)
+                        }
+                        var control = this.patchControlFor(doc)
+
+                        var startTime = Date.now()
+
+                        var props = ['subject', 'predicate', 'object', 'why']
+                        var verbs = ['insert', 'delete']
+                        var clauses = { 'delete': ds, 'insert': is }
+                        verbs.map(function (verb) {
+                            clauses[verb].map(function (st) {
+                                if (!doc.equals(st.graph)) {
+                                    throw new Error('update: destination ' + doc +
+                                        ' inconsistent with delete quad ' + st.graph)
+                                }
+                                props.map(function (prop) {
+                                    if (typeof st[prop] === 'undefined') {
+                                        throw new Error('update: undefined ' + prop + ' of statement.')
+                                    }
+                                })
+                            })
+                        })
+
+                        var bnodes = []
+
+                        if (ds.length) bnodes = this.statementArrayBnodes(ds)
+                        if (is.length) bnodes = bnodes.concat(this.statementArrayBnodes(is))
+                        var context = this.bnodeContext(bnodes, doc)
+                        var whereClause = this.contextWhere(context)
+                        var query = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+                        @prefix ex: <http://www.example.org/terms#>.
+
+                        _:patch a solid:InsertDeletePatch;
+                        `;
+                        if (whereClause.length) { // Is there a WHERE clause?
+                            if (ds.length) {
+                                query += 'solid:deletes { '
+                                for (let i = 0; i < ds.length; i++) {
+                                    query += this.anonymizeNT(ds[i]) + '\n'
+                                }
+                                query += ' };\n'
+                            }
+                            if (is.length) {
+                                query += 'solid:inserts { '
+                                for (let i = 0; i < is.length; i++) {
+                                    query += this.anonymizeNT(is[i]) + '\n'
+                                }
+                                query += ' };\n'
+                            }
+                            query += whereClause;
+                            query += ' .\n'
+                        } else { // no where clause
+                            if (ds.length) {
+                                query += 'solid:deletes { '
+                                for (let i = 0; i < ds.length; i++) {
+                                    query += this.anonymizeNT(ds[i]) + '\n'
+                                }
+                                query += ' } \n'
+                            }
+                            if (is.length) {
+                                if (ds.length) query += ' ; '
+                                query += 'solid:inserts { '
+                                for (let i = 0; i < is.length; i++) {
+                                    query += this.nTriples(is[i]) + '\n'
+                                }
+                                query += ' }.\n'
+                            }
+                        }
+                        // Track pending upstream patches until they have finished their callbackFunction
+                        control.pendingUpstream = control.pendingUpstream ? control.pendingUpstream + 1 : 1
+                        if ('upstreamCount' in control) {
+                            control.upstreamCount += 1 // count changes we originated ourselves
+                            // console.log('upstream count up to : ' + control.upstreamCount)
+                        }
+
+                        this.fire(doc.value, query, (uri, success, body, response) => {
+                            (response).elapsedTimeMs = Date.now() - startTime
+                            /* console.log('    UpdateManager: Return ' +
+                            (success ? 'success ' : 'FAILURE ') + (response as Response).status +
+                            ' elapsed ' + (response as any).elapsedTimeMs + 'ms')
+                            */
+                            if (success) {
+                                try {
+                                    kb.remove(ds)
+                                } catch (e) {
+                                    success = false
+                                    body = 'Remote Ok BUT error deleting ' + ds.length + ' from store!!! ' + e
+                                } // Add in any case -- help recover from weirdness??
+                                for (let i = 0; i < is.length; i++) {
+                                    kb.add(is[i].subject, is[i].predicate, is[i].object, doc)
+                                }
+                            }
+
+                            callback(uri, success, body, response)
+                            control.pendingUpstream -= 1
+                            // When upstream patches have been sent, reload state if downstream waiting
+                            if (control.pendingUpstream === 0 && control.downstreamAction) {
+                                var downstreamAction = control.downstreamAction
+                                delete control.downstreamAction
+                                // console.log('delayed downstream action:')
+                                downstreamAction(doc)
+                            }
+                        }, options); // fire
+
+                    } // try
+                    catch (e) {
+                        callback(undefined, false, 'Exception in update: ' + e + '\n' +
+                            Util.stackString(e))
+                    }
+                },
+
+                contextWhere(context) {
+                    var updater = this
+                    return (!context || context.length === 0)
+                        ? ''
+                        : 'solid::where { ' +
+                        context.map(function (x) {
+                            return updater.anonymizeNT(x)
+                        }).join('\n') + ' }\n'
+                },
+
+                fire(
+                    uri,
+                    query,
+                    callbackFunction,
+                    options = {}
+                ) {
+                    return Promise.resolve()
+                        .then(() => {
+                            if (!uri) {
+                                throw new Error('No URI given for remote editing operation: ' + query)
+                            }
+                            // console.log('UpdateManager: sending update to <' + uri + '>')
+
+                            options.noMeta = true;
+                            options.contentType = 'text/n3';
+                            options.body = query;
+
+                            return this.store.fetcher.webOperation('PATCH', uri, options)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                let message = 'UpdateManager: update failed for <' + uri + '> status=' +
+                                    response.status + ', ' + response.statusText +
+                                    '\n   for query: ' + query
+                                // console.log(message)
+                                throw new Error(message)
+                            }
+
+                            // console.log('UpdateManager: update Ok for <' + uri + '>')
+
+                            callbackFunction(uri, response.ok, response.responseText, response)
+                        })
+                        .catch(err => {
+                            callbackFunction(uri, false, err.message, err)
+                        })
+                }
+            });
+
+            panes.runDataBrowser()
+        })</script>
+    <script defer="defer" src="{{mashlib_js_uri}}"></script>
+    <link href="{{mashlib_css_uri}}" rel="stylesheet">
+</head>
+
+<body id="PageBody"><header id="PageHeader"></header><div class="TabulatorOutline" id="DummyUUID" role="main"><table id="outline"></table><div id="GlobalDashboard"></div></div><footer id="PageFooter"></footer></body>
+
+</html>

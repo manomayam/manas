@@ -1,0 +1,38 @@
+[package]
+name = "manas_semslot"
+version = "0.1.0"
+edition = "2021"
+description = "It is a bad idea to encode extra semantics into opaque resource ids as part of an http engine logic. But it is ok to do so behind a linked architecture abstraction, as an implementation detail for the sake of efficiency to avoid remote lookup. For such cases, this crate provides a type driven codec for encoding and decoding a solid resource slot path into/from it's slot id."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+bimap = "0.6.3"
+if_chain = "1.0.2"
+manas_http = { version = "0.0.0", path = "../manas_http" }
+manas_space = { version = "0.0.0", path = "../manas_space" }
+once_cell = "1.18.0"
+smallvec = "1.11.0"
+thiserror = "1.0.47"
+
+# feature: test-utils
+claims = { version = "0.7.1", optional = true }
+rstest = { version = "0.18.1", optional = true }
+
+
+[dev-dependencies]
+claims = "0.7.1"
+rstest = "0.18.1"
+manas_http = { version = "0.0.0", path = "../manas_http", features = [
+    "test-utils",
+] }
+manas_space = { version = "0.0.0", path = "../manas_space", features = [
+    "test-utils",
+] }
+
+[features]
+test-utils = ["dep:rstest", "dep:claims", "manas_http/test-utils", "manas_space/test-utils"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

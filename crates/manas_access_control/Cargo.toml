@@ -1,0 +1,56 @@
+[package]
+name = "manas_access_control"
+version = "0.0.0"
+edition = "2021"
+description = "This crate Defines traits for access control systems compatible with solid storage space. Provides default implementations confirming to [`ACP`](https://solid.github.io/authorization-panel/acp-specification/), [`WAC`](https://solid.github.io/web-access-control-spec/) authorization systems."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+acp = { version = "0.1.0", path = "../../fcrates/acp" }
+dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = [
+    "alias-future",
+] }
+futures = "0.3.28"
+ghost = "0.1.13"
+http_uri = { version = "1.0.0", path = "../../fcrates/http_uri", features = [
+    "invariants",
+    "sophia"
+] }
+manas_authentication = { version = "0.0.0", path = "../manas_authentication", features = ["creds-context"]}
+manas_http = { version = "0.0.0", path = "../manas_http", features = [
+    "typed-headers",
+] }
+manas_space = { version = "0.0.0", path = "../manas_space" }
+async-recursion = "1.0.4"
+itertools = "0.11.0"
+paste = "1.0.14"
+rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils" }
+rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl", "ns-foaf","ns-rdf"] }
+sophia_api = "0.8.0-alpha.1"
+thiserror = "1.0.43"
+tower = "0.4.13"
+tracing = { version = "0.1.37", features = ["attributes"] }
+unwrap-infallible = "0.1.5"
+once_cell = "1.18.0"
+vec1 = {version = "1.10.1", features = ["serde"]}
+
+# feature: cache-layered-prp
+# moka = { version = "0.11.2", features = ["future"], optional = true }
+
+# feature: layered-repo-impl
+manas_repo = { version = "0.0.0", path = "../manas_repo", optional = true }
+typed_record = { version = "0.0.0", path = "../../fcrates/typed_record", features = ["ext-anymap", "ext-http"]}
+serde = { version = "1.0.185", features = ["derive"] }
+
+
+[features]
+impl-pdp-acp = ["acp/engine"]
+impl-pdp-wac = ["acp/engine"]
+impl-layered-repo = ["dep:manas_repo"]
+# cache-layered-prp = ["moka"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

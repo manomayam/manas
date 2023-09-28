@@ -1,0 +1,66 @@
+[package]
+name = "manas_repo"
+version = "0.0.0"
+edition = "2021"
+description = "This crate defines definition traits for manas storage repositories and their services."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+manas_http = { version = "0.0.0", path = "../manas_http", features = [
+    "representation",
+    "impl-representation",
+    "conditional_req",
+] }
+manas_space = { version = "0.0.0", path = "../manas_space" }
+dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
+futures = "0.3.28"
+hyper = "0.14.27"
+tower = {version = "0.4.13", features=["util"]}
+dyn-clone = "1.0.11"
+if_chain = "1.0.2"
+smallvec = "1.11.0"
+gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs" }
+vec1 = "1.10.1"
+iri-string = "0.7.0"
+thiserror = "1.0.43"
+once_cell = "1.18.0"
+headers = "0.3.8"
+http = "0.2.9"
+mime = "0.3.17"
+rdf_dynsyn = { version = "0.3.0", path = "../../fcrates/rdf_dynsyn", features = [
+    "async",
+] }
+tracing = { version = "0.1.37", features = ["attributes"] }
+bytes = "1.4.0"
+async-compat = "0.2.1"
+either = "1.8.1"
+rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils"}
+anyhow = "1.0.71"
+regex = "1.9.1"
+tokio = { version = "1.29.1", features = ["rt"] }
+tokio-util = { version = "0.7.8", features = ["io", "io-util"] }
+typed_record = { version = "0.0.0", path = "../../fcrates/typed_record", features = [
+    "ext-anymap",
+    "ext-http",
+] }
+unwrap-infallible = "0.1.5"
+itertools = "0.11.0"
+sophia_api = "0.8.0-alpha.1"
+manas_authentication = { version = "0.0.0", path = "../manas_authentication" }
+
+# feature: test-utils
+claims = { version = "0.7.1", optional = true }
+rstest = { version = "0.18.1", optional = true }
+
+[features]
+test-utils = ["dep:rstest", "dep:claims", "manas_space/test-utils"]
+
+[dev-dependencies]
+claims = "0.7.1"
+rstest = "0.18.1"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

@@ -1,0 +1,35 @@
+# Default root ACR resource for the user account
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix acp: <http://www.w3.org/ns/solid/acp#>.
+
+<>
+    a acp:AccessControlResource ;
+    acp:resource <{{storage_root_res_uri}}> ;
+
+    acp:accessControl <#owner_grant>,
+    # The homepage is readable by the public.    
+    [
+        a acp:AccessControl ;
+        acp:apply [
+            a acp:Policy ;
+            acp:allow acl:Read ;
+            acp:anyOf [
+                a acp:Matcher ;
+                acp:agent  acp:PublicAgent ;
+            ]
+        ]
+    ];
+
+    # The owner has full access to every resource in their pod.
+    acp:memberAccessControl <#owner_grant>.
+
+<#owner_grant>
+    a acp:AccessControl ;
+    acp:apply [
+        a acp:Policy ;
+        acp:allow acl:Read, acl:Write, acl:Control ;
+        acp:anyOf [
+            a acp:Matcher ;
+            acp:agent  <{{owner_id}}>;
+        ]
+    ].

@@ -1,0 +1,72 @@
+[package]
+name = "manas_server"
+version = "0.0.0"
+edition = "2021"
+description = "This crate provides default recipes of solid server."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+http = "0.2.9"
+manas_podverse = { version = "0.0.0", path = "../manas_podverse" }
+manas_repo = { version = "0.0.0", path = "../manas_repo" }
+manas_repo_opendal = { version = "0.0.0", path = "../manas_repo_opendal", features = ["access-prp", "backend-embedded"]}
+manas_storage = { version = "0.0.0", path = "../manas_storage" }
+name_locker = { version = "0.1.0", path = "../../fcrates/name_locker", features = [
+    "inmem",
+] }
+tracing = { version = "0.1.37", features = ["attributes"] }
+tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt", "ansi"] }
+tracing-log = "0.1.3"
+manas_http = { version = "0.0.0", path = "../manas_http" }
+flagset = "0.4.3"
+hyper = { version = "0.14.27", features = ["server", "stream"] }
+tower-http = { version = "0.4.1", features = ["cors", "catch-panic"] }
+manas_space = { version = "0.0.0", path = "../manas_space" }
+once_cell = "1.18.0"
+serde = { version = "1.0.171", features = ["derive"] }
+bytes = { version = "1.4.0" }
+mime = { version = "0.3.17" }
+tower = { version = "0.4.13", features = ["make", "util"] }
+webid = { version = "0.1.0", path = "../../fcrates/webid" }
+rust-embed = { version = "8.0.0" }
+# Opendal is pinned, as it breaks frequently.
+opendal = {version = "^0.39.0", features = ["rustls"]}
+typed_record = { version = "0.0.0", path = "../../fcrates/typed_record", features = [
+    "ext-http",
+] }
+gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs" }
+manas_access_control = { version = "0.0.0", path = "../manas_access_control", features = [
+    "impl-layered-repo",
+] }
+rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils" }
+manas_semslot = { version = "0.1.0", path = "../manas_semslot" }
+upon = { version = "0.7.1", default-features = false, features = ["serde"] }
+futures = "0.3.28"
+axum-server = { version = "0.5.1", features = ["tls-rustls"] }
+dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
+anyhow = "1.0.75"
+clap = { version = "4.3.11", features = [
+    "derive", "string"
+] }
+config = { version = "0.13.3", default-features = false, features = ["toml"] }
+tokio = { version = "1.32.0", features = ["fs"] }
+dpop = { version = "0.1.0", path = "../../fcrates/dpop", features = ["unsafe-optional-ath-claim"] }
+paste = "1.0.14"
+manas_authentication = { version = "0.0.0", path = "../manas_authentication" }
+manas_repo_layers = { version = "0.1.0", path = "../manas_repo_layers", features = ["dconneging", "patching", "validating"] }
+frunk_core = "0.4.2"
+
+
+[features]
+backend-fs = ["opendal/services-fs", "manas_repo_opendal/backend-fs"]
+backend-s3 = ["opendal/services-s3", "manas_repo_opendal/backend-s3"]
+backend-gcs = ["opendal/services-gcs", "manas_repo_opendal/backend-gcs"]
+pdp-acp = ["manas_access_control/impl-pdp-acp"]
+pdp-wac = ["manas_access_control/impl-pdp-wac"]
+layer-authentication = ["manas_authentication/scheme-impl-solid-oidc"]
+default = ["layer-authentication"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

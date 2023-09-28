@@ -1,0 +1,99 @@
+[package]
+name = "manas_authentication"
+version = "0.0.0"
+edition = "2021"
+description = "This crate provides implementations of various http authentication schemes for solid storage resource servers and authorization servers."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+http_uri = { version = "1.0.0", path = "../../fcrates/http_uri", features = [
+    "invariants",
+    "serde",
+] }
+webid = { version = "0.1.0", path = "../../fcrates/webid", features = ["serde"] }
+http = { version = "0.2.9" }
+serde = { version = "1.0.169", features = ["derive"] }
+
+# feature cr-framework
+thiserror = { version = "1.0.43", optional = true }
+tracing = { version = "0.1.37", optional = true }
+mime = { version = "0.3.17", optional = true }
+manas_http = { version = "0.0.0", path = "../manas_http", features = [
+    "service",
+    "typed-headers",
+], optional = true }
+dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", optional = true }
+either = { version = "1.8.1", optional = true }
+itertools = { version = "0.11.0", optional = true }
+headers = { version = "0.3.8", optional = true }
+futures = { version = "0.3.28", optional = true }
+tower = { version = "0.4.13", optional = true }
+
+# feature: solid-oidc
+moka = { version = "0.11.2", optional = true, default-features = false, features = [
+    "future",
+] }
+rdf_vocabularies = { version = "0.2.0", features = [
+    "ns-solid",
+    "ns-acp",
+], optional = true }
+sophia_api = { version = "0.8.0-alpha.1", optional = true }
+unwrap-infallible = "0.1.5"
+reqwest = { version = "0.11.18", features = ["json", "rustls-tls"], optional = true, default-features = false}
+picky = { version = "7.0.0-rc.8", optional = true, default-features = false }
+dpop = { version = "0.1.0", path = "../../fcrates/dpop", optional = true, features = [
+    "http-header",
+] }
+gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs", features = ["serde"] }
+serde_json = { version = "1.0.100", optional = true }
+solid_oidc_types = { version = "0.1.0", path = "../../fcrates/solid_oidc_types", optional = true }
+once_cell = { version = "1.18.0", optional = true }
+unicase = "2.6.0"
+
+# feature: creds-context
+acp = { version = "0.1.0", path = "../../fcrates/acp", optional = true }
+rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils", optional = true }
+
+
+[features]
+cr-framework = [
+    "dep:tracing",
+    "dep:thiserror",
+    "dep:mime",
+    "dep:manas_http",
+    "dep:dyn_problem",
+    "dep:either",
+    "dep:itertools",
+    "dep:headers",
+    "dep:futures",
+    "dep:tower",
+    "http_uri/serde",
+    "webid/invariants",
+]
+scheme-impl-solid-oidc = [
+    "cr-framework",
+    "webid/profile-req-agent",
+    "dep:moka",
+    "dep:rdf_vocabularies",
+    "dep:sophia_api",
+    "dep:reqwest",
+    "picky",
+    "picky/jose",
+    "dep:dpop",
+    "dep:solid_oidc_types",
+    "dep:serde_json",
+    "dep:once_cell",
+]
+creds-context = [
+    "dep:acp",
+    "dep:rdf_utils",
+    "dep:rdf_vocabularies",
+    "webid/sophia",
+    "http_uri/sophia",
+]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

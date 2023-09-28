@@ -1,0 +1,14 @@
+[book]
+authors = ["damooo"]
+language = "en"
+multilingual = false
+src = "./book/src"
+title = "Manas solid server"
+
+[build]
+build-dir = "./book/out"
+create-missing = true
+
+[output.html]
+git-repository-url = "https://github.com/manomayam/manas"
+

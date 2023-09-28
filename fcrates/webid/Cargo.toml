@@ -1,0 +1,50 @@
+[package]
+name = "webid"
+version = "0.1.0"
+edition = "2021"
+description = "A crate for handling web-ids"
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+http_uri = { version = "1.0.0", path = "../http_uri", default-features = false }
+iri-string = "0.7.0"
+thiserror = "1.0.43"
+
+# feature: serde
+serde = { version = "1.0.167", features = ["derive"], optional = true }
+
+# feature: invariant
+gdp_rs = { version = "0.0.3", path = "../gdp_rs", optional = true }
+
+# feature: sophia
+sophia_api = { version = "0.8.0-alpha.1", optional = true }
+
+# feature: profile-req-agent
+reqwest = { version = "0.11.18", optional = true, features = ["stream", "rustls-tls"], default-features = false}
+tracing = { version = "0.1.37", features = ["attributes"] }
+rdf_dynsyn = { version = "0.3.0", path = "../rdf_dynsyn", optional = true, features = [
+    "async",
+] }
+headers = { version = "0.3.8", optional = true }
+mime = { version = "0.3.17", optional = true }
+futures = { version = "0.3.28", optional = true }
+
+
+[features]
+serde = ["dep:serde", "http_uri/serde"]
+invariants = ["http_uri/invariants", "dep:gdp_rs"]
+profile-req-agent = [
+    "dep:reqwest",
+    "invariants",
+    "dep:rdf_dynsyn",
+    "dep:headers",
+    "dep:mime",
+    "dep:futures",
+]
+sophia = ["dep:sophia_api"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

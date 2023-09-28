@@ -1,0 +1,10 @@
+[package]
+name = "manas_tauri"
+version = "0.1.0"
+edition = "2021"
+description = "This crate provides utilities to integrate manas as a backend in tauri apps."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+manas_server = { version = "0.0.0", path = "../manas_server", default-features = false, features = ["backend-fs"] }
