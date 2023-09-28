@@ -21,7 +21,7 @@
 //! * Integrated solid-os databrowser frontend.
 //! * ..etc.
 //! 
-//! ## Fpr developers
+//! ## For developers
 //! 
 //! [![Crates.io](https://img.shields.io/crates/v/manas.svg)](https://crates.io/crates/manas)
 //! [![Docs.rs](https://docs.rs/manas/badge.svg)](https://docs.rs/manas)

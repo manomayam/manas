@@ -18,6 +18,7 @@ databrowser_enabled = true
 # Refer <https://docs.rs/opendal/latest/opendal/services/struct.S3.html> for full range of configuration.
 [storage.repo.backend]
 endpoint ="https://s3.amazonaws.com"
+region = "india"
 bucket = "bkt1"
 root = "/path/to/root"
 access_key_id = "access_key_id"
