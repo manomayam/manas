@@ -68,7 +68,7 @@ capped_stream = { version = "0.1.0", path = "../../fcrates/capped_stream", optio
 
 # feature: service
 tower = { version = "0.4.13", optional = true, features = ["util"] }
-dyn-clone = { version = "1.0.11", optional = true }
+dyn-clone = { version = "1.0.14", optional = true }
 http-api-problem = { version = "0.57.0", features = [
     "api-error",
     "hyper",
