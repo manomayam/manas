@@ -4,8 +4,8 @@ resolver = "2"
 # members = ["crates/*", "crates/manas_specs/codegen/", "fcrates/*"]
 members = [
     "fcrates/gdp_rs",
-    "fcrates/dyn_problem",
     "fcrates/typed_record",
+    "fcrates/dyn_problem",
     "fcrates/name_locker",
     "fcrates/capped_stream",
     "fcrates/http_uri",

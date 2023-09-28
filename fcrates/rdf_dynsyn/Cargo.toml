@@ -1,6 +1,6 @@
 [package]
 name = "rdf_dynsyn"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "This crate provides sophia-compatible and sophia-based rdf parsers/serializers, that can be instantiated against any of supported syntaxes dynamically at run time."
 keywords = ["rdf", "parse", "serialize", "sophia"]
@@ -20,7 +20,7 @@ mime = "0.3.17"
 thiserror = "1.0.41"
 tracing = "0.1.37"
 anymap2 = "0.13.0"
-gdp_rs = { version = "0.1.0", path = "../gdp_rs" }
+gdp_rs = { version = "0.1.1", path = "../gdp_rs" }
 frunk_core = "0.4.2"
 if_chain = "1.0.2"
 resiter = "0.5.0"

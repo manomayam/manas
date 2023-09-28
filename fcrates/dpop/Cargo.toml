@@ -1,6 +1,6 @@
 [package]
 name = "dpop"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "An implementation of DPoP for rust."
 repository = "https://github.com/manomayam/manas"
@@ -11,10 +11,10 @@ license = "MIT OR Apache-2.0"
 base64 = "0.21.2"
 canonical_json = "0.5.0"
 frunk_core = "0.4.2"
-gdp_rs = { version = "0.1.0", path = "../gdp_rs", features = ["serde"] }
+gdp_rs = { version = "0.1.1", path = "../gdp_rs", features = ["serde"] }
 http = "0.2.9"
 http-serde = "1.1.2"
-http_uri = { version = "1.0.0", path = "../http_uri", features = ["serde"] }
+http_uri = { version = "1.0.1", path = "../http_uri", features = ["serde"] }
 once_cell = { version = "1.18.0" }
 picky = { version = "7.0.0-rc.8", default-features = false, features = [
     "jose",

@@ -1,6 +1,6 @@
 [package]
 name = "dyn_problem"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "This crate provides a `Problem` type to represent dynamic problems, with problem types identified by uri."
 repository = "https://github.com/manomayam/manas"
@@ -14,7 +14,7 @@ iri-string = "0.7.0"
 once_cell = "1.18.0"
 
 # feature: ext-typed-record
-typed_record = { version = "0.1.0", path = "../typed_record", features = ["ext-http"], optional = true}
+typed_record = { version = "0.1.1", path = "../typed_record", features = ["ext-http"], optional = true}
 
 # feature: anon-problem-type
 uuid = { version = "1.4.0", features = ["v4"], optional = true }

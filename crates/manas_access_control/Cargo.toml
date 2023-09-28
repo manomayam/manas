@@ -9,12 +9,12 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 acp = { version = "0.1.0", path = "../../fcrates/acp" }
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = [
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = [
     "alias-future",
 ] }
 futures = "0.3.28"
 ghost = "0.1.13"
-http_uri = { version = "1.0.0", path = "../../fcrates/http_uri", features = [
+http_uri = { version = "1.0.1", path = "../../fcrates/http_uri", features = [
     "invariants",
     "sophia"
 ] }
@@ -26,7 +26,7 @@ manas_space = { version = "0.1.0", path = "../manas_space" }
 async-recursion = "1.0.4"
 itertools = "0.11.0"
 paste = "1.0.14"
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils" }
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl", "ns-foaf","ns-rdf"] }
 sophia_api = "0.8.0-alpha.1"
 thiserror = "1.0.43"
@@ -38,7 +38,7 @@ vec1 = {version = "1.10.1", features = ["serde"]}
 
 # feature: layered-repo-impl
 manas_repo = { version = "0.1.0", path = "../manas_repo", optional = true }
-typed_record = { version = "0.1.0", path = "../../fcrates/typed_record", features = ["ext-anymap", "ext-http"]}
+typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = ["ext-anymap", "ext-http"]}
 serde = { version = "1.0.185", features = ["derive"] }
 
 

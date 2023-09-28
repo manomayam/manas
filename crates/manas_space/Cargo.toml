@@ -18,7 +18,7 @@ iri-string = "0.7.0"
 smallvec = "1.11.0"
 dyn-clone = "1.0.14"
 if_chain = "1.0.2"
-gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs" }
+gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs" }
 headers = "0.3.8"
 http = "0.2.9"
 mime = "0.3.17"

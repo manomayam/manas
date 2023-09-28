@@ -531,7 +531,7 @@ dependencies = [
 
 [[package]]
 name = "capped_stream"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "pin-project-lite",
@@ -950,7 +950,7 @@ dependencies = [
 
 [[package]]
 name = "dpop"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64 0.21.4",
  "bytes",
@@ -981,7 +981,7 @@ checksum = "23d2f3407d9a573d666de4b5bdf10569d73ca9478087346697dcbae6244bfbcd"
 
 [[package]]
 name = "dyn_problem"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "futures",
  "http",
@@ -1288,7 +1288,7 @@ dependencies = [
 
 [[package]]
 name = "gdp_rs"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "either",
  "frunk_core",
@@ -1550,7 +1550,7 @@ dependencies = [
 
 [[package]]
 name = "http_uri"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "claims",
  "frunk_core",
@@ -2372,7 +2372,7 @@ checksum = "8bc45ce96192b5d8b20cffb10ccd85cc431c283a7d171a0d843ac0bd7d444598"
 
 [[package]]
 name = "name_locker"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-stream",
  "dashmap",
@@ -2987,7 +2987,7 @@ dependencies = [
 
 [[package]]
 name = "rdf_dynsyn"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anymap2",
  "async-compat",
@@ -3018,7 +3018,7 @@ dependencies = [
 
 [[package]]
 name = "rdf_utils"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "chrono",
  "ecow",
@@ -4260,7 +4260,7 @@ checksum = "3528ecfd12c466c6f163363caf2d02a71161dd5e1cc6ae7b34207ea2d42d81ed"
 
 [[package]]
 name = "typed_record"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anymap2",
  "http",

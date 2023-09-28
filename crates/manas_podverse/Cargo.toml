@@ -7,7 +7,7 @@ repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
 futures = "0.3.28"
 ghost = "0.1.13"
 http-api-problem = { version = "0.57.0", features = ["api-error", "hyper"] }
@@ -18,10 +18,10 @@ manas_http = { version = "0.1.0", path = "../manas_http", features = [
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 manas_space = { version = "0.1.0", path = "../manas_space" }
 manas_storage = { version = "0.1.0", path = "../manas_storage" }
-rdf_dynsyn = { version = "0.3.0", path = "../../fcrates/rdf_dynsyn", features = [
+rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils" }
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-rdf", "ns-pim"] }
 regex = "1.9.1"
 sophia_api = "0.8.0-alpha.1"

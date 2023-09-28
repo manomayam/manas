@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-http_uri = { version = "1.0.0", path = "../../fcrates/http_uri", features = [
+http_uri = { version = "1.0.1", path = "../../fcrates/http_uri", features = [
     "invariants",
     "serde",
 ] }
@@ -24,7 +24,7 @@ manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "service",
     "typed-headers",
 ], optional = true }
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", optional = true }
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", optional = true }
 either = { version = "1.8.1", optional = true }
 itertools = { version = "0.11.0", optional = true }
 headers = { version = "0.3.8", optional = true }
@@ -43,10 +43,10 @@ sophia_api = { version = "0.8.0-alpha.1", optional = true }
 unwrap-infallible = "0.1.5"
 reqwest = { version = "0.11.18", features = ["json", "rustls-tls"], optional = true, default-features = false}
 picky = { version = "7.0.0-rc.8", optional = true, default-features = false }
-dpop = { version = "0.1.0", path = "../../fcrates/dpop", optional = true, features = [
+dpop = { version = "0.1.1", path = "../../fcrates/dpop", optional = true, features = [
     "http-header",
 ] }
-gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs", features = ["serde"] }
+gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs", features = ["serde"] }
 serde_json = { version = "1.0.100", optional = true }
 solid_oidc_types = { version = "0.1.0", path = "../../fcrates/solid_oidc_types", optional = true }
 once_cell = { version = "1.18.0", optional = true }
@@ -54,7 +54,7 @@ unicase = "2.6.0"
 
 # feature: creds-context
 acp = { version = "0.1.0", path = "../../fcrates/acp", optional = true }
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils", optional = true }
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", optional = true }
 
 
 [features]

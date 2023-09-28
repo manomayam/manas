@@ -1,6 +1,6 @@
 [package]
 name = "name_locker"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "This crate provides interface for asynchronous name lockers, that can run an async task with lock on a given name."
 repository = "https://github.com/manomayam/manas"

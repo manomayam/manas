@@ -12,7 +12,7 @@ manas_podverse = { version = "0.1.0", path = "../manas_podverse" }
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 manas_repo_opendal = { version = "0.1.0", path = "../manas_repo_opendal", features = ["access-prp", "backend-embedded"]}
 manas_storage = { version = "0.1.0", path = "../manas_storage" }
-name_locker = { version = "0.1.0", path = "../../fcrates/name_locker", features = [
+name_locker = { version = "0.1.1", path = "../../fcrates/name_locker", features = [
     "inmem",
 ] }
 tracing = { version = "0.1.37", features = ["attributes"] }
@@ -32,26 +32,26 @@ webid = { version = "0.1.0", path = "../../fcrates/webid" }
 rust-embed = { version = "8.0.0" }
 # Opendal is pinned, as it breaks frequently.
 opendal = {version = "^0.39.0", features = ["rustls"]}
-typed_record = { version = "0.1.0", path = "../../fcrates/typed_record", features = [
+typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-http",
 ] }
-gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs" }
+gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs" }
 manas_access_control = { version = "0.1.0", path = "../manas_access_control", features = [
     "impl-layered-repo",
 ] }
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils" }
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 manas_semslot = { version = "0.1.0", path = "../manas_semslot" }
 upon = { version = "0.7.1", default-features = false, features = ["serde"] }
 futures = "0.3.28"
 axum-server = { version = "0.5.1", features = ["tls-rustls"] }
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
 anyhow = "1.0.75"
 clap = { version = "4.3.11", features = [
     "derive", "string"
 ] }
 config = { version = "0.13.3", default-features = false, features = ["toml"] }
 tokio = { version = "1.32.0", features = ["fs"] }
-dpop = { version = "0.1.0", path = "../../fcrates/dpop", features = ["unsafe-optional-ath-claim"] }
+dpop = { version = "0.1.1", path = "../../fcrates/dpop", features = ["unsafe-optional-ath-claim"] }
 paste = "1.0.14"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 manas_repo_layers = { version = "0.1.0", path = "../manas_repo_layers", features = ["dconneging", "patching", "validating"] }

@@ -15,7 +15,7 @@ manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "conditional_req",
 ] }
 manas_space = { version = "0.1.0", path = "../manas_space" }
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
 futures = "0.3.28"
 hyper = "0.14.27"
 tower = {version = "0.4.13", features=["util"]}
@@ -24,17 +24,17 @@ once_cell = "1.18.0"
 headers = "0.3.8"
 http = "0.2.9"
 mime = "0.3.17"
-rdf_dynsyn = { version = "0.3.0", path = "../../fcrates/rdf_dynsyn", features = [
+rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
 tracing = { version = "0.1.37", features = ["attributes"] }
 async-convert = "1.0.0"
-capped_stream = { version = "0.1.0", path = "../../fcrates/capped_stream" }
+capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream" }
 frunk_core = "0.4.2"
-typed_record = { version = "0.1.0", path = "../../fcrates/typed_record", features = [
+typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
 ] }
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils"}
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils"}
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 if_chain = "1.0.2"
 tokio = { version = "1.29.1", features = ["rt"] }

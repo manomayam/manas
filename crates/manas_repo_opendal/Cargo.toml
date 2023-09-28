@@ -13,17 +13,17 @@ manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "representation",
 ] }
 once_cell = "1.18.0"
-rdf_dynsyn = { version = "0.3.0", path = "../../fcrates/rdf_dynsyn", features = [
+rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
 tokio = { version = "1.29.1", features = ["rt", "macros", "io-util"] }
 tower = { version = "0.4.13", features = ["util"] }
 tracing = { version = "0.1.37", features = ["attributes"] }
 uuid = { version = "1.2.2", features = ["v4"] }
-dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = [
+dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = [
     "ext-typed-record",
 ] }
-rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils", features = [
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", features = [
     "compat-chrono",
     "solid-insert-delete-patch",
 ] }
@@ -35,7 +35,7 @@ thiserror = "1.0.43"
 flagset = "0.4.3"
 # Opendal is pinned, as it breaks frequently.
 opendal = { version = "^0.39.0", features = ["rustls"]}
-gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs" }
+gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs" }
 regex = "1.9.1"
 percent-encoding = "2.3.0"
 async-stream = "0.3.5"
@@ -64,7 +64,7 @@ rdf_vocabularies = { version = "0.2.0", features = [
 ] }
 sophia_api = "0.8.0-alpha.1"
 dashmap = "5.4.0"
-typed_record = { version = "0.1.0", path = "../../fcrates/typed_record", features = [
+typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
 ] }
 async-once-cell = "0.5.3"
@@ -96,7 +96,7 @@ acp = { version = "0.1.0", path = "../../fcrates/acp", optional = true }
 async-convert = "1.0.0"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 ecow = "0.1.2"
-capped_stream = { version = "0.1.0", path = "../../fcrates/capped_stream" }
+capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream" }
 
 
 [features]
