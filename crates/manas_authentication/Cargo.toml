@@ -47,7 +47,7 @@ dpop = { version = "0.1.0", path = "../../fcrates/dpop", optional = true, featur
     "http-header",
 ] }
 gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs", features = ["serde"] }
-serde_json = { version = "1.0.100", optional = true }
+serde_json = { version = "1.0.107", optional = true }
 solid_oidc_types = { version = "0.1.0", path = "../../fcrates/solid_oidc_types", optional = true }
 once_cell = { version = "1.18.0", optional = true }
 unicase = "2.6.0"
