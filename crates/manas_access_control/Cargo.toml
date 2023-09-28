@@ -11,6 +11,7 @@ license = "MIT OR Apache-2.0"
 acp = { version = "0.1.0", path = "../../fcrates/acp" }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = [
     "alias-future",
+    "ext-typed-record"
 ] }
 futures = "0.3.28"
 ghost = "0.1.13"
@@ -19,7 +20,7 @@ http_uri = { version = "1.0.1", path = "../../fcrates/http_uri", features = [
     "sophia"
 ] }
 manas_authentication = { version = "0.1.0", path = "../manas_authentication", features = ["creds-context"]}
-manas_http = { version = "0.1.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "typed-headers",
 ] }
 manas_space = { version = "0.1.0", path = "../manas_space" }

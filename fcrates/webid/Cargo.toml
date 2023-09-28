@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-http_uri = { version = "1.0.1", path = "../http_uri", default-features = false }
+http_uri = { version = "1.0.1", path = "../http_uri", default-features = false, features = ["sophia"]}
 iri-string = "0.7.0"
 thiserror = "1.0.43"
 

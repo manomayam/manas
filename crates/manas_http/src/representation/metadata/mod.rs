@@ -7,7 +7,6 @@ use std::ops::{Deref, DerefMut};
 
 use headers::{ContentLength, ContentRange, ETag, LastModified};
 use http_uri::HttpUri;
-use rdf_dynsyn::{correspondence::Correspondent, syntax::RdfSyntax};
 use typed_record::{ClonableTypedRecord, TypedRecord, TypedRecordKey};
 
 use self::derived_etag::DerivedETag;
@@ -60,16 +59,6 @@ impl RepresentationMetadata {
             .unwrap_or(&APPLICATION_OCTET_STREAM)
     }
 
-    /// Get the rdf syntax corresponding to content-type.
-    #[inline]
-    pub fn rdf_syntax<S>(&self) -> Option<Correspondent<S>>
-    where
-        S: Deref<Target = RdfSyntax>,
-        Correspondent<S>: for<'a> TryFrom<&'a mime::Mime>,
-    {
-        Correspondent::try_from(self.content_type().deref()).ok()
-    }
-
     /// Get [`RepresentationMetadata`] with given kv pair inserted.
     #[inline]
     pub fn with<K: TypedRecordKey>(mut self, v: K::Value) -> Self
@@ -92,6 +81,27 @@ impl RepresentationMetadata {
             self.remove_rec_item::<K>();
         }
         self
+    }
+}
+
+#[cfg(feature = "impl-representation")]
+mod rdf_ext {
+    use std::ops::Deref;
+
+    use rdf_dynsyn::{correspondence::Correspondent, syntax::RdfSyntax};
+
+    use super::RepresentationMetadata;
+
+    impl RepresentationMetadata {
+        /// Get the rdf syntax corresponding to content-type.
+        #[inline]
+        pub fn rdf_syntax<S>(&self) -> Option<Correspondent<S>>
+        where
+            S: Deref<Target = RdfSyntax>,
+            Correspondent<S>: for<'a> TryFrom<&'a mime::Mime>,
+        {
+            Correspondent::try_from(self.content_type().deref()).ok()
+        }
     }
 }
 

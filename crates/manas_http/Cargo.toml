@@ -1,6 +1,6 @@
 [package]
 name = "manas_http"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "This crate provides extended functionality for handling http semantics, that integrates into [`hyper`](https://docs.rs/hyper/latest/hyper/index.html) ecosystem."
 repository = "https://github.com/manomayam/manas"

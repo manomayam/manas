@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-manas_http = { version = "0.1.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "representation",
     "typed-headers",
 ] }
@@ -33,7 +33,7 @@ webid = { version = "0.1.0", path = "../../fcrates/webid" }
 [dev-dependencies]
 claims = "0.7.1"
 rstest = "0.18.1"
-manas_http = { version = "0.1.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "representation",
     "typed-headers",
     "test-utils",
