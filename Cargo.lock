@@ -1288,7 +1288,7 @@ dependencies = [
 
 [[package]]
 name = "gdp_rs"
-version = "0.0.3"
+version = "0.1.0"
 dependencies = [
  "either",
  "frunk_core",
@@ -1824,7 +1824,7 @@ checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "manas_access_control"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "acp",
  "async-recursion",
@@ -1853,7 +1853,7 @@ dependencies = [
 
 [[package]]
 name = "manas_authentication"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "acp",
  "dpop",
@@ -1887,7 +1887,7 @@ dependencies = [
 
 [[package]]
 name = "manas_http"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-convert",
@@ -1937,7 +1937,7 @@ dependencies = [
 
 [[package]]
 name = "manas_podverse"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "dyn_problem",
  "futures",
@@ -1959,7 +1959,7 @@ dependencies = [
 
 [[package]]
 name = "manas_repo"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-compat",
@@ -2029,7 +2029,7 @@ dependencies = [
 
 [[package]]
 name = "manas_repo_opendal"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "acp",
  "anyhow",
@@ -2110,7 +2110,7 @@ dependencies = [
 
 [[package]]
 name = "manas_server"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum-server",
@@ -2156,7 +2156,7 @@ dependencies = [
 
 [[package]]
 name = "manas_server_single_fs_wac"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "manas_server",
  "tokio",
@@ -2164,7 +2164,7 @@ dependencies = [
 
 [[package]]
 name = "manas_server_single_s3_wac"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "manas_server",
  "tokio",
@@ -2172,7 +2172,7 @@ dependencies = [
 
 [[package]]
 name = "manas_space"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "claims",
  "dyn-clone",
@@ -2228,7 +2228,7 @@ dependencies = [
 
 [[package]]
 name = "manas_storage"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "dyn-clone",
@@ -3018,7 +3018,7 @@ dependencies = [
 
 [[package]]
 name = "rdf_utils"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "ecow",
@@ -4260,7 +4260,7 @@ checksum = "3528ecfd12c466c6f163363caf2d02a71161dd5e1cc6ae7b34207ea2d42d81ed"
 
 [[package]]
 name = "typed_record"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "anymap2",
  "http",

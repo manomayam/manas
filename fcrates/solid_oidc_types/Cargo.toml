@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 dpop = { version = "0.1.0", path = "../dpop" }
-gdp_rs = { version = "0.0.3", path = "../gdp_rs", features = ["serde"] }
+gdp_rs = { version = "0.1.0", path = "../gdp_rs", features = ["serde"] }
 http_uri = { version = "1.0.0", path = "../http_uri", features = ["serde"] }
 picky = { version = "7.0.0-rc.8", default-features = false, features = [
     "jose",

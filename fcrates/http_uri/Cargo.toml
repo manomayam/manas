@@ -15,7 +15,7 @@ thiserror = "1.0.41"
 serde = { version = "1.0.166", optional = true }
 
 # feature: invariants
-gdp_rs = { version = "0.0.3", path = "../gdp_rs", optional = true }
+gdp_rs = { version = "0.1.0", path = "../gdp_rs", optional = true }
 frunk_core = { version = "0.4.2", optional = true }
 
 # feature: sophia-term-impl

@@ -1,6 +1,6 @@
 [package]
 name = "manas_space"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2021"
 description = "This crate provides abstractions for modelling storage spaces confirming to generalized solid protocol."
 repository = "https://github.com/manomayam/manas"
@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-manas_http = { version = "0.0.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "representation",
     "typed-headers",
 ] }
@@ -18,7 +18,7 @@ iri-string = "0.7.0"
 smallvec = "1.11.0"
 dyn-clone = "1.0.14"
 if_chain = "1.0.2"
-gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs" }
+gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs" }
 headers = "0.3.8"
 http = "0.2.9"
 mime = "0.3.17"
@@ -33,7 +33,7 @@ webid = { version = "0.1.0", path = "../../fcrates/webid" }
 [dev-dependencies]
 claims = "0.7.1"
 rstest = "0.18.1"
-manas_http = { version = "0.0.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "representation",
     "typed-headers",
     "test-utils",

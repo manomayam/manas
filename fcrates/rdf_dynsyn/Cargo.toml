@@ -20,7 +20,7 @@ mime = "0.3.17"
 thiserror = "1.0.41"
 tracing = "0.1.37"
 anymap2 = "0.13.0"
-gdp_rs = { version = "0.0.3", path = "../gdp_rs" }
+gdp_rs = { version = "0.1.0", path = "../gdp_rs" }
 frunk_core = "0.4.2"
 if_chain = "1.0.2"
 resiter = "0.5.0"

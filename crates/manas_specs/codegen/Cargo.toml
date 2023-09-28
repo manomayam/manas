@@ -14,7 +14,7 @@ rdf_vocabularies = { version = "0.2.0", features = ["ns-spec", "ns-dcterms"] }
 handlebars = "4.3.7"
 serde = { version = "1.0.169", features = ["derive"] }
 sophia_api = "0.8.0-alpha.1"
-rdf_utils = { version = "0.2.1", path = "../../../fcrates/rdf_utils" }
+rdf_utils = { version = "0.3.0", path = "../../../fcrates/rdf_utils" }
 sophia_turtle = "0.8.0-alpha.1"
 
 [package.metadata.release]

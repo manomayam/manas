@@ -1,6 +1,6 @@
 [package]
 name = "manas_authentication"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2021"
 description = "This crate provides implementations of various http authentication schemes for solid storage resource servers and authorization servers."
 repository = "https://github.com/manomayam/manas"
@@ -20,7 +20,7 @@ serde = { version = "1.0.169", features = ["derive"] }
 thiserror = { version = "1.0.43", optional = true }
 tracing = { version = "0.1.37", optional = true }
 mime = { version = "0.3.17", optional = true }
-manas_http = { version = "0.0.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "service",
     "typed-headers",
 ], optional = true }
@@ -46,7 +46,7 @@ picky = { version = "7.0.0-rc.8", optional = true, default-features = false }
 dpop = { version = "0.1.0", path = "../../fcrates/dpop", optional = true, features = [
     "http-header",
 ] }
-gdp_rs = { version = "0.0.3", path = "../../fcrates/gdp_rs", features = ["serde"] }
+gdp_rs = { version = "0.1.0", path = "../../fcrates/gdp_rs", features = ["serde"] }
 serde_json = { version = "1.0.100", optional = true }
 solid_oidc_types = { version = "0.1.0", path = "../../fcrates/solid_oidc_types", optional = true }
 once_cell = { version = "1.18.0", optional = true }
@@ -54,7 +54,7 @@ unicase = "2.6.0"
 
 # feature: creds-context
 acp = { version = "0.1.0", path = "../../fcrates/acp", optional = true }
-rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils", optional = true }
+rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils", optional = true }
 
 
 [features]

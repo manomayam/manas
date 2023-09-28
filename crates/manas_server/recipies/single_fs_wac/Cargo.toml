@@ -1,13 +1,13 @@
 [package]
 name = "manas_server_single_fs_wac"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2021"
 description = "This binary crate provides a solid server with fs backend, with wac access control."
 repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-manas_server = { version = "0.0.0", path = "../..", features = ["backend-fs", "pdp-wac"] }
+manas_server = { version = "0.1.0", path = "../..", features = ["backend-fs", "pdp-wac"] }
 tokio = { version = "1.32.0", features = ["rt", "rt-multi-thread"] }
 
 

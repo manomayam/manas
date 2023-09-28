@@ -9,12 +9,12 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-manas_http = { version = "0.0.0", path = "../manas_http", features = [
+manas_http = { version = "0.1.0", path = "../manas_http", features = [
     "representation",
     "impl-representation",
     "conditional_req",
 ] }
-manas_space = { version = "0.0.0", path = "../manas_space" }
+manas_space = { version = "0.1.0", path = "../manas_space" }
 dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
 futures = "0.3.28"
 hyper = "0.14.27"
@@ -31,11 +31,11 @@ tracing = { version = "0.1.37", features = ["attributes"] }
 async-convert = "1.0.0"
 capped_stream = { version = "0.1.0", path = "../../fcrates/capped_stream" }
 frunk_core = "0.4.2"
-typed_record = { version = "0.0.0", path = "../../fcrates/typed_record", features = [
+typed_record = { version = "0.1.0", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
 ] }
-rdf_utils = { version = "0.2.1", path = "../../fcrates/rdf_utils"}
-manas_repo = { version = "0.0.0", path = "../manas_repo" }
+rdf_utils = { version = "0.3.0", path = "../../fcrates/rdf_utils"}
+manas_repo = { version = "0.1.0", path = "../manas_repo" }
 if_chain = "1.0.2"
 tokio = { version = "1.29.1", features = ["rt"] }
 sophia_api = "0.8.0-alpha.1"

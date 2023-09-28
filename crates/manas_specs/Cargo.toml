@@ -11,13 +11,13 @@ dyn_problem = { version = "0.1.0", path = "../../fcrates/dyn_problem", features 
 http = "0.2.9"
 http-api-problem = { version = "0.57.0", features = ["api-error"] }
 iri-string = "0.7.0"
-manas_http = { version = "0.0.0", path = "../manas_http" }
+manas_http = { version = "0.1.0", path = "../manas_http" }
 once_cell = "1.18.0"
 percent-encoding = "2.3.0"
 serde = "1.0.169"
 serde_with = "3.0.0"
 thiserror = "1.0.43"
-typed_record = { version = "0.0.0", path = "../../fcrates/typed_record" }
+typed_record = { version = "0.1.0", path = "../../fcrates/typed_record" }
 
 [package.metadata.docs.rs]
 all-features = true
