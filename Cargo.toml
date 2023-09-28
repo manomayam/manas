@@ -28,8 +28,8 @@ members = [
     "crates/manas_storage",
     "crates/manas_podverse",
     "crates/manas_server",
-    "crates/manas_server/recipies/single_fs_wac",
-    "crates/manas_server/recipies/single_s3_wac",
+    "crates/manas_server/recipes/single_fs_wac",
+    "crates/manas_server/recipes/single_s3_wac",
     "crates/manas"
     # "crates/manas_tauri"
 ]
