@@ -46,4 +46,4 @@ jobs:
           tar: unix
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
-          include: crates/manas_server/recipes/single_fs_wac/README.md, crates/manas_server/recipes/single_fs_wac/config-template.toml, LICENSE-MIT
+          include: crates/manas_server/recipes/single_fs_wac/README.md,crates/manas_server/recipes/single_fs_wac/config-template.toml,LICENSE-MIT
