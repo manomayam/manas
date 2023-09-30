@@ -31,6 +31,7 @@ use self::service::{
 pub mod context;
 pub mod policy;
 pub mod service;
+pub mod layer;
 
 /// A repo manages resources in a storage space.
 pub trait Repo: Debug + Send + Sync + 'static + Unpin + Sized {

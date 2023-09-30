@@ -5,10 +5,9 @@ use manas_space::resource::{slot::SolidResourceSlot, slot_link::AuxLink};
 use typed_record::ClonableTypedRecord;
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::common::{
-        preconditions::Preconditions,
-        status_token::impl_::layered::{Layered, LayeredResourceStatusTokenTypes},
+        preconditions::Preconditions, status_token::impl_::layered::Layered,
     },
     Repo, RepoRepresentedResourceToken,
 };
@@ -65,15 +64,8 @@ impl<R: Repo> ResourceDeleteRequest<R> {
     /// Unlayer the tokens.
     pub fn unlayer_tokens<IR>(self) -> ResourceDeleteRequest<IR>
     where
-        R: Repo<
-            StSpace = IR::StSpace,
-            ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-                IR::ResourceStatusTokenTypes,
-                R,
-            >,
-        >,
-        R::Context: LayeredRepoContext<InnerRepo = IR>,
         IR: Repo,
+        R: LayeredRepo<IR>,
         R::Credentials: Into<IR::Credentials>,
     {
         self.map_tokens(|tokens| Layered::from(tokens).inner)

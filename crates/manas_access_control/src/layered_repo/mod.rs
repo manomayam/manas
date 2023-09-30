@@ -6,6 +6,7 @@ use std::{marker::PhantomData, sync::Arc};
 
 use manas_repo::{
     context::LayeredRepoContext,
+    layer::RepoLayer,
     policy::uri::impl_::DelegatedUriPolicy,
     service::{
         patcher_resolver::impl_::DelegatedRepPatcherResolver,
@@ -18,7 +19,7 @@ use manas_repo::{
 };
 
 use self::{
-    context::AccessControlledRepoContext,
+    context::{AccessControlledRepoContext, InitialRootAcrRepFactory},
     service::{
         initializer::AccessControlledRepoInitializer,
         resource_operator::{
@@ -111,4 +112,77 @@ where
     type ResourceUpdater = AccessControlledResourceUpdater<IR, PEP>;
 
     type ResourceDeleter = AccessControlledResourceDeleter<IR, PEP>;
+}
+
+/// An implementation of [`RepoLayer`] that layers access control
+/// functionality over repos.
+#[derive(Clone)]
+pub struct AccessControlledRepoLayer<IR, PEP>
+where
+    IR: Repo,
+    PEP: PolicyEnforcementPoint<StSpace = IR::StSpace>,
+    PEP::Credentials: Into<IR::Credentials>,
+{
+    /// Policy enforcement point.
+    pub pep: Arc<PEP>,
+
+    /// Initial storage root acr in ttl.
+    pub initial_root_acr_rep_factory: Arc<InitialRootAcrRepFactory<IR>>,
+
+    _phantom: PhantomData<fn(IR, PEP)>,
+}
+
+impl<IR, PEP> std::fmt::Debug for AccessControlledRepoLayer<IR, PEP>
+where
+    IR: Repo,
+    PEP: PolicyEnforcementPoint<StSpace = IR::StSpace>,
+    PEP::Credentials: Into<IR::Credentials>,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AccessControlledRepoLayer")
+            .field("pep", &self.pep)
+            .field("_phantom", &self._phantom)
+            .finish()
+    }
+}
+
+impl<IR, PEP> AccessControlledRepoLayer<IR, PEP>
+where
+    IR: Repo,
+    PEP: PolicyEnforcementPoint<StSpace = IR::StSpace>,
+    PEP::Credentials: Into<IR::Credentials>,
+{
+    /// Create a new [`AccessControlledRepoLayer`].
+    #[inline]
+    pub fn new(
+        pep: Arc<PEP>,
+        initial_root_acr_rep_factory: Arc<InitialRootAcrRepFactory<IR>>,
+    ) -> Self {
+        Self {
+            pep,
+            initial_root_acr_rep_factory,
+            _phantom: PhantomData,
+        }
+    }
+}
+
+impl<IR, PEP> RepoLayer<IR> for AccessControlledRepoLayer<IR, PEP>
+where
+    IR: Repo,
+    PEP: PolicyEnforcementPoint<StSpace = IR::StSpace>,
+    PEP::Credentials: Into<IR::Credentials>,
+{
+    type LayeredRepo = AccessControlledRepo<IR, PEP>;
+
+    #[inline]
+    fn layer_context(
+        &self,
+        inner_context: Arc<<IR as Repo>::Context>,
+    ) -> <Self::LayeredRepo as Repo>::Context {
+        AccessControlledRepoContext {
+            inner: inner_context,
+            pep: self.pep.clone(),
+            initial_root_acr_rep_factory: self.initial_root_acr_rep_factory.clone(),
+        }
+    }
 }

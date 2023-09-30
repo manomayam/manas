@@ -5,6 +5,7 @@
 use std::{marker::PhantomData, sync::Arc};
 
 use manas_repo::{
+    layer::RepoLayer,
     policy::uri::impl_::DelegatedUriPolicy,
     service::{
         initializer::impl_::DelegatedRepoInitializer,
@@ -113,4 +114,50 @@ where
     type ResourceUpdater = PatchingRepoResourceUpdater<IR, P>;
 
     type ResourceDeleter = DelegatingOperator<RepoResourceDeleter<IR>, MRepo<IR, P>>;
+}
+
+/// An implementation of [`RepoLayer`] that layers patching
+/// functionality over repos.
+#[derive(Debug, Clone)]
+pub struct PatchingRepoLayer<IR, P>
+where
+    IR: Repo<RepPatcher = UnsupportedRepPatcher>,
+    P: DirectRepPatcher<IR::StSpace, IR::Representation>,
+{
+    patcher_resolution_config: Arc<P::ResolutionConfig>,
+    _phantom: PhantomData<fn(IR, P)>,
+}
+
+impl<IR, P> PatchingRepoLayer<IR, P>
+where
+    IR: Repo<RepPatcher = UnsupportedRepPatcher>,
+    P: DirectRepPatcher<IR::StSpace, IR::Representation>,
+{
+    /// Create a new [`PatchingRepoLayer`].
+    #[inline]
+    pub fn new(patcher_resolution_config: Arc<P::ResolutionConfig>) -> Self {
+        Self {
+            patcher_resolution_config,
+            _phantom: PhantomData,
+        }
+    }
+}
+
+impl<IR, P> RepoLayer<IR> for PatchingRepoLayer<IR, P>
+where
+    IR: Repo<RepPatcher = UnsupportedRepPatcher>,
+    P: DirectRepPatcher<IR::StSpace, IR::Representation>,
+{
+    type LayeredRepo = PatchingRepo<IR, P>;
+
+    #[inline]
+    fn layer_context(
+        &self,
+        inner_context: Arc<<IR as Repo>::Context>,
+    ) -> <Self::LayeredRepo as Repo>::Context {
+        PatchingRepoContext {
+            inner: inner_context,
+            patcher_resolution_config: self.patcher_resolution_config.clone(),
+        }
+    }
 }

@@ -2,12 +2,9 @@ use dyn_problem::{ProbFuture, Problem};
 use tower::Service;
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::{
-        common::{
-            impl_::DelegatingOperator,
-            status_token::impl_::layered::LayeredResourceStatusTokenTypes,
-        },
+        common::impl_::DelegatingOperator,
         updater::{ResourceUpdateRequest, ResourceUpdateResponse, ResourceUpdater},
     },
     Repo,
@@ -16,14 +13,7 @@ use crate::{
 impl<Inner, LR> Service<ResourceUpdateRequest<LR>> for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceUpdater,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
     LR::Representation: Into<<Inner::Repo as Repo>::Representation>,
     LR::RepPatcher: Into<<Inner::Repo as Repo>::RepPatcher>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
@@ -50,14 +40,7 @@ where
 impl<Inner, LR> ResourceUpdater for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceUpdater,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
     LR::Representation: Into<<Inner::Repo as Repo>::Representation>,
     LR::RepPatcher: Into<<Inner::Repo as Repo>::RepPatcher>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,

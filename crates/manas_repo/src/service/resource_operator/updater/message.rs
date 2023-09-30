@@ -4,11 +4,10 @@
 use typed_record::ClonableTypedRecord;
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::common::{
-        preconditions::Preconditions,
-        rep_update_action::RepUpdateAction,
-        status_token::impl_::layered::{Layered, LayeredResourceStatusTokenTypes},
+        preconditions::Preconditions, rep_update_action::RepUpdateAction,
+        status_token::impl_::layered::Layered,
     },
     Repo, RepoExistingResourceToken,
 };
@@ -71,15 +70,8 @@ impl<R: Repo> ResourceUpdateRequest<R> {
     /// Unlayer the tokens.
     pub fn unlayer_tokens<IR>(self) -> ResourceUpdateRequest<IR>
     where
-        R: Repo<
-            StSpace = IR::StSpace,
-            ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-                IR::ResourceStatusTokenTypes,
-                R,
-            >,
-        >,
-        R::Context: LayeredRepoContext<InnerRepo = IR>,
         IR: Repo,
+        R: LayeredRepo<IR>,
         R::Representation: Into<IR::Representation>,
         R::RepPatcher: Into<IR::RepPatcher>,
         R::Credentials: Into<IR::Credentials>,

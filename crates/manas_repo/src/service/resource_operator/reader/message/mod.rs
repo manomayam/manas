@@ -9,10 +9,9 @@ use typed_record::ClonableTypedRecord;
 
 use self::rep_preferences::RepresentationPreferences;
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::common::{
-        preconditions::Preconditions,
-        status_token::impl_::layered::{Layered, LayeredResourceStatusTokenTypes},
+        preconditions::Preconditions, status_token::impl_::layered::Layered,
     },
     Repo, RepoRepresentedResourceToken,
 };
@@ -89,15 +88,8 @@ impl<R: Repo> ResourceReadRequest<R> {
     /// Unlayer the tokens.
     pub fn unlayer_tokens<IR>(self) -> ResourceReadRequest<IR>
     where
-        R: Repo<
-            StSpace = IR::StSpace,
-            ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-                IR::ResourceStatusTokenTypes,
-                R,
-            >,
-        >,
-        R::Context: LayeredRepoContext<InnerRepo = IR>,
         IR: Repo,
+        R: LayeredRepo<IR>,
         R::Credentials: Into<IR::Credentials>,
     {
         self.map_tokens(|tokens| Layered::from(tokens).inner)
@@ -133,15 +125,7 @@ where
     #[inline]
     pub fn layer_tokens<LR>(self, layer_context: Arc<LR::Context>) -> ResourceReadResponse<LR, Rep>
     where
-        LR: Repo<
-            StSpace = R::StSpace,
-            ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-                R::ResourceStatusTokenTypes,
-                LR,
-            >,
-        >,
-        LR::Context: LayeredRepoContext<InnerRepo = R>,
-        LR: Repo,
+        LR: LayeredRepo<R>,
         LR::Credentials: Into<R::Credentials>,
     {
         ResourceReadResponse {
@@ -156,15 +140,8 @@ where
     #[inline]
     pub fn unlayer_tokens<IR>(self) -> ResourceReadResponse<IR, Rep>
     where
-        R: Repo<
-            StSpace = IR::StSpace,
-            ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-                IR::ResourceStatusTokenTypes,
-                R,
-            >,
-        >,
-        R::Context: LayeredRepoContext<InnerRepo = IR>,
         IR: Repo,
+        R: LayeredRepo<IR>,
         R::Credentials: Into<IR::Credentials>,
     {
         ResourceReadResponse {

@@ -12,6 +12,10 @@ use manas_space::resource::uri::SolidResourceUri;
 use super::AccessControlledRepo;
 use crate::model::pep::PolicyEnforcementPoint;
 
+/// Type of initial root acr factory.
+pub type InitialRootAcrRepFactory<IR> =
+    dyn Fn(SolidResourceUri) -> Option<<IR as Repo>::Representation> + Send + Sync + 'static;
+
 /// An implementation of [`RepoContext`] for
 /// [`AccessControlledRepo`] repo implementation.
 #[derive(Clone)]
@@ -20,11 +24,10 @@ pub struct AccessControlledRepoContext<IR: Repo, PEP> {
     pub inner: Arc<IR::Context>,
 
     /// Policy enforcement point.
-    pub pep: PEP,
+    pub pep: Arc<PEP>,
 
     /// Initial storage root acr in ttl.
-    pub initial_root_acr_rep_factory:
-        Arc<dyn Fn(SolidResourceUri) -> Option<IR::Representation> + Send + Sync + 'static>,
+    pub initial_root_acr_rep_factory: Arc<InitialRootAcrRepFactory<IR>>,
 }
 
 impl<IR: Repo, PEP: Debug> Debug for AccessControlledRepoContext<IR, PEP> {
@@ -55,10 +58,8 @@ impl<IR: Repo, PEP> AccessControlledRepoContext<IR, PEP> {
     #[inline]
     pub fn new(
         inner: Arc<IR::Context>,
-        pep: PEP,
-        initial_root_acr_rep_factory: Arc<
-            dyn Fn(SolidResourceUri) -> Option<IR::Representation> + Send + Sync + 'static,
-        >,
+        pep: Arc<PEP>,
+        initial_root_acr_rep_factory: Arc<InitialRootAcrRepFactory<IR>>,
     ) -> Self {
         Self {
             inner,

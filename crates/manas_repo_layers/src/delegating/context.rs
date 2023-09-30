@@ -11,17 +11,18 @@ use manas_repo::{
 use super::MRepo;
 
 /// An implementation of [`RepoContext`] for [`DelegatingRepo`](super::DelegatingRepo).
-pub struct DelegatingRepoContext<IR, V>
+pub struct DelegatingRepoContext<IR, DLR>
 where
     IR: Repo,
 {
     /// Inner repo config.
     pub inner: Arc<IR::Context>,
 
-    _phantom: PhantomData<fn(V)>,
+    /// Layer config.
+    pub layer_config: Arc<PhantomData<fn(DLR)>>,
 }
 
-impl<IR, V> Debug for DelegatingRepoContext<IR, V>
+impl<IR, DLR> Debug for DelegatingRepoContext<IR, DLR>
 where
     IR: Repo,
 {
@@ -32,12 +33,12 @@ where
     }
 }
 
-impl<IR, V> RepoContext for DelegatingRepoContext<IR, V>
+impl<IR, DLR> RepoContext for DelegatingRepoContext<IR, DLR>
 where
     IR: Repo,
-    V: 'static,
+    DLR: 'static,
 {
-    type Repo = MRepo<IR, V>;
+    type Repo = MRepo<IR, DLR>;
 
     #[inline]
     fn storage_space(&self) -> &Arc<IR::StSpace> {
@@ -45,10 +46,10 @@ where
     }
 }
 
-impl<IR, V> LayeredRepoContext for DelegatingRepoContext<IR, V>
+impl<IR, DLR> LayeredRepoContext for DelegatingRepoContext<IR, DLR>
 where
     IR: Repo,
-    V: 'static,
+    DLR: 'static,
 {
     type InnerRepo = IR;
 

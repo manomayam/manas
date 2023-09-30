@@ -23,7 +23,7 @@ use super::common::{resolve_authenticating_svc_maker, serve_recipe};
 use crate::{
     dtbr::{adapt_dconneg_layer_config, DatabrowserContext, RcpDatabrowserAdaptedRdfSourceCNL},
     pep::{resolve_initial_root_acr_rep_factory, InitialRootAcrTemplateContext, RcpSimplePEP},
-    podverse::enumerated::{RcpEnumeratedPodSetService, RcpPod},
+    podverse::static_::{RcpStaticPodSetService, RcpPod},
     recipe::Recipe,
     space::RcpStorageSpace,
     storage::{RcpStorage, RcpStorageSetup},
@@ -169,7 +169,7 @@ impl<RSetup: SinglePodRecipeSetup> Recipe for SinglePodRecipe<RSetup> {
             )
             .await?;
 
-            let podset_svc = CW::<RcpEnumeratedPodSetService<_>>::new_for_enumerated(
+            let podset_svc = CW::<RcpStaticPodSetService<_>>::new_for_static(
                 vec![Arc::new(pod)],
                 config.dev_mode,
             );

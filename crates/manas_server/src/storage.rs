@@ -146,7 +146,7 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
     pub(crate) fn _new(
         odr_context: Arc<ODRContext<RcpBaseRepoSetup<StSetup::Backend>>>,
         conneg_layer_config: Arc<RcpCNLConfig<StSetup::CNL, StSetup::Backend>>,
-        pep: StSetup::PEP,
+        pep: Arc<StSetup::PEP>,
         initial_root_acr_rep_factory: InitialRootAcrRepFactory,
         resource_locker: StSetup::ResourceLocker,
     ) -> Self {
@@ -199,7 +199,7 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
         backend: StSetup::Backend,
         odr_config: ODRConfig,
         conneg_layer_config: Arc<RcpCNLConfig<StSetup::CNL, StSetup::Backend>>,
-        pep: StSetup::PEP,
+        pep: Arc<StSetup::PEP>,
         initial_root_acr_rep_factory: InitialRootAcrRepFactory,
         resource_locker: StSetup::ResourceLocker,
     ) -> Self {
@@ -241,7 +241,7 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
         Self::_new(
             odr_context,
             conneg_layer_config,
-            pep,
+            Arc::new(pep),
             initial_root_acr_rep_factory,
             resource_locker,
         )

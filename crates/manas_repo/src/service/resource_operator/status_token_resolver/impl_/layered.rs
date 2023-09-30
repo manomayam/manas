@@ -8,14 +8,14 @@ use futures::TryFutureExt;
 use tower::Service;
 
 use crate::{
-    context::{impl_::DelegatedRepoContextual, LayeredRepoContext},
+    context::impl_::DelegatedRepoContextual,
+    layer::LayeredRepo,
     service::resource_operator::{
-        common::status_token::impl_::layered::{Layered, LayeredResourceStatusTokenTypes},
+        common::status_token::impl_::layered::Layered,
         status_token_resolver::{
             ResourceStatusTokenRequest, ResourceStatusTokenResolver, ResourceStatusTokenResponse,
         },
     },
-    Repo,
 };
 
 /// An implementation of
@@ -27,14 +27,7 @@ impl<Inner, LR> Service<ResourceStatusTokenRequest>
     for LayeredResourceStatusTokenResolver<Inner, LR>
 where
     Inner: ResourceStatusTokenResolver,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
 {
     type Response = ResourceStatusTokenResponse<LR>;
 
@@ -65,13 +58,6 @@ where
 impl<Inner, LR> ResourceStatusTokenResolver for LayeredResourceStatusTokenResolver<Inner, LR>
 where
     Inner: ResourceStatusTokenResolver,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
 {
 }

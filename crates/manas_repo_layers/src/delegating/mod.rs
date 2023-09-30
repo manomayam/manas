@@ -2,9 +2,10 @@
 //! simply delegates all operations to inner repo.
 //!
 
-use std::{marker::PhantomData, sync::Arc};
+use std::{fmt::Debug, marker::PhantomData, sync::Arc};
 
 use manas_repo::{
+    layer::RepoLayer,
     policy::uri::impl_::DelegatedUriPolicy,
     service::{
         initializer::impl_::DelegatedRepoInitializer,
@@ -31,14 +32,14 @@ pub mod context;
 ///
 /// It is intended as starting template for new repo layers.
 #[derive(Clone)]
-pub struct DelegatingRepo<IR, V>
+pub struct DelegatingRepo<IR, DLR>
 where
     IR: Repo,
 {
-    context: Arc<DelegatingRepoContext<IR, V>>,
+    context: Arc<DelegatingRepoContext<IR, DLR>>,
 }
 
-impl<IR, V> std::fmt::Debug for DelegatingRepo<IR, V>
+impl<IR, DLR> Debug for DelegatingRepo<IR, DLR>
 where
     IR: Repo,
 {
@@ -49,16 +50,16 @@ where
     }
 }
 
-impl<IR, V> Repo for DelegatingRepo<IR, V>
+impl<IR, DLR> Repo for DelegatingRepo<IR, DLR>
 where
     IR: Repo,
-    V: 'static,
+    DLR: 'static,
 {
     type StSpace = IR::StSpace;
 
     type Representation = IR::Representation;
 
-    type Context = DelegatingRepoContext<IR, V>;
+    type Context = DelegatingRepoContext<IR, DLR>;
 
     type UriPolicy = DelegatedUriPolicy<IR::UriPolicy, Self>;
 
@@ -67,7 +68,7 @@ where
 
     type RepPatcher = IR::RepPatcher;
 
-    type Services = DelegatingRepoServices<IR, V>;
+    type Services = DelegatingRepoServices<IR, DLR>;
 
     type Credentials = IR::Credentials;
 
@@ -83,33 +84,76 @@ where
 }
 
 /// Quick alias for `DelegatingRepo`
-pub(crate) type MRepo<IR, V> = DelegatingRepo<IR, V>;
+pub(crate) type MRepo<IR, DLR> = DelegatingRepo<IR, DLR>;
 
 /// Services for [`DelegatingRepo`].
 #[derive(Debug, Clone)]
-pub struct DelegatingRepoServices<IR, V> {
-    _phantom: PhantomData<fn(IR, V)>,
+pub struct DelegatingRepoServices<IR, DLR> {
+    _phantom: PhantomData<fn(IR, DLR)>,
 }
 
-impl<IR, V> RepoServices for DelegatingRepoServices<IR, V>
+impl<IR, DLR> RepoServices for DelegatingRepoServices<IR, DLR>
 where
     IR: Repo,
-    V: 'static,
+    DLR: 'static,
 {
-    type Repo = MRepo<IR, V>;
+    type Repo = MRepo<IR, DLR>;
 
-    type Initializer = DelegatedRepoInitializer<RepoInitializerService<IR>, MRepo<IR, V>>;
+    type Initializer = DelegatedRepoInitializer<RepoInitializerService<IR>, MRepo<IR, DLR>>;
 
-    type RepPatcherResolver = DelegatedRepPatcherResolver<RepoRepPatcherResolver<IR>, MRepo<IR, V>>;
+    type RepPatcherResolver = DelegatedRepPatcherResolver<RepoRepPatcherResolver<IR>, MRepo<IR, DLR>>;
 
     type ResourceStatusTokenResolver =
-        LayeredResourceStatusTokenResolver<RepoResourceStatusTokenResolver<IR>, MRepo<IR, V>>;
+        LayeredResourceStatusTokenResolver<RepoResourceStatusTokenResolver<IR>, MRepo<IR, DLR>>;
 
-    type ResourceReader = DelegatingOperator<RepoResourceReader<IR>, MRepo<IR, V>>;
+    type ResourceReader = DelegatingOperator<RepoResourceReader<IR>, MRepo<IR, DLR>>;
 
-    type ResourceCreator = DelegatingOperator<RepoResourceCreator<IR>, MRepo<IR, V>>;
+    type ResourceCreator = DelegatingOperator<RepoResourceCreator<IR>, MRepo<IR, DLR>>;
 
-    type ResourceUpdater = DelegatingOperator<RepoResourceUpdater<IR>, MRepo<IR, V>>;
+    type ResourceUpdater = DelegatingOperator<RepoResourceUpdater<IR>, MRepo<IR, DLR>>;
 
-    type ResourceDeleter = DelegatingOperator<RepoResourceDeleter<IR>, MRepo<IR, V>>;
+    type ResourceDeleter = DelegatingOperator<RepoResourceDeleter<IR>, MRepo<IR, DLR>>;
+}
+
+/// An implementation of [`RepoLayer`] that is no op.
+#[derive(Debug, Clone)]
+pub struct DelegatingRepoLayer<IR, DLR>
+where
+    IR: Repo,
+{
+    layer_config: Arc<PhantomData<fn(DLR)>>,
+    _phantom: PhantomData<fn(IR, DLR)>,
+}
+
+impl<IR, DLR> DelegatingRepoLayer<IR, DLR>
+where
+    IR: Repo,
+{
+    /// Create a new [`DelegatingRepoLayer`].
+    #[inline]
+    pub fn new(layer_config: Arc<PhantomData<fn(DLR)>>) -> Self {
+        Self {
+            layer_config,
+            _phantom: PhantomData,
+        }
+    }
+}
+
+impl<IR, DLR> RepoLayer<IR> for DelegatingRepoLayer<IR, DLR>
+where
+    IR: Repo,
+    DLR: Debug + Send + 'static,
+{
+    type LayeredRepo = DelegatingRepo<IR, DLR>;
+
+    #[inline]
+    fn layer_context(
+        &self,
+        inner_context: Arc<<IR as Repo>::Context>,
+    ) -> <Self::LayeredRepo as Repo>::Context {
+        DelegatingRepoContext {
+            inner: inner_context,
+            layer_config: self.layer_config.clone(),
+        }
+    }
 }

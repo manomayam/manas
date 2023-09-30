@@ -1,4 +1,4 @@
-//! I define an implementation of [`PodSet`] with explicitly enumerated members.
+//! I define an implementation of [`PodSet`] with a static set of explicitly enumerated members.
 //!
 
 use std::{ops::Deref, sync::Arc};
@@ -14,9 +14,9 @@ use crate::{
 };
 
 /// An implementation of [`PodSet`], that is backed by
-/// an explicit enumeration of pre-provisioned pods.
+/// a static set of enumerated pre-provisioned pods.
 #[derive(Debug, Clone)]
-pub struct EnumeratedPodSet<MPod> {
+pub struct StaticPodSet<MPod> {
     /// Enumeration of member pods.
     pods: Vec<Arc<MPod>>,
 
@@ -24,7 +24,7 @@ pub struct EnumeratedPodSet<MPod> {
     uri_ns_regex_set: RegexSet,
 }
 
-impl<MPod> EnumeratedPodSet<MPod>
+impl<MPod> StaticPodSet<MPod>
 where
     MPod: Pod,
 {
@@ -48,7 +48,7 @@ where
     }
 }
 
-impl<MPod: Pod> PodSet for EnumeratedPodSet<MPod> {
+impl<MPod: Pod> PodSet for StaticPodSet<MPod> {
     type Pod = MPod;
 
     #[inline]
