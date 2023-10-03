@@ -9,11 +9,8 @@ use dyn_problem::Problem;
 use futures::{future::BoxFuture, TryFutureExt};
 use http_api_problem::ApiError;
 use hyper::{service::Service, Body, Method, Request, Response, StatusCode};
-use manas_http::{
-    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
-    uri::invariant::NormalAbsoluteHttpUri,
-};
-use manas_space::SolidStorageSpace;
+use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use manas_space::{resource::uri::SolidResourceUri, SolidStorageSpace};
 use manas_storage::SolidStorageExt;
 use rdf_dynsyn::{
     serializer::triples::DynSynTripleSerializerFactory,
@@ -66,7 +63,7 @@ where
         Box::pin(async move {
             let res_uri = req
                 .extensions()
-                .get::<NormalAbsoluteHttpUri>()
+                .get::<SolidResourceUri>()
                 .expect("Must be called after uri normal validity check.");
 
             // If res_uri is description resource uri, then handle the request.
@@ -133,7 +130,7 @@ where
     Inner: PodService + Clone,
 {
     #[inline]
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool {
         self.inner.has_in_uri_ns(uri)
     }
 }

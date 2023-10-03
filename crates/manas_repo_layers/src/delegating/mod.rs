@@ -101,7 +101,8 @@ where
 
     type Initializer = DelegatedRepoInitializer<RepoInitializerService<IR>, MRepo<IR, DLR>>;
 
-    type RepPatcherResolver = DelegatedRepPatcherResolver<RepoRepPatcherResolver<IR>, MRepo<IR, DLR>>;
+    type RepPatcherResolver =
+        DelegatedRepPatcherResolver<RepoRepPatcherResolver<IR>, MRepo<IR, DLR>>;
 
     type ResourceStatusTokenResolver =
         LayeredResourceStatusTokenResolver<RepoResourceStatusTokenResolver<IR>, MRepo<IR, DLR>>;

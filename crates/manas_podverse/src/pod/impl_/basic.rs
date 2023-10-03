@@ -3,7 +3,10 @@
 
 use std::sync::Arc;
 
+use dyn_problem::Problem;
+use futures::{future::BoxFuture, TryFutureExt, FutureExt};
 use manas_storage::SolidStorage;
+use tracing::error;
 
 use crate::pod::Pod;
 
@@ -20,5 +23,11 @@ impl<Storage: SolidStorage> Pod for BasicPod<Storage> {
     #[inline]
     fn storage(&self) -> &Arc<Self::Storage> {
         &self.storage
+    }
+
+    fn initialize(&self) -> BoxFuture<'static, Result<(), Problem>> {
+        self.storage.initialize().inspect_err(|e| {
+            error!("Error in initializing the storage. {e}");
+        }).boxed()
     }
 }

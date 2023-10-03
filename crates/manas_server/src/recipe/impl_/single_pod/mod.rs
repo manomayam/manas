@@ -23,7 +23,7 @@ use super::common::{resolve_authenticating_svc_maker, serve_recipe};
 use crate::{
     dtbr::{adapt_dconneg_layer_config, DatabrowserContext, RcpDatabrowserAdaptedRdfSourceCNL},
     pep::{resolve_initial_root_acr_rep_factory, InitialRootAcrTemplateContext, RcpSimplePEP},
-    podverse::static_::{RcpStaticPodSetService, RcpPod},
+    podverse::static_::{RcpPod, RcpStaticPodSetService},
     recipe::Recipe,
     space::RcpStorageSpace,
     storage::{RcpStorage, RcpStorageSetup},

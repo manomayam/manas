@@ -89,8 +89,7 @@ pub mod assets_overriden_static {
     use rust_embed::RustEmbed;
 
     use super::static_::{
-        RcpStaticPodSet, RcpStaticPodSetService, RcpPod, RcpPodService,
-        RcpPodServiceFactory,
+        RcpPod, RcpPodService, RcpPodServiceFactory, RcpStaticPodSet, RcpStaticPodSetService,
     };
     use crate::{
         pep::RcpTrivialPEP,
@@ -129,10 +128,8 @@ pub mod assets_overriden_static {
 
     /// Type of static podset service, with
     /// assets overriden pod services.
-    pub type RcpStaticAssetsOverridenPodSetService<RSetup> = BasicPodSetService<
-        RcpStaticPodSet<RSetup>,
-        RcpAssetsOverridenPodServiceFactory<RSetup>,
-    >;
+    pub type RcpStaticAssetsOverridenPodSetService<RSetup> =
+        BasicPodSetService<RcpStaticPodSet<RSetup>, RcpAssetsOverridenPodServiceFactory<RSetup>>;
 
     /// Type of assets overriden static podset service.
     pub type RcpAssetsOverridenStaticPodSetService<RSetup> =
@@ -146,8 +143,7 @@ pub mod assets_overriden_static {
             overrider: RcpAssetsPodService,
             dev_mode: bool,
         ) -> RcpAssetsOverridenStaticPodSetService<StSetup> {
-            let inner =
-                CW::<RcpStaticPodSetService<StSetup>>::new_for_static(pods, dev_mode);
+            let inner = CW::<RcpStaticPodSetService<StSetup>>::new_for_static(pods, dev_mode);
 
             OverridenPodSetService::new(inner, overrider)
         }

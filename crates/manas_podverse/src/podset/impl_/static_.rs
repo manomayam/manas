@@ -5,7 +5,7 @@ use std::{ops::Deref, sync::Arc};
 
 use dyn_problem::Problem;
 use futures::future::BoxFuture;
-use manas_http::uri::invariant::NormalAbsoluteHttpUri;
+use manas_space::resource::uri::SolidResourceUri;
 use regex::RegexSet;
 
 use crate::{
@@ -57,13 +57,13 @@ impl<MPod: Pod> PodSet for StaticPodSet<MPod> {
     }
 
     #[inline]
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool {
         self.uri_ns_regex_set.is_match(uri.as_str())
     }
 
     fn resolve_target_pod(
         &self,
-        req_target: &NormalAbsoluteHttpUri,
+        req_target: &SolidResourceUri,
     ) -> BoxFuture<'static, Result<Arc<Self::Pod>, Problem>> {
         // Match request target against namespace uri regex set.
         let matches = self.uri_ns_regex_set.matches(req_target.as_str());
@@ -79,7 +79,7 @@ impl<MPod: Pod> PodSet for StaticPodSet<MPod> {
 
     fn get_pod(
         &self,
-        pod_id: &NormalAbsoluteHttpUri,
+        pod_id: &SolidResourceUri,
     ) -> BoxFuture<'static, Result<Arc<Self::Pod>, Problem>> {
         Box::pin(futures::future::ready(
             self.pods
