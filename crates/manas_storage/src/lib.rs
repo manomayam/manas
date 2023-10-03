@@ -8,6 +8,8 @@
 
 use std::sync::Arc;
 
+use dyn_problem::Problem;
+use futures::future::BoxFuture;
 use manas_http::representation::impl_::binary::BinaryRepresentation;
 use manas_repo::{
     context::RepoContext,
@@ -48,6 +50,9 @@ pub trait SolidStorage: Send + Sync + 'static + Unpin {
 
     /// Get any extensions.
     fn extensions(&self) -> &http::Extensions;
+
+    /// Initialize the storage.
+    fn initialize(&self) -> BoxFuture<'static, Result<(), Problem>>;
 }
 
 /// Alias for type of storage's space.

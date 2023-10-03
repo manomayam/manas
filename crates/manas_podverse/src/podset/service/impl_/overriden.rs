@@ -5,12 +5,10 @@
 use std::{convert::Infallible, sync::Arc};
 
 use hyper::{Body, Request, Response};
-use manas_http::{
-    service::{
-        impl_::OverridingHttpService, namespaced::NamespacedHttpService, BoxHttpResponseFuture,
-    },
-    uri::invariant::NormalAbsoluteHttpUri,
+use manas_http::service::{
+    impl_::OverridingHttpService, namespaced::NamespacedHttpService, BoxHttpResponseFuture,
 };
+use manas_space::resource::uri::SolidResourceUri;
 use tower::Service;
 
 use crate::podset::service::PodSetService;
@@ -86,7 +84,7 @@ where
     Overrider: NamespacedHttpService<Body, Body> + Clone,
 {
     #[inline]
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool {
         self.svc.has_in_uri_ns(uri)
     }
 }

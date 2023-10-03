@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use dyn_problem::{define_anon_problem_types, Problem};
 use futures::future::BoxFuture;
-use manas_http::uri::invariant::NormalAbsoluteHttpUri;
+use manas_space::resource::uri::SolidResourceUri;
 
 use crate::pod::Pod;
 
@@ -21,11 +21,10 @@ pub trait PodSet: Send + Sync + 'static {
     type Pod: Pod;
 
     /// Initialize the pod set.
-    // TODO Refactor as a service.
     fn initialize(&mut self) -> BoxFuture<'static, Result<(), Problem>>;
 
     /// Check if given uri is in uri namespace of the podset..
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool;
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool;
 
     /// Resolve provisioned pod corresponding to given request target.
     ///
@@ -39,7 +38,7 @@ pub trait PodSet: Send + Sync + 'static {
     /// is in namespace of an unprovisioned pod, that belongs to podset's namespace.
     fn resolve_target_pod(
         &self,
-        req_target: &NormalAbsoluteHttpUri,
+        req_target: &SolidResourceUri,
     ) -> BoxFuture<'static, Result<Arc<Self::Pod>, Problem>>;
 
     /// Get provisioned pod with given pod id.
@@ -52,7 +51,7 @@ pub trait PodSet: Send + Sync + 'static {
     /// - [`POD_IS_UNPROVISIONED`], If pod with given id is not yet provisioned.
     fn get_pod(
         &self,
-        pod_id: &NormalAbsoluteHttpUri,
+        pod_id: &SolidResourceUri,
     ) -> BoxFuture<'static, Result<Arc<Self::Pod>, Problem>>;
 }
 

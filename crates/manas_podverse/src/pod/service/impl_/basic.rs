@@ -6,10 +6,8 @@ use std::{convert::Infallible, marker::PhantomData, sync::Arc, task::Poll};
 use dyn_problem::Problem;
 use futures::future::BoxFuture;
 use hyper::{service::Service, Body, Request, Response};
-use manas_http::{
-    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
-    uri::invariant::NormalAbsoluteHttpUri,
-};
+use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use manas_space::resource::uri::SolidResourceUri;
 use manas_storage::service::{SolidStorageService, SolidStorageServiceFactory};
 
 use crate::pod::{
@@ -68,7 +66,7 @@ where
     StorageSvc: SolidStorageService<Storage = SvcPod::Storage> + Clone,
 {
     #[inline]
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool {
         self.storage_svc.has_in_uri_ns(uri)
     }
 }

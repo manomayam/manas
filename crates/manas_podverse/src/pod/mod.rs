@@ -4,8 +4,9 @@
 
 use std::sync::Arc;
 
-use manas_http::uri::invariant::NormalAbsoluteHttpUri;
-use manas_space::SolidStorageSpace;
+use dyn_problem::Problem;
+use futures::future::BoxFuture;
+use manas_space::{resource::uri::SolidResourceUri, SolidStorageSpace};
 use manas_storage::{SolidStorage, SolidStorageExt};
 
 pub mod service;
@@ -19,6 +20,9 @@ pub trait Pod: Send + Sync + 'static {
 
     /// Get storage of this pod.
     fn storage(&self) -> &Arc<Self::Storage>;
+
+        /// Initialize the pod set.
+    fn initialize(&self) -> BoxFuture<'static, Result<(), Problem>>;
 }
 
 mod sealed {
@@ -34,7 +38,7 @@ pub trait PodExt: Pod + sealed::Sealed {
     /// Get id of the pod.
     /// Pod id is same as uri of the pod storage's root resource
     #[inline]
-    fn id(&self) -> &NormalAbsoluteHttpUri {
+    fn id(&self) -> &SolidResourceUri {
         self.storage().space().root_res_uri()
     }
 }
