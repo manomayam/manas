@@ -1,6 +1,5 @@
 {
     "cSpell.words": [
-        "मनस्",
         "abnf",
         "acled",
         "acrs",
@@ -142,6 +141,7 @@
         "supplem",
         "svcs",
         "Swatinem",
+        "tauri",
         "tchar",
         "thiserror",
         "tinytemplate",
@@ -155,7 +155,8 @@
         "VCHAR",
         "webid",
         "webids",
-        "wgraph"
+        "wgraph",
+        "मनस्"
     ],
     "rust-analyzer.showUnlinkedFileNotification": false,
     "cSpell.enabled": true,

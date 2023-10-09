@@ -21,7 +21,7 @@ pub trait Pod: Send + Sync + 'static {
     /// Get storage of this pod.
     fn storage(&self) -> &Arc<Self::Storage>;
 
-        /// Initialize the pod set.
+    /// Initialize the pod set.
     fn initialize(&self) -> BoxFuture<'static, Result<(), Problem>>;
 }
 

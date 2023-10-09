@@ -26,5 +26,5 @@ pub struct TemplateDrivenAdminPod<Inner, MTemplate: PodTemplate> {
     /// Provisioned member keys.
     provisioned_member_keys: Arc<DashSet<MTemplate::PodKey>>,
 
-    provisioned_pod_cache: 
+    // provisioned_pod_cache: 
 }
