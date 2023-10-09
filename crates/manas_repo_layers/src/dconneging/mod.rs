@@ -6,6 +6,7 @@
 use std::{marker::PhantomData, sync::Arc};
 
 use manas_repo::{
+    layer::RepoLayer,
     policy::uri::impl_::DelegatedUriPolicy,
     service::{
         initializer::impl_::DelegatedRepoInitializer,
@@ -107,4 +108,52 @@ where
     type ResourceUpdater = DelegatingOperator<RepoResourceUpdater<IR>, MRepo<IR, CNL>>;
 
     type ResourceDeleter = DelegatingOperator<RepoResourceDeleter<IR>, MRepo<IR, CNL>>;
+}
+
+/// An implementation of [`RepoLayer`] that layers content
+/// negotiation over repos.
+#[derive(Debug, Clone)]
+pub struct DerivedContentNegotiatingRepoLayer<IR, CNL>
+where
+    IR: Repo,
+    CNL: DerivedContentNegotiationLayer<IR, IR::Representation, RepoResourceReader<IR>>,
+{
+    /// Derived conneg layer config.
+    dconneg_layer_config: Arc<CNL::Config>,
+
+    _phantom: PhantomData<fn(IR)>,
+}
+
+impl<IR, CNL> DerivedContentNegotiatingRepoLayer<IR, CNL>
+where
+    IR: Repo,
+    CNL: DerivedContentNegotiationLayer<IR, IR::Representation, RepoResourceReader<IR>>,
+{
+    /// Create a new [`DerivedContentNegotiatingRepoLayer`].
+    #[inline]
+    pub fn new(dconneg_layer_config: Arc<CNL::Config>) -> Self {
+        Self {
+            dconneg_layer_config,
+            _phantom: PhantomData,
+        }
+    }
+}
+
+impl<IR, CNL> RepoLayer<IR> for DerivedContentNegotiatingRepoLayer<IR, CNL>
+where
+    IR: Repo,
+    CNL: DerivedContentNegotiationLayer<IR, IR::Representation, RepoResourceReader<IR>>,
+{
+    type LayeredRepo = DerivedContentNegotiatingRepo<IR, CNL>;
+
+    #[inline]
+    fn layer_context(
+        &self,
+        inner_context: Arc<<IR as Repo>::Context>,
+    ) -> <Self::LayeredRepo as Repo>::Context {
+        DerivedContentNegotiatingRepoContext {
+            inner: inner_context,
+            dconneg_layer_config: self.dconneg_layer_config.clone(),
+        }
+    }
 }

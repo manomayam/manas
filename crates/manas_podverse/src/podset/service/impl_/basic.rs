@@ -5,10 +5,8 @@
 use std::{convert::Infallible, sync::Arc, task::Poll};
 
 use hyper::{Body, Request, Response, StatusCode};
-use manas_http::{
-    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
-    uri::invariant::NormalAbsoluteHttpUri,
-};
+use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use manas_space::resource::uri::SolidResourceUri;
 use tower::{Service, ServiceExt};
 use tracing::{error, info, instrument};
 
@@ -66,7 +64,7 @@ where
 
         Box::pin(async move {
             // Get res uri.
-            let res_uri = req.extensions().get::<NormalAbsoluteHttpUri>().expect(
+            let res_uri = req.extensions().get::<SolidResourceUri>().expect(
                 "BasicPodSetService must be called after handling uri normal validity check.",
             );
 
@@ -126,7 +124,7 @@ where
     SvcPodSet: PodSet,
     PodSvcFactory: PodServiceFactory<Pod = SvcPodSet::Pod>,
 {
-    fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
+    fn has_in_uri_ns(&self, uri: &SolidResourceUri) -> bool {
         // Only serves pod resources.
         self.pod_set.has_in_uri_ns(uri)
     }

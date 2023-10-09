@@ -5,6 +5,7 @@
 use std::{marker::PhantomData, sync::Arc};
 
 use manas_repo::{
+    layer::RepoLayer,
     policy::uri::impl_::DelegatedUriPolicy,
     service::{
         initializer::impl_::DelegatedRepoInitializer,
@@ -111,4 +112,50 @@ where
     type ResourceUpdater = ValidatingRepoResourceUpdater<IR, V>;
 
     type ResourceDeleter = DelegatingOperator<RepoResourceDeleter<IR>, MRepo<IR, V>>;
+}
+
+/// An implementation of [`RepoLayer`] that layers validation
+/// functionality over repos.
+#[derive(Debug, Clone)]
+pub struct ValidatingRepoLayer<IR, V>
+where
+    IR: Repo,
+    V: RepUpdateValidator<IR>,
+{
+    rep_update_validator_config: Arc<V::Config>,
+    _phantom: PhantomData<fn(IR, V)>,
+}
+
+impl<IR, V> ValidatingRepoLayer<IR, V>
+where
+    IR: Repo,
+    V: RepUpdateValidator<IR>,
+{
+    /// Create a new [`ValidatingRepoLayer`].
+    #[inline]
+    pub fn new(rep_update_validator_config: Arc<V::Config>) -> Self {
+        Self {
+            rep_update_validator_config,
+            _phantom: PhantomData,
+        }
+    }
+}
+
+impl<IR, V> RepoLayer<IR> for ValidatingRepoLayer<IR, V>
+where
+    IR: Repo,
+    V: RepUpdateValidator<IR>,
+{
+    type LayeredRepo = ValidatingRepo<IR, V>;
+
+    #[inline]
+    fn layer_context(
+        &self,
+        inner_context: Arc<<IR as Repo>::Context>,
+    ) -> <Self::LayeredRepo as Repo>::Context {
+        ValidatingRepoContext {
+            inner: inner_context,
+            rep_update_validator_config: self.rep_update_validator_config.clone(),
+        }
+    }
 }

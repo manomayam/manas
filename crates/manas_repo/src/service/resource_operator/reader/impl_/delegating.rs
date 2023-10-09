@@ -3,12 +3,9 @@ use futures::TryFutureExt;
 use tower::Service;
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::{
-        common::{
-            impl_::DelegatingOperator,
-            status_token::impl_::layered::LayeredResourceStatusTokenTypes,
-        },
+        common::impl_::DelegatingOperator,
         reader::{
             FlexibleResourceReader, ResourceReadRequest, ResourceReadResponse, ResourceReader,
         },
@@ -19,15 +16,7 @@ use crate::{
 impl<Inner, LR> Service<ResourceReadRequest<LR>> for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceReader,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        Representation = <Inner::Repo as Repo>::Representation,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo, Representation = <Inner::Repo as Repo>::Representation>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
 {
     type Response = ResourceReadResponse<LR, LR::Representation>;
@@ -57,15 +46,7 @@ where
 impl<Inner, LR> FlexibleResourceReader<LR, LR::Representation> for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceReader,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        Representation = <Inner::Repo as Repo>::Representation,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo, Representation = <Inner::Repo as Repo>::Representation>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
 {
 }
@@ -73,15 +54,7 @@ where
 impl<Inner, LR> ResourceReader for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceReader,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        Representation = <Inner::Repo as Repo>::Representation,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo, Representation = <Inner::Repo as Repo>::Representation>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
 {
     type Repo = LR;

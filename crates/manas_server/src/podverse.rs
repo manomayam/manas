@@ -1,8 +1,8 @@
 //! I define podverse related concrete types for recipes.
 //!
 
-/// I define enumerated podverse related types.
-pub mod enumerated {
+/// I define static podverse related types.
+pub mod static_ {
     use std::sync::Arc;
 
     use manas_podverse::{
@@ -13,7 +13,7 @@ pub mod enumerated {
                 StorageDescribingPodServiceFactory,
             },
         },
-        podset::{impl_::EnumeratedPodSet, service::impl_::BasicPodSetService},
+        podset::{impl_::static_::StaticPodSet, service::impl_::BasicPodSetService},
     };
     use manas_storage::service::impl_::DefaultStorageServiceFactory;
 
@@ -34,12 +34,12 @@ pub mod enumerated {
         BasicPodServiceFactory<RcpPod<StSetup>, RcpStorageServiceFactory<StSetup>>,
     >;
 
-    /// Type of enumerated podsets for recipes.
-    pub type RcpEnumeratedPodSet<StSetup> = EnumeratedPodSet<RcpPod<StSetup>>;
+    /// Type of static podsets for recipes.
+    pub type RcpStaticPodSet<StSetup> = StaticPodSet<RcpPod<StSetup>>;
 
-    /// Type of enumerated podset services for recipes.
-    pub type RcpEnumeratedPodSetService<StSetup> =
-        BasicPodSetService<RcpEnumeratedPodSet<StSetup>, RcpPodServiceFactory<StSetup>>;
+    /// Type of static podset services for recipes.
+    pub type RcpStaticPodSetService<StSetup> =
+        BasicPodSetService<RcpStaticPodSet<StSetup>, RcpPodServiceFactory<StSetup>>;
 
     impl<StSetup: RcpStorageSetup> CW<RcpPodServiceFactory<StSetup>> {
         /// Get a new pod service factory.
@@ -53,23 +53,23 @@ pub mod enumerated {
         }
     }
 
-    impl<StSetup: RcpStorageSetup> CW<RcpEnumeratedPodSetService<StSetup>> {
-        /// Get a new podset service serving enumerated pods.
-        pub fn new_for_enumerated(
+    impl<StSetup: RcpStorageSetup> CW<RcpStaticPodSetService<StSetup>> {
+        /// Get a new podset service serving static pods.
+        pub fn new_for_static(
             pods: Vec<Arc<RcpPod<StSetup>>>,
             dev_mode: bool,
-        ) -> RcpEnumeratedPodSetService<StSetup> {
-            RcpEnumeratedPodSetService {
-                pod_set: Arc::new(EnumeratedPodSet::new(pods)),
+        ) -> RcpStaticPodSetService<StSetup> {
+            RcpStaticPodSetService {
+                pod_set: Arc::new(StaticPodSet::new(pods)),
                 pod_service_factory: Arc::new(CW::<RcpPodServiceFactory<StSetup>>::new(dev_mode)),
             }
         }
     }
 }
 
-/// I define assets overriden enumerated podverse related
+/// I define assets overriden static podverse related
 /// types for the recipe.
-pub mod assets_overriden_enumerated {
+pub mod assets_overriden_static {
     use std::sync::Arc;
 
     use manas_podverse::{
@@ -88,9 +88,8 @@ pub mod assets_overriden_enumerated {
     use name_locker::impl_::VoidNameLocker;
     use rust_embed::RustEmbed;
 
-    use super::enumerated::{
-        RcpEnumeratedPodSet, RcpEnumeratedPodSetService, RcpPod, RcpPodService,
-        RcpPodServiceFactory,
+    use super::static_::{
+        RcpPod, RcpPodService, RcpPodServiceFactory, RcpStaticPodSet, RcpStaticPodSetService,
     };
     use crate::{
         pep::RcpTrivialPEP,
@@ -127,27 +126,24 @@ pub mod assets_overriden_enumerated {
         RcpPodService<RcpEmbeddedStorageSetup>,
     >;
 
-    /// Type of enumerated podset service, with
+    /// Type of static podset service, with
     /// assets overriden pod services.
-    pub type RcpEnumeratedAssetsOverridenPodSetService<RSetup> = BasicPodSetService<
-        RcpEnumeratedPodSet<RSetup>,
-        RcpAssetsOverridenPodServiceFactory<RSetup>,
-    >;
+    pub type RcpStaticAssetsOverridenPodSetService<RSetup> =
+        BasicPodSetService<RcpStaticPodSet<RSetup>, RcpAssetsOverridenPodServiceFactory<RSetup>>;
 
-    /// Type of assets overriden enumerated podset service.
-    pub type RcpAssetsOverridenEnumeratedPodSetService<RSetup> =
-        OverridenPodSetService<RcpEnumeratedPodSetService<RSetup>, RcpAssetsPodService>;
+    /// Type of assets overriden static podset service.
+    pub type RcpAssetsOverridenStaticPodSetService<RSetup> =
+        OverridenPodSetService<RcpStaticPodSetService<RSetup>, RcpAssetsPodService>;
 
-    impl<StSetup: RcpStorageSetup> CW<RcpAssetsOverridenEnumeratedPodSetService<StSetup>> {
+    impl<StSetup: RcpStorageSetup> CW<RcpAssetsOverridenStaticPodSetService<StSetup>> {
         /// Get a new assets overriden pod set service serving
-        /// enumerated pods
-        pub fn new_for_enumerated(
+        /// static pods
+        pub fn new_for_static(
             pods: Vec<Arc<RcpPod<StSetup>>>,
             overrider: RcpAssetsPodService,
             dev_mode: bool,
-        ) -> RcpAssetsOverridenEnumeratedPodSetService<StSetup> {
-            let inner =
-                CW::<RcpEnumeratedPodSetService<StSetup>>::new_for_enumerated(pods, dev_mode);
+        ) -> RcpAssetsOverridenStaticPodSetService<StSetup> {
+            let inner = CW::<RcpStaticPodSetService<StSetup>>::new_for_static(pods, dev_mode);
 
             OverridenPodSetService::new(inner, overrider)
         }
@@ -159,7 +155,7 @@ pub mod assets_overriden_enumerated {
             assets_space: Arc<RcpStorageSpace>,
             assets_label: String,
             dev_mode: bool,
-        ) -> RcpAssetsOverridenEnumeratedPodSetService<StSetup> {
+        ) -> RcpAssetsOverridenStaticPodSetService<StSetup> {
             let assets_backend =
                 EmbeddedBackend::try_from(Embedded::<Assets>::default().with_name(assets_label))
                     .expect("Must be valid");
@@ -181,7 +177,7 @@ pub mod assets_overriden_enumerated {
             let assets_pod_svc = CW::<RcpPodServiceFactory<RcpEmbeddedStorageSetup>>::new(dev_mode)
                 .new_service(Arc::new(assets_pod));
 
-            Self::new_for_enumerated(vec![pod], assets_pod_svc, dev_mode)
+            Self::new_for_static(vec![pod], assets_pod_svc, dev_mode)
         }
     }
 }

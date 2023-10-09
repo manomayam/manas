@@ -241,7 +241,7 @@ impl<ObjSpaceSetup: ODRObjectSpaceSetup> ODRObjectSpace<ObjSpaceSetup> {
         let (mut obj_path_base_part, mut assoc_rev_rel_type) =
             (odr_obj_root_relative_path.as_ref(), AssocRelType::Base);
 
-        // Update if it is aux dir id.
+        // Update if it is aux dir path.
         if_chain!(
             // Strip trailing slash
             if let Some(obj_path_slash_stripped) = odr_obj_root_relative_path.strip_suffix(SLASH_CHAR);
@@ -253,7 +253,7 @@ impl<ObjSpaceSetup: ODRObjectSpaceSetup> ODRObjectSpace<ObjSpaceSetup> {
             }
         );
 
-        // Update if it is supplem object id.
+        // Update if it is supplem object path.
         if_chain!(
             // Split by sidecar link delim, if path contains one.
             if let Some((base_path_part, rel_type_encode_token_str)) = odr_obj_root_relative_path.split_once(Self::sidecar_link_encode_delim());

@@ -3,13 +3,15 @@
 
 use std::{collections::HashSet, fmt::Debug, marker::PhantomData, sync::Arc};
 
+use dyn_problem::Problem;
 use frunk_core::hlist;
+use futures::{future::BoxFuture, FutureExt, TryFutureExt};
 use manas_access_control::{
     layered_repo::context::AccessControlledRepoContext,
     model::{pdp::PolicyDecisionPoint, pep::PolicyEnforcementPoint},
 };
 use manas_http::representation::impl_::binary::BinaryRepresentation;
-use manas_repo::{context::RepoContextual, Repo};
+use manas_repo::{context::RepoContextual, Repo, RepoExt};
 use manas_repo_layers::{
     dconneging::{
         conneg_layer::DerivedContentNegotiationLayer, context::DerivedContentNegotiatingRepoContext,
@@ -39,6 +41,7 @@ use manas_storage::{
 };
 use name_locker::NameLocker;
 use rdf_utils::model::triple::ArcTriple;
+use tracing::error;
 
 use crate::{
     pep::{InitialRootAcrRepFactory, RcpPRP, RcpSimplePEP, SimpleAccessRcpStorageSetup},
@@ -140,13 +143,23 @@ impl<StSetup: RcpStorageSetup> SolidStorage for RcpStorage<StSetup> {
     fn extensions(&self) -> &http::Extensions {
         &self.extensions
     }
+
+    fn initialize(&self) -> BoxFuture<'static, Result<(), Problem>> {
+        self.repo
+            .initialize()
+            .inspect_err(|e| {
+                error!("Error in initializing the repo. {e}");
+            })
+            .map_ok(|_| ())
+            .boxed()
+    }
 }
 
 impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
     pub(crate) fn _new(
         odr_context: Arc<ODRContext<RcpBaseRepoSetup<StSetup::Backend>>>,
         conneg_layer_config: Arc<RcpCNLConfig<StSetup::CNL, StSetup::Backend>>,
-        pep: StSetup::PEP,
+        pep: Arc<StSetup::PEP>,
         initial_root_acr_rep_factory: InitialRootAcrRepFactory,
         resource_locker: StSetup::ResourceLocker,
     ) -> Self {
@@ -199,7 +212,7 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
         backend: StSetup::Backend,
         odr_config: ODRConfig,
         conneg_layer_config: Arc<RcpCNLConfig<StSetup::CNL, StSetup::Backend>>,
-        pep: StSetup::PEP,
+        pep: Arc<StSetup::PEP>,
         initial_root_acr_rep_factory: InitialRootAcrRepFactory,
         resource_locker: StSetup::ResourceLocker,
     ) -> Self {
@@ -241,7 +254,7 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
         Self::_new(
             odr_context,
             conneg_layer_config,
-            pep,
+            Arc::new(pep),
             initial_root_acr_rep_factory,
             resource_locker,
         )

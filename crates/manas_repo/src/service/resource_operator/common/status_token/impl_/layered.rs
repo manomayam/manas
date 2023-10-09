@@ -7,7 +7,7 @@ use manas_http::representation::metadata::RepresentationMetadata;
 use manas_space::resource::{slot::SolidResourceSlot, uri::SolidResourceUri};
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::{
         common::status_token::{
             ExistingNonRepresentedResourceToken, ExistingRepresentedResourceToken,
@@ -242,14 +242,7 @@ where
 impl<IR, LR> From<ResourceCreateTokenSet<LR>> for Layered<ResourceCreateTokenSet<IR>, LR>
 where
     IR: Repo,
-    LR: Repo<
-        StSpace = IR::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            IR::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR>,
+    LR: LayeredRepo<IR>,
 {
     fn from(tokens: ResourceCreateTokenSet<LR>) -> Self {
         let layer_context = tokens.repo_context().clone();
@@ -265,14 +258,7 @@ where
 impl<IR, LR> From<ResourceReadTokenSet<LR>> for Layered<ResourceReadTokenSet<IR>, LR>
 where
     IR: Repo,
-    LR: Repo<
-        StSpace = IR::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            IR::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR>,
+    LR: LayeredRepo<IR>,
 {
     fn from(tokens: ResourceReadTokenSet<LR>) -> Self {
         let layer_context = tokens.res_token.layer_context;
@@ -286,14 +272,7 @@ where
 impl<IR, LR> From<Layered<ResourceReadTokenSet<IR>, LR>> for ResourceReadTokenSet<LR>
 where
     IR: Repo,
-    LR: Repo<
-        StSpace = IR::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            IR::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR>,
+    LR: LayeredRepo<IR>,
 {
     fn from(l_tokens: Layered<ResourceReadTokenSet<IR>, LR>) -> Self {
         ResourceReadTokenSet::new(Layered::new(
@@ -306,14 +285,7 @@ where
 impl<IR, LR> From<ResourceUpdateTokenSet<LR>> for Layered<ResourceUpdateTokenSet<IR>, LR>
 where
     IR: Repo,
-    LR: Repo<
-        StSpace = IR::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            IR::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR>,
+    LR: LayeredRepo<IR>,
 {
     fn from(tokens: ResourceUpdateTokenSet<LR>) -> Self {
         let l_res_token = Layered::from(tokens.res_token);
@@ -327,14 +299,7 @@ where
 impl<IR, LR> From<ResourceDeleteTokenSet<LR>> for Layered<ResourceDeleteTokenSet<IR>, LR>
 where
     IR: Repo,
-    LR: Repo<
-        StSpace = IR::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            IR::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR>,
+    LR: LayeredRepo<IR>,
 {
     fn from(tokens: ResourceDeleteTokenSet<LR>) -> Self {
         let layer_context = tokens.res_token.layer_context;

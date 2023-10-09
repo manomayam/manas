@@ -29,6 +29,7 @@ use self::service::{
 };
 
 pub mod context;
+pub mod layer;
 pub mod policy;
 pub mod service;
 

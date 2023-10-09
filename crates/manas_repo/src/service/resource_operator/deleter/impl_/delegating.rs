@@ -3,12 +3,9 @@ use futures::TryFutureExt;
 use tower::Service;
 
 use crate::{
-    context::LayeredRepoContext,
+    layer::LayeredRepo,
     service::resource_operator::{
-        common::{
-            impl_::DelegatingOperator,
-            status_token::impl_::layered::LayeredResourceStatusTokenTypes,
-        },
+        common::impl_::DelegatingOperator,
         deleter::{ResourceDeleteRequest, ResourceDeleteResponse, ResourceDeleter},
     },
     Repo,
@@ -17,14 +14,7 @@ use crate::{
 impl<Inner, LR> Service<ResourceDeleteRequest<LR>> for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceDeleter,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
 {
     type Response = ResourceDeleteResponse<LR>;
@@ -53,14 +43,7 @@ where
 impl<Inner, LR> ResourceDeleter for DelegatingOperator<Inner, LR>
 where
     Inner: ResourceDeleter,
-    LR: Repo<
-        StSpace = <Inner::Repo as Repo>::StSpace,
-        ResourceStatusTokenTypes = LayeredResourceStatusTokenTypes<
-            <Inner::Repo as Repo>::ResourceStatusTokenTypes,
-            LR,
-        >,
-    >,
-    LR::Context: LayeredRepoContext<InnerRepo = Inner::Repo>,
+    LR: LayeredRepo<Inner::Repo>,
     LR::Credentials: Into<<Inner::Repo as Repo>::Credentials>,
 {
     type Repo = LR;
