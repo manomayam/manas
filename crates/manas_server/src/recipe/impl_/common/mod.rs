@@ -7,14 +7,9 @@ use axum_server::{service::MakeServiceRef, tls_rustls::RustlsConfig};
 use futures::TryFutureExt;
 use http::{uri::Scheme, Method, Request};
 use hyper::{server::conn::AddrStream, Body};
-use manas_authentication::{
-    challenge_response_framework::{
-        scheme::impl_::solid_oidc::DefaultSolidOidcDpopScheme, service::HttpCRAuthenticationLayer,
-    },
-    common::{
-        credentials::impl_::basic::BasicRequestCredentials,
-        req_authenticator::impl_::BasicRequestAuthenticator,
-    },
+use manas_authentication::common::{
+    credentials::impl_::basic::BasicRequestCredentials,
+    req_authenticator::impl_::BasicRequestAuthenticator,
 };
 use manas_http::service::{
     impl_::{NormalValidateTargetUri, ReconstructTargetUri},
@@ -59,13 +54,13 @@ pub fn resolve_svc_maker(
 pub fn resolve_authenticating_svc_maker(
     podset_svc: impl HttpService<Body, Body> + Clone,
 ) -> impl SendMakeServiceRef {
-    resolve_svc_maker(HttpCRAuthenticationLayer::<
+    resolve_svc_maker(manas_authentication::challenge_response_framework::service::HttpCRAuthenticationLayer::<
         _,
         _,
         Body,
         BasicRequestAuthenticator<BasicRequestCredentials>,
     >::new(
-        DefaultSolidOidcDpopScheme::default(),
+        manas_authentication::challenge_response_framework::scheme::impl_::solid_oidc::DefaultSolidOidcDpopScheme::default(),
         Arc::new(vec![
             Method::POST,
             Method::PATCH,
