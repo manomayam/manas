@@ -46,7 +46,7 @@ futures = "0.3.28"
 axum-server = { version = "0.5.1", features = ["tls-rustls"] }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
 anyhow = "1.0.75"
-clap = { version = "4.3.11", features = [
+clap = { version = "4.4.7", features = [
     "derive", "string"
 ] }
 config = { version = "0.13.3", default-features = false, features = ["toml"] }
