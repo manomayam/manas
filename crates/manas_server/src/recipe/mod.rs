@@ -76,7 +76,7 @@ pub trait RecipeExt: Recipe {
             let config_content = String::from_utf8(
                 tokio::fs::read(args.config_path)
                     .inspect_err(|e| {
-                        error!("Error in reading config fle. {}", e);
+                        error!("Error in reading config file. {}", e);
                     })
                     .await?,
             )
