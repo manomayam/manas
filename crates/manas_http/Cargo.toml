@@ -59,7 +59,7 @@ rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", optional = 
 ] }
 tokio = { version = "1.29.1", features = ["rt", "io-util"], optional = true }
 tokio-util = { version = "0.7.8", optional = true, features = ["io-util"] }
-sophia_api = { version = "0.8.0-alpha.1", optional = true }
+sophia_api = { version = "0.8.0-alpha.3", optional = true }
 async-once-cell = { version = "0.5.3", optional = true }
 capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream", optional = true }
 

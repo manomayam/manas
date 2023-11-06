@@ -43,9 +43,10 @@ where
 /// Resolve service maker for given podset service.
 pub fn resolve_svc_maker(
     podset_svc: impl HttpService<Body, Body> + Clone,
+    default_scheme: Scheme,
 ) -> impl SendMakeServiceRef {
     Shared::new(CatchPanic::new(LiberalCors::new(
-        ReconstructTargetUri::new(Scheme::HTTP, NormalValidateTargetUri::new(podset_svc)),
+        ReconstructTargetUri::new(default_scheme, NormalValidateTargetUri::new(podset_svc)),
     )))
 }
 
@@ -53,6 +54,7 @@ pub fn resolve_svc_maker(
 #[cfg(feature = "layer-authentication")]
 pub fn resolve_authenticating_svc_maker(
     podset_svc: impl HttpService<Body, Body> + Clone,
+    default_scheme: Scheme,
 ) -> impl SendMakeServiceRef {
     resolve_svc_maker(manas_authentication::challenge_response_framework::service::HttpCRAuthenticationLayer::<
         _,
@@ -60,15 +62,17 @@ pub fn resolve_authenticating_svc_maker(
         Body,
         BasicRequestAuthenticator<BasicRequestCredentials>,
     >::new(
-        manas_authentication::challenge_response_framework::scheme::impl_::solid_oidc::DefaultSolidOidcDpopScheme::default(),
-        Arc::new(vec![
-            Method::POST,
-            Method::PATCH,
-            Method::PUT,
-            Method::DELETE,
-        ]),
+            manas_authentication::challenge_response_framework::scheme::impl_::solid_oidc::DefaultSolidOidcDpopScheme::default(),
+            Arc::new(vec![
+                Method::POST,
+                Method::PATCH,
+                Method::PUT,
+                Method::DELETE,
+            ]),
+        )
+        .layer(podset_svc),
+        default_scheme
     )
-    .layer(podset_svc))
 }
 
 /// Serve the recipe.

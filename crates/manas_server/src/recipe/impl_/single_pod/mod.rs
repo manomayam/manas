@@ -6,6 +6,7 @@
 use std::{borrow::Cow, marker::PhantomData, sync::Arc};
 
 use futures::future::{BoxFuture, TryFutureExt};
+use http::uri::Scheme;
 use manas_repo::RepoExt;
 use manas_repo_layers::dconneging::conneg_layer::impl_::binary_rdf_doc_converting::BinaryRdfDocContentNegotiationConfig;
 use manas_space::BoxError;
@@ -174,7 +175,14 @@ impl<RSetup: SinglePodRecipeSetup> Recipe for SinglePodRecipe<RSetup> {
                 config.dev_mode,
             );
 
-            let svc_maker = resolve_authenticating_svc_maker(podset_svc);
+            let svc_maker = resolve_authenticating_svc_maker(
+                podset_svc,
+                if config.server.tls.is_some() {
+                    Scheme::HTTPS
+                } else {
+                    Scheme::HTTP
+                },
+            );
 
             tracing::info!("Serving at {}", config.server.addr);
             tracing::info!(
