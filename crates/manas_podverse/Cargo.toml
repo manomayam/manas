@@ -23,7 +23,7 @@ rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = 
 ] }
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-rdf", "ns-pim"] }
-regex = "1.9.1"
+regex = "1.10.2"
 sophia_api = "0.8.0-alpha.3"
 tower = "0.4.13"
 tracing = { version = "0.1.37", features = ["attributes"] }
