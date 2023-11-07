@@ -1,10 +1,12 @@
 //! I define an dynsyn models for rdf concepts.
 //!
 
+//TODO bring to sanity.
+
 use rio_api::model::{Quad as RioQuad, Term as RioTerm, Triple as RioTriple};
 use sophia_api::{
     quad::{QBorrowTerm, Quad, Spog},
-    term::{BnodeId, CmpTerm, GraphName, IriRef, LanguageTag, Term, TermKind, VarName},
+    term::{BnodeId, CmpTerm, GraphName, IriRef, LanguageTag, SimpleTerm, Term, TermKind, VarName},
     triple::{TBorrowTerm, Triple},
     MownStr,
 };
@@ -15,6 +17,7 @@ use sophia_rio::model::Trusted;
 pub(crate) enum InnerBorrowTerm<'a> {
     /// Trusted rio terms variant.
     Rio(CmpTerm<Trusted<RioTerm<'a>>>),
+    Simple(&'a SimpleTerm<'a>),
 }
 
 impl<'a> From<Trusted<RioTerm<'a>>> for InnerBorrowTerm<'a> {
@@ -31,6 +34,13 @@ impl<'a> From<CmpTerm<Trusted<RioTerm<'a>>>> for InnerBorrowTerm<'a> {
     }
 }
 
+impl<'a> From<&'a SimpleTerm<'a>> for InnerBorrowTerm<'a> {
+    #[inline]
+    fn from(value: &'a SimpleTerm<'a>) -> Self {
+        Self::Simple(value)
+    }
+}
+
 /// Type of borrow-terms produced by dynsyn parsers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct DynSynBorrowTerm<'a>(pub(crate) InnerBorrowTerm<'a>);
@@ -42,6 +52,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn kind(&self) -> TermKind {
         match self.0 {
             InnerBorrowTerm::Rio(v) => v.kind(),
+            InnerBorrowTerm::Simple(v) => v.kind(),
         }
     }
 
@@ -54,6 +65,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn iri(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.iri(),
+            InnerBorrowTerm::Simple(v) => v.iri(),
         }
     }
 
@@ -61,6 +73,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn bnode_id(&self) -> Option<BnodeId<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.bnode_id(),
+            InnerBorrowTerm::Simple(v) => v.bnode_id(),
         }
     }
 
@@ -68,6 +81,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn lexical_form(&self) -> Option<MownStr> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.lexical_form(),
+            InnerBorrowTerm::Simple(v) => v.lexical_form(),
         }
     }
 
@@ -75,6 +89,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn datatype(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.datatype(),
+            InnerBorrowTerm::Simple(v) => v.datatype(),
         }
     }
 
@@ -82,6 +97,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn language_tag(&self) -> Option<LanguageTag<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.language_tag(),
+            InnerBorrowTerm::Simple(v) => v.language_tag(),
         }
     }
 
@@ -89,6 +105,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn variable(&self) -> Option<VarName<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.variable(),
+            InnerBorrowTerm::Simple(v) => v.variable(),
         }
     }
 
@@ -96,6 +113,9 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn triple(&self) -> Option<[Self::BorrowTerm<'_>; 3]> {
         match self.0 {
             InnerBorrowTerm::Rio(v) => v
+                .triple()
+                .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
+            InnerBorrowTerm::Simple(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
@@ -110,6 +130,9 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
             InnerBorrowTerm::Rio(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
+            InnerBorrowTerm::Simple(v) => v
+                .to_triple()
+                .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
     }
 }
@@ -119,6 +142,7 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
 pub(crate) enum InnerTerm<'a> {
     /// Trusted rio terms variant.
     Rio(CmpTerm<Trusted<RioTerm<'a>>>),
+    Simple(SimpleTerm<'a>),
 }
 
 impl<'a> From<Trusted<RioTerm<'a>>> for InnerTerm<'a> {
@@ -135,6 +159,13 @@ impl<'a> From<CmpTerm<Trusted<RioTerm<'a>>>> for InnerTerm<'a> {
     }
 }
 
+impl<'a> From<SimpleTerm<'a>> for InnerTerm<'a> {
+    #[inline]
+    fn from(value: SimpleTerm<'a>) -> Self {
+        Self::Simple(value)
+    }
+}
+
 /// Type of terms produced by dynsyn parsers.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct DynSynTerm<'a>(pub(crate) InnerTerm<'a>);
@@ -144,15 +175,17 @@ impl<'a> Term for DynSynTerm<'a> {
 
     #[inline]
     fn kind(&self) -> TermKind {
-        match self.0 {
+        match &self.0 {
             InnerTerm::Rio(v) => v.kind(),
+            InnerTerm::Simple(v) => v.kind(),
         }
     }
 
     #[inline]
     fn borrow_term(&self) -> Self::BorrowTerm<'_> {
-        match self.0 {
-            InnerTerm::Rio(v) => DynSynBorrowTerm(v.into()),
+        match &self.0 {
+            InnerTerm::Rio(v) => DynSynBorrowTerm((*v).into()),
+            InnerTerm::Simple(v) => DynSynBorrowTerm(v.into()),
         }
     }
 
@@ -160,6 +193,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn iri(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.iri(),
+            InnerTerm::Simple(v) => v.iri(),
         }
     }
 
@@ -167,6 +201,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn bnode_id(&self) -> Option<BnodeId<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.bnode_id(),
+            InnerTerm::Simple(v) => v.bnode_id(),
         }
     }
 
@@ -174,6 +209,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn lexical_form(&self) -> Option<MownStr> {
         match &self.0 {
             InnerTerm::Rio(v) => v.lexical_form(),
+            InnerTerm::Simple(v) => v.lexical_form(),
         }
     }
 
@@ -181,6 +217,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn datatype(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.datatype(),
+            InnerTerm::Simple(v) => v.datatype(),
         }
     }
 
@@ -188,6 +225,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn language_tag(&self) -> Option<LanguageTag<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.language_tag(),
+            InnerTerm::Simple(v) => v.language_tag(),
         }
     }
 
@@ -195,6 +233,7 @@ impl<'a> Term for DynSynTerm<'a> {
     fn variable(&self) -> Option<VarName<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.variable(),
+            InnerTerm::Simple(v) => v.variable(),
         }
     }
 
@@ -202,6 +241,9 @@ impl<'a> Term for DynSynTerm<'a> {
     fn triple(&self) -> Option<[Self::BorrowTerm<'_>; 3]> {
         match &self.0 {
             InnerTerm::Rio(v) => v
+                .triple()
+                .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
+            InnerTerm::Simple(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
@@ -214,6 +256,9 @@ impl<'a> Term for DynSynTerm<'a> {
     {
         match self.0 {
             InnerTerm::Rio(v) => v
+                .to_triple()
+                .map(|triple| triple.map(|term| DynSynTerm(term.into()))),
+            InnerTerm::Simple(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynTerm(term.into()))),
         }
@@ -275,6 +320,7 @@ impl<'a> Triple for DynSynTriple<'a> {
 pub(crate) enum InnerQuad<'a> {
     /// Trusted rio quad variant.
     Rio(Trusted<rio_api::model::Quad<'a>>),
+    Simple(Spog<SimpleTerm<'a>>),
 }
 
 impl<'a> From<Trusted<RioQuad<'a>>> for InnerQuad<'a> {
@@ -293,29 +339,33 @@ impl<'a> Quad for DynSynQuad<'a> {
 
     #[inline]
     fn s(&self) -> QBorrowTerm<Self> {
-        match self.0 {
+        match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.s().into()),
+            InnerQuad::Simple(v) => DynSynBorrowTerm(v.s().into()),
         }
     }
 
     #[inline]
     fn p(&self) -> QBorrowTerm<Self> {
-        match self.0 {
+        match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.p().into()),
+            InnerQuad::Simple(v) => DynSynBorrowTerm(v.p().into()),
         }
     }
 
     #[inline]
     fn o(&self) -> QBorrowTerm<Self> {
-        match self.0 {
+        match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.o().into()),
+            InnerQuad::Simple(v) => DynSynBorrowTerm(v.o().into()),
         }
     }
 
     #[inline]
     fn g(&self) -> GraphName<QBorrowTerm<Self>> {
-        match self.0 {
+        match &self.0 {
             InnerQuad::Rio(v) => v.g().map(|gn| DynSynBorrowTerm(gn.into())),
+            InnerQuad::Simple(v) => v.g().map(|gn| DynSynBorrowTerm(gn.into())),
         }
     }
 
@@ -323,6 +373,13 @@ impl<'a> Quad for DynSynQuad<'a> {
     fn to_spog(self) -> Spog<Self::Term> {
         match self.0 {
             InnerQuad::Rio(v) => {
+                let spog = v.to_spog();
+                (
+                    spog.0.map(|term| DynSynTerm(term.into())),
+                    spog.1.map(|term| DynSynTerm(term.into())),
+                )
+            }
+            InnerQuad::Simple(v) => {
                 let spog = v.to_spog();
                 (
                     spog.0.map(|term| DynSynTerm(term.into())),

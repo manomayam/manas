@@ -13,7 +13,7 @@ manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "representation",
 ] }
 once_cell = "1.18.0"
-rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = [
+rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
 tokio = { version = "1.29.1", features = ["rt", "macros", "io-util"] }

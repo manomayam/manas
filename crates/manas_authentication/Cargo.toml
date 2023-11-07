@@ -86,6 +86,9 @@ scheme-impl-solid-oidc = [
     "dep:serde_json",
     "dep:once_cell",
 ]
+scheme-impl-httpsig = [
+    "picky"
+]
 creds-context = [
     "dep:acp",
     "dep:rdf_utils",

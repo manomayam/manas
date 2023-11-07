@@ -2,7 +2,7 @@ use std::{error::Error, io::BufRead};
 
 use rio_api::parser::TriplesParser as RioTriplesParser;
 use rio_turtle::{NTriplesParser as RioNTriplesParser, TurtleParser as RioTurtleParser};
-#[cfg(feature = "rdf_xml")]
+#[cfg(feature = "rdf-xml")]
 use rio_xml::RdfXmlParser as RioRdfXmlParser;
 use sophia_api::source::{StreamResult, TripleSource};
 use sophia_rio::parser::StrictRioSource;
@@ -16,7 +16,7 @@ use crate::{model::DynSynTriple, parser::error::DynSynParseError};
 pub(crate) enum InnerTripleSource<R: BufRead> {
     FNTriples(StrictRioSource<RioNTriplesParser<R>>),
     FTurtle(StrictRioSource<RioTurtleParser<R>>),
-    #[cfg(feature = "rdf_xml")]
+    #[cfg(feature = "rdf-xml")]
     FRdfXml(StrictRioSource<RioRdfXmlParser<R>>),
 }
 
@@ -34,7 +34,7 @@ impl<R: BufRead> From<StrictRioSource<RioTurtleParser<R>>> for InnerTripleSource
     }
 }
 
-#[cfg(feature = "rdf_xml")]
+#[cfg(feature = "rdf-xml")]
 impl<R: BufRead> From<StrictRioSource<RioRdfXmlParser<R>>> for InnerTripleSource<R> {
     #[inline]
     fn from(qs: StrictRioSource<RioRdfXmlParser<R>>) -> Self {
@@ -84,7 +84,7 @@ where
 
             InnerTripleSource::FTurtle(ts) => Self::try_for_some_adapted_rio_triple(ts, f),
 
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             InnerTripleSource::FRdfXml(ts) => Self::try_for_some_adapted_rio_triple(ts, f),
         }
     }

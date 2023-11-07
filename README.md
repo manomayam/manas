@@ -64,7 +64,7 @@ It provides following crates:
 Along with these main crates, Manas project provides many utility crates that help dealing with solid ecosystem.
 
 - [`dpop`](https://docs.rs/dpop): Rust crate for dpop protocol
-- [`rdf_dynsyn`](https://docs.rs/rdf_dynsyn): Rust crate for dynamic rdf parsers and serializers on to of sophia.
+- [`rdf_dynsyn`](https://docs.rs/rdf_dynsyn): Rust crate for dynamic rdf parsers and serializers on top of sophia.
 - [`rdf_utils`](https://docs.rs/rdf_utils): Utilities to handle rdf in rust.
 - [`webid`](https://docs.rs/webid): Rust crate for webid.
 - ... etc.

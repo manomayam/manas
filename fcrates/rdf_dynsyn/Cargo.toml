@@ -1,6 +1,6 @@
 [package]
 name = "rdf_dynsyn"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2021"
 description = "This crate provides sophia-compatible and sophia-based rdf parsers/serializers, that can be instantiated against any of supported syntaxes dynamically at run time."
 keywords = ["rdf", "parse", "serialize", "sophia"]
@@ -24,8 +24,9 @@ gdp_rs = { version = "0.1.1", path = "../gdp_rs" }
 frunk_core = "0.4.2"
 if_chain = "1.0.2"
 resiter = "0.5.0"
+sophia_iri = { version = "0.8.0-alpha.3" }
 
-# feature: rdf_xml
+# feature: rdf-xml
 sophia_xml = { version = "0.8.0-alpha.3", optional = true }
 rio_xml = { version = "0.8.4", optional = true }
 
@@ -45,19 +46,23 @@ tokio-util = { version = "0.7.8", optional = true, features = [
 ] }
 tokio-stream = { version = "0.1.14", optional = true }
 
+# feature: jsonld
+json-ld = { version = "^0.15.0", optional = true}
+sophia_jsonld = { version = "0.8.0-alpha.3", optional = true}
+locspan = { version = "^0.7.16", optional = true }
+rdf-types = { version = "^0.15.4", optional = true }
+
+# feature: docsrs
+document-features = { version = "0.2.7", optional = true }
+
 [features]
-async = [
-    "dep:futures",
-    "dep:bytes",
-    "dep:tokio",
-    "dep:async-compat",
-    "dep:tokio-util",
-    "dep:tokio-stream",
-]
-rdf_xml = [
-    "dep:sophia_xml","dep:rio_xml"
-]
-default = ["rdf_xml"]
+##! Enables async wrapper parsers and serializers.
+async = ["dep:futures", "dep:bytes", "dep:tokio", "dep:async-compat", "dep:tokio-util", "dep:tokio-stream"]
+##! Enables rdf-xml parsers and serializers.
+rdf-xml = ["dep:sophia_xml", "dep:rio_xml"]
+##! Enables json-ld parsers and serializers.
+jsonld = ["dep:json-ld", "dep:sophia_jsonld", "dep:locspan", "dep:futures", "dep:rdf-types"]
+default = ["rdf-xml"]
 
 [dev-dependencies]
 env_logger = "0.10.0"

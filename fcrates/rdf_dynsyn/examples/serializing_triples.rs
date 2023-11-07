@@ -1,7 +1,6 @@
 use rdf_dynsyn::{
-    serializer::triples::DynSynTripleSerializerFactory,
+    serializer::{config::DynSynSerializerConfig, triples::DynSynTripleSerializerFactory},
     syntax::invariant::triples_serializable::{TS_N_TRIPLES, TS_TURTLE},
-    ConfigMap,
 };
 use sophia_api::{
     ns::{rdf, Namespace},
@@ -11,12 +10,11 @@ use sophia_api::{
 use sophia_turtle::serializer::turtle::TurtleConfig;
 
 pub fn try_main() -> Result<(), Box<dyn std::error::Error>> {
-    // A configmap that holds *optional* configurations for different serialization syntaxes.
-    let mut serializer_config_map = ConfigMap::new();
-    // add optional configurations to config_map
-    serializer_config_map.insert::<TurtleConfig>(TurtleConfig::new().with_pretty(true));
+    // A config that holds configurations for different serialization syntaxes.
+    let serializer_config =
+        DynSynSerializerConfig::default().with_turtle_config(TurtleConfig::new().with_pretty(true));
 
-    let serializer_factory = DynSynTripleSerializerFactory::new(Some(serializer_config_map));
+    let serializer_factory = DynSynTripleSerializerFactory::new(serializer_config);
 
     let schema_org = Namespace::new("http://schema.org/")?;
     let example_org = Namespace::new("http://example.org/")?;

@@ -3,7 +3,7 @@
 
 use gdp_rs::predicate::{Predicate, PurePredicate, SyncEvaluablePredicate};
 
-use crate::syntax::{RdfSyntax, N_QUADS, N_TRIPLES, RDF_XML, TRIG, TURTLE};
+use crate::syntax::{RdfSyntax, JSON_LD, N_QUADS, N_TRIPLES, RDF_XML, TRIG, TURTLE};
 
 /// A type representing a predicate over an rdf-syntax, stating that syntax is dynsyn parsable.
 #[derive(Debug, Clone)]
@@ -16,8 +16,10 @@ impl IsDynSynParsable {
         TRIG,
         N_TRIPLES,
         TURTLE,
-        #[cfg(feature = "rdf_xml")]
+        #[cfg(feature = "rdf-xml")]
         RDF_XML,
+        #[cfg(feature = "jsonld")]
+        JSON_LD,
     ];
 }
 

@@ -7,7 +7,8 @@ use mime::Mime;
 use crate::{
     correspondence::Correspondent,
     syntax::{
-        predicate::IsDynSynSerializable, RdfSyntax, N_QUADS, N_TRIPLES, RDF_XML, TRIG, TURTLE,
+        predicate::IsDynSynSerializable, RdfSyntax, JSON_LD, N_QUADS, N_TRIPLES, RDF_XML, TRIG,
+        TURTLE,
     },
 };
 
@@ -39,7 +40,8 @@ pub static S_N_TRIPLES: DynSynSerializableSyntax = unsafe { Proven::new_unchecke
 pub static S_TURTLE: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(TURTLE) };
 
 /// rdf/xml DynSyn serializable syntax.
-#[cfg(feature = "rdf_xml")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
+#[cfg(feature = "rdf-xml")]
 pub static S_RDF_XML: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(RDF_XML) };
 
 /// n-quads DynSyn serializable syntax.
@@ -48,16 +50,21 @@ pub static S_N_QUADS: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(
 /// trig DynSyn serializable syntax.
 pub static S_TRIG: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(TRIG) };
 
-// /// json-ld DynSyn serializable syntax.
-// pub static S_JSON_LD: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(JSON_LD) };
+/// json-ld DynSyn serializable syntax.
+#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
+#[cfg(feature = "jsonld")]
+pub static S_JSON_LD: DynSynSerializableSyntax = unsafe { Proven::new_unchecked(JSON_LD) };
 
 /// List of all DynSyn serializable syntaxes.
 pub static S_ALL: &[DynSynSerializableSyntax] = &[
     S_N_TRIPLES,
     S_TURTLE,
-    #[cfg(feature = "rdf_xml")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
+    #[cfg(feature = "rdf-xml")]
     S_RDF_XML,
     S_N_QUADS,
     S_TRIG,
-    // S_JSON_LD,
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
+    #[cfg(feature = "jsonld")]
+    S_JSON_LD,
 ];

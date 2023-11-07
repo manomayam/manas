@@ -16,11 +16,12 @@ use crate::syntax::{
     predicate::{IsDatasetEncoding, IsGraphEncoding},
 };
 
+pub mod config;
 pub mod quads;
 pub mod triples;
 
 /// A struct for set of rdf serializing factories.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default)]
 pub struct DynSynSerializerFactorySet {
     /// Quads serializing serializer factory.
     pub quads_serializing: DynSynQuadSerializerFactory,

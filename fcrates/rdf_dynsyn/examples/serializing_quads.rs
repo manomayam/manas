@@ -1,4 +1,7 @@
-use rdf_dynsyn::{serializer::quads::*, syntax::invariant::quads_serializable::*, ConfigMap};
+use rdf_dynsyn::{
+    serializer::{config::DynSynSerializerConfig, quads::*},
+    syntax::invariant::quads_serializable::*,
+};
 use sophia_api::{
     ns::{rdf, Namespace},
     quad::Spog,
@@ -8,12 +11,11 @@ use sophia_api::{
 use sophia_turtle::serializer::trig::TrigConfig;
 
 pub fn try_main() -> Result<(), Box<dyn std::error::Error>> {
-    // A configmap that holds *optional* configurations for different serialization syntaxes.
-    let mut serializer_config_map = ConfigMap::new();
-    // add optional configurations to config_map
-    serializer_config_map.insert::<TrigConfig>(TrigConfig::new().with_pretty(true));
+    // A config that holds configurations for different serialization syntaxes.
+    let serializer_config =
+        DynSynSerializerConfig::default().with_trig_config(TrigConfig::new().with_pretty(true));
 
-    let serializer_factory = DynSynQuadSerializerFactory::new(Some(serializer_config_map));
+    let serializer_factory = DynSynQuadSerializerFactory::new(serializer_config);
 
     let schema_org = Namespace::new("http://schema.org/")?;
     let example_org = Namespace::new("http://example.org/")?;

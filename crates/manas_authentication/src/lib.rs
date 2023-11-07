@@ -2,6 +2,7 @@
 //! for solid storage resource servers and authorization servers.
 
 #![warn(missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(unused_qualifications)]
 
 pub mod common;

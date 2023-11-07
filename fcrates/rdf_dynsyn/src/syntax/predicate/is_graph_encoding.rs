@@ -11,12 +11,7 @@ pub struct IsGraphEncoding;
 
 impl IsGraphEncoding {
     /// Slice of all graph encoding syntaxes.
-    const ALL_RAW: &'static [RdfSyntax] = &[
-        N_TRIPLES,
-        TURTLE,
-        #[cfg(feature = "rdf_xml")]
-        RDF_XML,
-    ];
+    const ALL_RAW: &'static [RdfSyntax] = &[N_TRIPLES, TURTLE, RDF_XML];
 }
 
 impl Predicate<RdfSyntax> for IsGraphEncoding {

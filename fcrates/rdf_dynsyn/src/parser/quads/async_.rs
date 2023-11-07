@@ -103,6 +103,6 @@ impl DynSynQuadParserFactory {
         syntax_: QuadsParsableSyntax,
         base_iri: Option<Iri<String>>,
     ) -> DynSynAsyncQuadParser {
-        DynSynAsyncQuadParser(DynSynQuadParser::new(syntax_, base_iri))
+        DynSynAsyncQuadParser(DynSynQuadParser::new(syntax_, &self.config, base_iri))
     }
 }

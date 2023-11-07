@@ -1,4 +1,5 @@
 #![warn(missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(unused_qualifications)]
 
 //! This crate provides sophia-compatible and sophia-based rdf
@@ -77,7 +78,7 @@
 //!     graph.insert_triple([&ex.get("bob")?, &foaf.get("knows")?, &ex.get("alice")?])?;
 //!
 //!     // get serializer for target syntax
-//!     let serializer_factory = DynSynTripleSerializerFactory::new(None); // Here we can pass optional formatting options. see documentation.
+//!     let serializer_factory = DynSynTripleSerializerFactory::new(Default::default()); // Here we can pass optional formatting options. see documentation.
 //!
 //!     let mut serializer = serializer_factory.new_stringifier(tgt_doc_syntax.try_proven()?);
 //!     let serialized_doc = serializer.serialize_graph(&graph)?.as_str();
@@ -91,6 +92,11 @@
 //! # }
 //! ```
 //!
+//! ## Feature flags
+#![cfg_attr(
+    doc_cfg,
+    cfg_attr(doc, doc = ::document_features::document_features!())
+)]
 
 use std::sync::Arc;
 
@@ -106,9 +112,6 @@ pub mod serializer;
 pub mod syntax;
 
 pub(crate) mod util;
-
-/// Type alias for clonable anymap.
-pub type ConfigMap = anymap2::Map<dyn anymap2::any::CloneAnySendSync + Send + Sync>;
 
 /// A struct for set of dynsyn parser/serializer factories.
 #[derive(Debug, Default, Clone)]

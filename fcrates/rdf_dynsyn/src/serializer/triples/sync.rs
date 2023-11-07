@@ -4,12 +4,9 @@ use sophia_api::{
     serializer::{Stringifier, TripleSerializer},
     source::{StreamResult, TripleSource},
 };
-use sophia_turtle::serializer::{
-    nt::{NtConfig, NtSerializer},
-    turtle::{TurtleConfig, TurtleSerializer},
-};
-#[cfg(feature = "rdf_xml")]
-use sophia_xml::serializer::{RdfXmlConfig, RdfXmlSerializer};
+use sophia_turtle::serializer::{nt::NtSerializer, turtle::TurtleSerializer};
+#[cfg(feature = "rdf-xml")]
+use sophia_xml::serializer::RdfXmlSerializer;
 
 use super::factory::DynSynTripleSerializerFactory;
 use crate::syntax::{self, invariant::triples_serializable::TriplesSerializableSyntax};
@@ -19,7 +16,7 @@ use crate::syntax::{self, invariant::triples_serializable::TriplesSerializableSy
 pub(crate) enum InnerTripleSerializer<W: io::Write> {
     NTriples(NtSerializer<W>),
     Turtle(TurtleSerializer<W>),
-    #[cfg(feature = "rdf_xml")]
+    #[cfg(feature = "rdf-xml")]
     RdfXml(RdfXmlSerializer<W>),
 }
 
@@ -28,7 +25,7 @@ impl<W: io::Write> Debug for InnerTripleSerializer<W> {
         match self {
             Self::NTriples(_) => f.debug_tuple("NTriples").finish(),
             Self::Turtle(_) => f.debug_tuple("Turtle").finish(),
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             Self::RdfXml(_) => f.debug_tuple("RdfXml").finish(),
         }
     }
@@ -77,7 +74,7 @@ impl<W: io::Write> TripleSerializer for DynSynTripleSerializer<W> {
                 Ok(_) => Ok(self),
                 Err(e) => Err(e),
             },
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             InnerTripleSerializer::RdfXml(s) => match s.serialize_triples(source) {
                 Ok(_) => Ok(self),
                 Err(e) => Err(e),
@@ -91,7 +88,7 @@ impl Stringifier for DynSynTripleSerializer<Vec<u8>> {
         match &self.0 {
             InnerTripleSerializer::NTriples(s) => s.as_utf8(),
             InnerTripleSerializer::Turtle(s) => s.as_utf8(),
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             InnerTripleSerializer::RdfXml(s) => s.as_utf8(),
         }
     }
@@ -106,14 +103,20 @@ impl DynSynTripleSerializerFactory {
     ) -> DynSynTripleSerializer<W> {
         match syntax_.into_subject() {
             syntax::N_TRIPLES => DynSynTripleSerializer::new(InnerTripleSerializer::NTriples(
-                NtSerializer::new_with_config(write, self.get_config::<NtConfig>()),
+                NtSerializer::new_with_config(write, self.config.nt.clone().unwrap_or_default()),
             )),
             syntax::TURTLE => DynSynTripleSerializer::new(InnerTripleSerializer::Turtle(
-                TurtleSerializer::new_with_config(write, self.get_config::<TurtleConfig>()),
+                TurtleSerializer::new_with_config(
+                    write,
+                    self.config.turtle.clone().unwrap_or_default(),
+                ),
             )),
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             syntax::RDF_XML => DynSynTripleSerializer::new(InnerTripleSerializer::RdfXml(
-                RdfXmlSerializer::new_with_config(write, self.get_config::<RdfXmlConfig>()),
+                RdfXmlSerializer::new_with_config(
+                    write,
+                    self.config.rdf_xml.clone().unwrap_or_default(),
+                ),
             )),
 
             // All triples serializable syntaxes addressed.
@@ -153,25 +156,24 @@ mod tests {
     use super::*;
     use crate::{
         parser::triples::DynSynTripleParserFactory,
-        serializer::test_data::{TESTS_NTRIPLES, TESTS_RDF_XML, TESTS_TURTLE},
+        serializer::{
+            config::DynSynSerializerConfig,
+            test_data::{TESTS_NTRIPLES, TESTS_RDF_XML, TESTS_TURTLE},
+        },
         syntax::invariant::triples_serializable::*,
         tests::TRACING,
-        ConfigMap,
     };
 
     static SERIALIZER_FACTORY: Lazy<DynSynTripleSerializerFactory> =
-        Lazy::new(|| DynSynTripleSerializerFactory::new(None));
+        Lazy::new(|| DynSynTripleSerializerFactory::new(Default::default()));
 
     static SERIALIZER_FACTORY_WITH_PRETTY_CONFIG: Lazy<DynSynTripleSerializerFactory> =
         Lazy::new(|| {
-            let mut config_map = ConfigMap::new();
-            config_map.insert::<TurtleConfig>(TurtleConfig::new().with_pretty(true));
-            config_map.insert::<NtConfig>(NtConfig::default());
+            let config = DynSynSerializerConfig::default()
+                .with_turtle_config(TurtleConfig::new().with_pretty(true))
+                .with_nt_config(NtConfig::default());
 
-            #[cfg(feature = "rdf_xml")]
-            config_map.insert::<RdfXmlConfig>(RdfXmlConfig::default());
-
-            DynSynTripleSerializerFactory::new(Some(config_map))
+            DynSynTripleSerializerFactory::new(config)
         });
 
     /// As DynSyn parsers can be non-cyclically tested, we can use them here.

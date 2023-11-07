@@ -1,6 +1,8 @@
 //! I define simple webid profile requesting agent.
 //!
 
+use std::sync::Arc;
+
 use futures::StreamExt;
 use headers::{ContentType, HeaderMapExt};
 use http_uri::invariant::AbsoluteHttpUri;
@@ -32,7 +34,7 @@ pub struct WebIdProfileReqAgent {
     client_no_redirects: Client,
 
     /// Triple parser factory.
-    triple_parser_factory: DynSynTripleParserFactory,
+    triple_parser_factory: Arc<DynSynTripleParserFactory>,
 }
 
 impl Default for WebIdProfileReqAgent {
@@ -54,7 +56,7 @@ impl WebIdProfileReqAgent {
         Self {
             client,
             client_no_redirects,
-            triple_parser_factory: DynSynTripleParserFactory::new(None),
+            triple_parser_factory: Arc::new(DynSynTripleParserFactory::new(Default::default())),
         }
     }
 

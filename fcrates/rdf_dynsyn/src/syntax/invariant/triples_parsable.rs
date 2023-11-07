@@ -9,7 +9,8 @@ use crate::syntax::{
     RdfSyntax, N_TRIPLES, RDF_XML, TURTLE,
 };
 
-/// Type alias for rdf syntax that can encode a graph, and can be parsable by dynsyn.
+/// Type alias for rdf syntax that can encode a graph, and can
+/// be parsable by dynsyn.
 pub type TriplesParsableSyntax =
     Proven<RdfSyntax, AllOf<RdfSyntax, HList![IsGraphEncoding, IsDynSynParsable]>>;
 
@@ -20,13 +21,15 @@ pub static TP_N_TRIPLES: TriplesParsableSyntax = unsafe { Proven::new_unchecked(
 pub static TP_TURTLE: TriplesParsableSyntax = unsafe { Proven::new_unchecked(TURTLE) };
 
 /// rdf/xml triples parsable syntax.
-#[cfg(feature = "rdf_xml")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
+#[cfg(feature = "rdf-xml")]
 pub static TP_RDF_XML: TriplesParsableSyntax = unsafe { Proven::new_unchecked(RDF_XML) };
 
 /// List of all triples parsable syntaxes.
 pub static TP_ALL: &[TriplesParsableSyntax] = &[
     TP_N_TRIPLES,
     TP_TURTLE,
-    #[cfg(feature = "rdf_xml")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
+    #[cfg(feature = "rdf-xml")]
     TP_RDF_XML,
 ];

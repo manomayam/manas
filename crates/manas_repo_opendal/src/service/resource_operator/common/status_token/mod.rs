@@ -49,6 +49,7 @@ impl<Setup: ODRSetup> ResourceStatusTokenTypes for ODRResourceStatusTokenTypes<S
 
 /// A struct for representing a base version of odr
 /// resource status token.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone)]
 pub enum ODRBaseResourceStatusToken<Setup: ODRSetup> {
     /// Existing

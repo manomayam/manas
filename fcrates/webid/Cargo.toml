@@ -24,7 +24,7 @@ sophia_api = { version = "0.8.0-alpha.3", optional = true }
 # feature: profile-req-agent
 reqwest = { version = "0.11.18", optional = true, features = ["stream", "rustls-tls"], default-features = false}
 tracing = { version = "0.1.37", features = ["attributes"] }
-rdf_dynsyn = { version = "0.3.1", path = "../rdf_dynsyn", optional = true, features = [
+rdf_dynsyn = { version = "0.4.0", path = "../rdf_dynsyn", optional = true, features = [
     "async",
 ] }
 headers = { version = "0.3.8", optional = true }

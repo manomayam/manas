@@ -17,12 +17,13 @@ use crate::syntax::{
     predicate::{IsDatasetEncoding, IsGraphEncoding},
 };
 
+pub mod config;
 pub mod error;
 pub mod quads;
 pub mod triples;
 
 /// A struct for set of rdf parsing factories.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Default)]
 pub struct DynSynParserFactorySet {
     /// Quads parsing parser factory.
     pub quads_parsing: DynSynQuadParserFactory,
@@ -98,6 +99,7 @@ mod async_ {
         /// Parse quads from given bytes stream, in given parsable syntax.
         /// If syntax is triples representing syntax, then
         /// default graph will be the graph name of parsed quads.
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "async")))]
         pub async fn parse_quads_from_bytes_stream<S, T>(
             &self,
             data: S,
@@ -116,6 +118,7 @@ mod async_ {
         /// Parse quads from given bytes stream, in given parsable syntax.
         /// If syntax is triples representing syntax, then
         /// default graph will be the graph component of parsed quads.
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "async")))]
         pub async fn parse_quads_async<R, T>(
             &self,
             data: R,

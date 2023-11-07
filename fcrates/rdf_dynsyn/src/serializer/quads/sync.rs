@@ -4,19 +4,25 @@ use sophia_api::{
     serializer::{QuadSerializer, Stringifier},
     source::{QuadSource, StreamResult},
 };
-use sophia_turtle::serializer::{
-    nq::{NqConfig, NqSerializer},
-    trig::{TrigConfig, TrigSerializer},
-};
+
+use sophia_turtle::serializer::{nq::NqSerializer, trig::TrigSerializer};
 
 use super::factory::DynSynQuadSerializerFactory;
 use crate::syntax::{self, invariant::quads_serializable::QuadsSerializableSyntax};
+
+#[cfg(feature = "jsonld")]
+use sophia_jsonld::JsonLdSerializer;
+
+#[cfg(feature = "jsonld")]
+use crate::parser::config::jsonld::DynDocumentLoader;
 
 /// This is a sum-type that wraps around different
 /// quad-serializers from sophia.
 pub(crate) enum InnerQuadSerializer<W: io::Write> {
     NQuads(NqSerializer<W>),
     Trig(TrigSerializer<W>),
+    #[cfg(feature = "jsonld")]
+    JsonLd(JsonLdSerializer<W, DynDocumentLoader>),
 }
 
 impl<W: io::Write> Debug for InnerQuadSerializer<W> {
@@ -24,6 +30,8 @@ impl<W: io::Write> Debug for InnerQuadSerializer<W> {
         match self {
             Self::NQuads(_) => f.debug_tuple("NQuads").finish(),
             Self::Trig(_) => f.debug_tuple("Trig").finish(),
+            #[cfg(feature = "jsonld")]
+            Self::JsonLd(_) => f.debug_tuple("JsonLd").finish(),
         }
     }
 }
@@ -34,7 +42,7 @@ impl<W: io::Write> Debug for InnerQuadSerializer<W> {
 ///
 /// It can currently serialize quad-sources/datasets into
 /// documents in any of concrete_syntaxes: [`n-quads`](crate::syntax::invariant::quads_serializable::QS_N_QUADS),
-/// [`trig`](crate::syntax::invariant::quads_serializable::QS_TRIG),. Other syntaxes that
+/// [`trig`](crate::syntax::invariant::quads_serializable::QS_TRIG), [`json-ld`](crate::syntax::invariant::quads_serializable::QS_JSON_LD),. Other syntaxes that
 /// cannot represent quads are not supported
 ///
 /// For each supported serialization syntax, it also supports
@@ -67,6 +75,11 @@ impl<W: io::Write> QuadSerializer for DynSynQuadSerializer<W> {
                 Ok(_) => Ok(self),
                 Err(e) => Err(e),
             },
+            #[cfg(feature = "jsonld")]
+            InnerQuadSerializer::JsonLd(s) => match s.serialize_quads(source) {
+                Ok(_) => Ok(self),
+                Err(e) => Err(e.map_sink(|se| io::Error::new(io::ErrorKind::InvalidInput, se))),
+            },
         }
     }
 }
@@ -76,6 +89,8 @@ impl Stringifier for DynSynQuadSerializer<Vec<u8>> {
         match &self.0 {
             InnerQuadSerializer::NQuads(s) => s.as_utf8(),
             InnerQuadSerializer::Trig(s) => s.as_utf8(),
+            #[cfg(feature = "jsonld")]
+            InnerQuadSerializer::JsonLd(s) => s.as_utf8(),
         }
     }
 }
@@ -89,14 +104,21 @@ impl DynSynQuadSerializerFactory {
     ) -> DynSynQuadSerializer<W> {
         match syntax_.into_subject() {
             syntax::N_QUADS => DynSynQuadSerializer::new(InnerQuadSerializer::NQuads(
-                NqSerializer::new_with_config(write, self.get_config::<NqConfig>()),
+                NqSerializer::new_with_config(
+                    write,
+                    self.config.nquads.clone().unwrap_or_default(),
+                ),
             )),
             syntax::TRIG => DynSynQuadSerializer::new(InnerQuadSerializer::Trig(
-                TrigSerializer::new_with_config(write, self.get_config::<TrigConfig>()),
+                TrigSerializer::new_with_config(
+                    write,
+                    self.config.trig.clone().unwrap_or_default(),
+                ),
             )),
-            // syntax::JSON_LD => DynSynQuadSerializer::new(InnerQuadSerializer::JsonLd(
-            //     JsonLdSerializer::new_with_config(write, self.get_config::<JsonLdConfig>()),
-            // )),
+            #[cfg(feature = "jsonld")]
+            syntax::JSON_LD => DynSynQuadSerializer::new(InnerQuadSerializer::JsonLd(
+                JsonLdSerializer::new_with_options(write, self.config.resolved_jsonld_options()),
+            )),
 
             // All quads serializable syntaxes addressed.
             _ => unreachable!(),
@@ -136,23 +158,24 @@ mod tests {
     use super::*;
     use crate::{
         parser::quads::DynSynQuadParserFactory,
-        serializer::test_data::{TESTS_NQUADS, TESTS_TRIG},
+        serializer::{
+            config::DynSynSerializerConfig,
+            test_data::{TESTS_NQUADS, TESTS_TRIG},
+        },
         syntax::invariant::quads_serializable::*,
         tests::TRACING,
-        ConfigMap,
     };
 
     static SERIALIZER_FACTORY: Lazy<DynSynQuadSerializerFactory> =
-        Lazy::new(|| DynSynQuadSerializerFactory::new(None));
+        Lazy::new(|| DynSynQuadSerializerFactory::new(Default::default()));
 
     static SERIALIZER_FACTORY_WITH_PRETTY_CONFIG: Lazy<DynSynQuadSerializerFactory> =
         Lazy::new(|| {
-            let mut config_map = ConfigMap::new();
-            config_map.insert::<TrigConfig>(TrigConfig::new().with_pretty(true));
-            config_map.insert::<NqConfig>(NqConfig::default());
-            // config_map.insert::<JsonLdConfig>(JsonLdConfig::default());
+            let config = DynSynSerializerConfig::default()
+                .with_trig_config(TrigConfig::new().with_pretty(true))
+                .with_nquads_config(NqConfig::default());
 
-            DynSynQuadSerializerFactory::new(Some(config_map))
+            DynSynQuadSerializerFactory::new(config)
         });
 
     /// As DynSyn parsers can be non-cyclically tested, we can use them here.

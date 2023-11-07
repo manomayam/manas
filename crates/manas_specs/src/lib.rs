@@ -2,6 +2,7 @@
 //!
 
 #![warn(missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![deny(unused_qualifications)]
 
 use std::{borrow::Cow, fmt::Debug, marker::PhantomData};

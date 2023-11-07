@@ -6,7 +6,7 @@ use gdp_rs::{predicate::impl_::all_of::AllOf, Proven};
 
 use crate::syntax::{
     predicate::{IsDatasetEncoding, IsDynSynParsable},
-    RdfSyntax, N_QUADS, TRIG,
+    RdfSyntax, JSON_LD, N_QUADS, TRIG,
 };
 
 /// Type alias for rdf syntax that can encode dataset, and can be parsable by dynsyn.
@@ -19,5 +19,16 @@ pub static QP_N_QUADS: QuadsParsableSyntax = unsafe { Proven::new_unchecked(N_QU
 /// trig quads parsable syntax.
 pub static QP_TRIG: QuadsParsableSyntax = unsafe { Proven::new_unchecked(TRIG) };
 
+/// jsonld quads parsable syntax.
+#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
+#[cfg(feature = "jsonld")]
+pub static QP_JSON_LD: QuadsParsableSyntax = unsafe { Proven::new_unchecked(JSON_LD) };
+
 /// List of all quads parsable syntaxes.
-pub static QP_ALL: &[QuadsParsableSyntax] = &[QP_N_QUADS, QP_TRIG];
+pub static QP_ALL: &[QuadsParsableSyntax] = &[
+    QP_N_QUADS,
+    QP_TRIG,
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
+    #[cfg(feature = "jsonld")]
+    QP_JSON_LD,
+];

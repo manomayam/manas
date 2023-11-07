@@ -2,18 +2,19 @@ use std::io::BufRead;
 
 use sophia_api::prelude::{Iri, TripleParser};
 use sophia_turtle::parser::{nt::NTriplesParser, turtle::TurtleParser};
-#[cfg(feature = "rdf_xml")]
+#[cfg(feature = "rdf-xml")]
 use sophia_xml::parser::RdfXmlParser;
 
 use super::{factory::DynSynTripleParserFactory, source::DynSynTripleSource};
 use crate::syntax::{self, invariant::triples_parsable::TriplesParsableSyntax};
 
-/// This is a sum-type that wraps around different triple-parsers from sophia.
+/// A sum-type that wraps around different
+/// triple-parsers from sophia.
 #[derive(Debug, Clone)]
-pub enum InnerTripleParser {
+enum InnerTripleParser {
     NTriples(NTriplesParser),
     Turtle(TurtleParser),
-    #[cfg(feature = "rdf_xml")]
+    #[cfg(feature = "rdf-xml")]
     RdfXml(RdfXmlParser),
 }
 
@@ -31,7 +32,7 @@ impl From<TurtleParser> for InnerTripleParser {
     }
 }
 
-#[cfg(feature = "rdf_xml")]
+#[cfg(feature = "rdf-xml")]
 impl From<RdfXmlParser> for InnerTripleParser {
     #[inline]
     fn from(p: RdfXmlParser) -> Self {
@@ -41,11 +42,11 @@ impl From<RdfXmlParser> for InnerTripleParser {
 
 impl InnerTripleParser {
     /// Create a sum-parser for given syntax.
-    pub fn new(syntax_: TriplesParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
+    pub(crate) fn new(syntax_: TriplesParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
         match syntax_.into_subject() {
             syntax::N_TRIPLES => NTriplesParser {}.into(),
             syntax::TURTLE => TurtleParser { base: base_iri }.into(),
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             syntax::RDF_XML => RdfXmlParser { base: base_iri }.into(),
             // All triple parsable syntaxes are addressed.
             _ => unreachable!(),
@@ -70,7 +71,7 @@ pub struct DynSynTripleParser(InnerTripleParser);
 impl DynSynTripleParser {
     /// Create a new parser with given params.
     #[inline]
-    pub fn new(syntax_: TriplesParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
+    pub(crate) fn new(syntax_: TriplesParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
         Self(InnerTripleParser::new(syntax_, base_iri))
     }
 }
@@ -85,7 +86,7 @@ where
         match &self.0 {
             InnerTripleParser::NTriples(p) => DynSynTripleSource(p.parse(data).into()),
             InnerTripleParser::Turtle(p) => DynSynTripleSource(p.parse(data).into()),
-            #[cfg(feature = "rdf_xml")]
+            #[cfg(feature = "rdf-xml")]
             InnerTripleParser::RdfXml(p) => DynSynTripleSource(p.parse(data).into()),
         }
     }
@@ -168,7 +169,7 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "rdf_xml")]
+    #[cfg(feature = "rdf-xml")]
     #[test]
     pub fn correctly_parses_rdf_xml() {
         Lazy::force(&TRACING);

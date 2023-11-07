@@ -1,16 +1,37 @@
-use std::io::BufRead;
+use std::{io::BufRead, sync::Arc};
 
 use sophia_api::prelude::{Iri, QuadParser};
 use sophia_turtle::parser::{nq::NQuadsParser, trig::TriGParser};
 
-use super::{factory::DynSynQuadParserFactory, DynSynQuadSource};
-use crate::syntax::{self, invariant::quads_parsable::QuadsParsableSyntax};
+use super::{factory::DynSynQuadParserFactory, source::InnerQuadSource, DynSynQuadSource};
+use crate::{
+    parser::config::DynSynParserConfig,
+    syntax::{self, invariant::quads_parsable::QuadsParsableSyntax},
+};
 
-/// This is a sum-type that wraps around different quad-parsers from sophia.
-#[derive(Debug, Clone)]
-pub enum InnerQuadParser {
+#[cfg(feature = "jsonld")]
+use sophia_jsonld::JsonLdParser;
+
+#[cfg(feature = "jsonld")]
+use crate::parser::config::jsonld::DynDocumentLoader;
+
+/// A sum-type that wraps around different quad-parsers from sophia.
+enum InnerQuadParser {
     NQuads(NQuadsParser),
     TriG(TriGParser),
+    #[cfg(feature = "jsonld")]
+    JsonLd(JsonLdParser<DynDocumentLoader>),
+}
+
+impl std::fmt::Debug for InnerQuadParser {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::NQuads(arg0) => f.debug_tuple("NQuads").field(arg0).finish(),
+            Self::TriG(arg0) => f.debug_tuple("TriG").field(arg0).finish(),
+            #[cfg(feature = "jsonld")]
+            Self::JsonLd(_) => f.debug_tuple("JsonLd").finish(),
+        }
+    }
 }
 
 impl From<NQuadsParser> for InnerQuadParser {
@@ -25,12 +46,38 @@ impl From<TriGParser> for InnerQuadParser {
     }
 }
 
+#[cfg(feature = "jsonld")]
+impl From<JsonLdParser<DynDocumentLoader>> for InnerQuadParser {
+    fn from(p: JsonLdParser<DynDocumentLoader>) -> Self {
+        Self::JsonLd(p)
+    }
+}
+
 impl InnerQuadParser {
     /// Create a sum-parser for given syntax.
-    pub fn new(syntax_: QuadsParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
+    pub fn new(
+        syntax_: QuadsParsableSyntax,
+        config: &DynSynParserConfig,
+        base_iri: Option<Iri<String>>,
+    ) -> Self {
         match syntax_.into_subject() {
             syntax::N_QUADS => NQuadsParser {}.into(),
-            syntax::TRIG => TriGParser { base: base_iri }.into(),
+            syntax::TRIG => TriGParser {
+                base: base_iri.clone(),
+            }
+            .into(),
+            #[cfg(feature = "jsonld")]
+            syntax::JSON_LD => {
+                let mut options = config.resolved_jsonld_options();
+
+                options = if let Some(base) = base_iri {
+                    options.with_base(Iri::new_unchecked(Arc::from(base.as_str())))
+                } else {
+                    options.with_no_base()
+                };
+
+                JsonLdParser::new_with_options(options).into()
+            }
             // All quad parsable syntaxes are addressed.
             _ => unreachable!(),
         }
@@ -48,14 +95,18 @@ impl InnerQuadParser {
 /// syntaxes, this parser will stream quads through
 /// [`DynSynQuadSource`] instance.
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct DynSynQuadParser(InnerQuadParser);
 
 impl DynSynQuadParser {
     /// Create a new parser with given params.
     #[inline]
-    pub fn new(syntax_: QuadsParsableSyntax, base_iri: Option<Iri<String>>) -> Self {
-        Self(InnerQuadParser::new(syntax_, base_iri))
+    pub(crate) fn new(
+        syntax_: QuadsParsableSyntax,
+        config: &DynSynParserConfig,
+        base_iri: Option<Iri<String>>,
+    ) -> Self {
+        Self(InnerQuadParser::new(syntax_, config, base_iri))
     }
 }
 
@@ -69,6 +120,8 @@ where
         match &self.0 {
             InnerQuadParser::NQuads(p) => DynSynQuadSource(p.parse(data).into()),
             InnerQuadParser::TriG(p) => DynSynQuadSource(p.parse(data).into()),
+            #[cfg(feature = "jsonld")]
+            InnerQuadParser::JsonLd(p) => DynSynQuadSource(InnerQuadSource::FJsonLd(p.parse(data))),
         }
     }
 }
@@ -82,7 +135,7 @@ impl DynSynQuadParserFactory {
         syntax_: QuadsParsableSyntax,
         base_iri: Option<Iri<String>>,
     ) -> DynSynQuadParser {
-        DynSynQuadParser::new(syntax_, base_iri)
+        DynSynQuadParser::new(syntax_, &self.config, base_iri)
     }
 }
 

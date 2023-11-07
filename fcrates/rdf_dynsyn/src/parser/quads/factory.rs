@@ -1,19 +1,15 @@
-use crate::ConfigMap;
+use crate::parser::config::DynSynParserConfig;
 
 /// A factory to instantiate [`DynSynQuadParser`](super::sync::DynSynQuadParser).
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default)]
 pub struct DynSynQuadParserFactory {
-    _parser_config_map: ConfigMap,
+    pub(crate) config: DynSynParserConfig,
 }
 
 impl DynSynQuadParserFactory {
-    /// Instantiate a factory. It takes a `parser_config_map`,
-    /// an optional [`ConfigMap`], which can be populated with
-    /// configuration structures corresponding to supported syntaxes.
+    /// Create a new quads parser factory with given config.
     #[inline]
-    pub fn new(parser_config_map: Option<ConfigMap>) -> Self {
-        Self {
-            _parser_config_map: parser_config_map.unwrap_or_default(),
-        }
+    pub fn new(config: DynSynParserConfig) -> Self {
+        Self { config }
     }
 }

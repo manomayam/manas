@@ -18,7 +18,7 @@ manas_http = { version = "0.1.1", path = "../manas_http", features = [
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 manas_space = { version = "0.1.0", path = "../manas_space" }
 manas_storage = { version = "0.1.0", path = "../manas_storage" }
-rdf_dynsyn = { version = "0.3.1", path = "../../fcrates/rdf_dynsyn", features = [
+rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }

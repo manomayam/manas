@@ -50,7 +50,7 @@ pub fn try_main() -> Result<(), Box<dyn std::error::Error>> {
     graph.insert_triple([&ex.get("bob")?, &foaf.get("knows")?, &ex.get("alice")?])?;
 
     // get serializer for target syntax
-    let serializer_factory = DynSynTripleSerializerFactory::new(None); // Here we can pass optional formatting options. see documentation.
+    let serializer_factory = DynSynTripleSerializerFactory::new(Default::default()); // Here we can pass optional formatting options. see documentation.
 
     let mut serializer = serializer_factory.new_stringifier(tgt_doc_syntax.try_proven()?);
     let serialized_doc = serializer.serialize_graph(&graph)?.as_str();

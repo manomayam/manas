@@ -1,4 +1,5 @@
-//! I define predicates to check if rdf syntax is a dataset-encoding-syntax.
+//! I define predicates to check if rdf syntax is a
+//! dataset-encoding-syntax.
 //!
 
 use gdp_rs::predicate::{Predicate, PurePredicate, SyncEvaluablePredicate};
@@ -35,7 +36,7 @@ impl SyncEvaluablePredicate<RdfSyntax> for IsDatasetEncoding {
     }
 }
 
-/// Anerror type for non dataset-encoding-syntaxes.
+/// An error type for non dataset-encoding-syntaxes.
 #[derive(Debug, Clone, thiserror::Error)]
 #[error("Syntax is not a dataset encoding syntax.")]
 pub struct NotADatasetEncodingSyntax(RdfSyntax);
