@@ -60,7 +60,7 @@ impl Loader<ArcIri, Location<ArcIri>> for DynDocumentLoader {
 }
 
 impl DynDocumentLoader {
-    /// Create a new [`DynContextLoader`] by wrapping a given
+    /// Create a new [`DynDocumentLoader`] by wrapping a given
     /// inner loader.
     #[inline]
     pub fn new<L>(inner: L) -> Self
@@ -76,7 +76,7 @@ impl DynDocumentLoader {
         }
     }
 
-    /// Get a new [`DynContextLoader`] that doesn't load any document.
+    /// Get a new [`DynDocumentLoader`] that doesn't load any document.
     #[inline]
     pub fn new_no_loading() -> Self {
         DynDocumentLoader::new(NoLoader::new())
