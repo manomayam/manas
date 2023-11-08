@@ -17,24 +17,16 @@ regex = "1.9.1"
 uriparse = "0.6.4"
 thiserror = "1.0.43"
 tracing = { version = "0.1.37", features = ["attributes"] }
-unicase = { version = "2.6.0" }
-ecow = "0.1.2"
+ecow = "0.2.0"
 
 # feature: typed-headers
+http_headers = { version = "0.2.0", path = "../../fcrates/http_headers", optional = true}
 headers = { version = "0.3.8", optional = true }
 http = { version = "0.2.9", optional = true }
-mime = { version = "0.3.17", optional = true }
-mime_guess = { version = "2.0.4", optional = true }
-rust_decimal = { version = "1.30.0", optional = true }
 smallvec = { version = "1.11.0", optional = true }
 chrono = { version = "0.4.26", optional = true, default-features = false, features = [
     "std",
 ] }
-vec1 = { version = "1.10.1", features = [
-    "smallvec-v1",
-    "smallvec-v1-write",
-], optional = true }
-itertools = { version = "0.11.0", optional = true }
 async-convert = "1.0.0"
 
 # feature: serde
@@ -45,9 +37,10 @@ typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", feature
     "ext-anymap",
 ], optional = true}
 hyper = { version = "0.14.27", features = ["stream"], optional = true }
+mime = { version = "0.3.17", optional = true }
+either = { version = "1.8.1", optional = true }
 
 # feature: impl-representation
-either = { version = "1.8.1", optional = true }
 bytes = { version = "1.4.0", optional = true }
 futures = { version = "0.3.28", optional = true }
 anyhow = { version = "1.0.71", optional = true }
@@ -62,9 +55,6 @@ tokio-util = { version = "0.7.8", optional = true, features = ["io-util"] }
 sophia_api = { version = "0.8.0-alpha.3", optional = true }
 async-once-cell = { version = "0.5.3", optional = true }
 capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream", optional = true }
-
-# For authentication
-# indexmap = { version = "1.9.3", optional = true }
 
 # feature: service
 tower = { version = "0.4.13", optional = true, features = ["util"] }
@@ -83,8 +73,8 @@ rstest = { version = "0.18.1", optional = true }
 
 [features]
 serde = ["dep:serde", "iri-string/serde"]
-typed-headers = ["dep:headers", "dep:http", "dep:mime", "dep:mime_guess", "dep:rust_decimal", "dep:smallvec", "dep:chrono", "dep:vec1", "dep:itertools", "dep:either"]
-representation = ["typed-headers", "dep:typed_record", "dep:hyper"]
+typed-headers = ["dep:http_headers", "dep:chrono"]
+representation = ["typed-headers", "dep:typed_record", "dep:hyper", "dep:mime"]
 impl-representation = ["representation", "dep:either", "dep:bytes", "dep:futures", "dep:anyhow", "dep:rdf_utils", "dep:dyn_problem", "dep:async-stream", "dep:rdf_dynsyn", "dep:if_chain", "dep:tokio", "dep:tokio-util", "dep:tower", "dep:dyn-clone", "http_uri/sophia", "dep:sophia_api", "dep:async-once-cell", "dep:capped_stream"]
 service = ["dep:tower", "dep:futures", "dep:dyn-clone", "dep:http", "dep:hyper", "dep:http-api-problem", "typed-headers"]
 conditional_req = ["dep:if_chain", "dep:headers", "dep:http"]

@@ -7,7 +7,6 @@ use sophia_jsonld::JsonLdOptions;
 #[cfg(feature = "jsonld")]
 use self::jsonld::{DynDocumentLoader, JsonLdConfig};
 
-#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
 #[cfg(feature = "jsonld")]
 pub mod jsonld;
 
@@ -19,7 +18,6 @@ pub struct DynSynParserConfig {
 }
 
 impl DynSynParserConfig {
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
     #[cfg(feature = "jsonld")]
     /// Get parser config augmented with given jsonld parser config.
     pub fn with_jsonld_config(mut self, config: JsonLdConfig) -> Self {

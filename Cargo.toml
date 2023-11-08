@@ -9,6 +9,7 @@ members = [
     "fcrates/name_locker",
     "fcrates/capped_stream",
     "fcrates/http_uri",
+    "fcrates/http_headers",
     "fcrates/dpop",
     "fcrates/rdf_dynsyn",
     "fcrates/rdf_utils",

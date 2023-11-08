@@ -19,7 +19,6 @@ pub static TS_N_TRIPLES: TriplesSerializableSyntax = unsafe { Proven::new_unchec
 pub static TS_TURTLE: TriplesSerializableSyntax = unsafe { Proven::new_unchecked(TURTLE) };
 
 /// rdf/xml triples serializable syntax.
-#[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
 #[cfg(feature = "rdf-xml")]
 pub static TS_RDF_XML: TriplesSerializableSyntax = unsafe { Proven::new_unchecked(RDF_XML) };
 
@@ -27,7 +26,6 @@ pub static TS_RDF_XML: TriplesSerializableSyntax = unsafe { Proven::new_unchecke
 pub static TS_ALL: &[TriplesSerializableSyntax] = &[
     TS_N_TRIPLES,
     TS_TURTLE,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
     #[cfg(feature = "rdf-xml")]
     TS_RDF_XML,
 ];

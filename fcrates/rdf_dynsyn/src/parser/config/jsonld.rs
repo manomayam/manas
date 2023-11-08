@@ -123,3 +123,13 @@ impl JsonLdConfig {
         options
     }
 }
+
+#[cfg(feature = "jsonld-http-loader")]
+mod http_loader {
+    // use reqwest::Client;
+
+    // /// A [`Loader``] that loads http served documents.
+    // pub struct HttpDocumentLoader {
+    //     client: Client,
+    // }
+}

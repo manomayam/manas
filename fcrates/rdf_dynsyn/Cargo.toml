@@ -55,6 +55,10 @@ rdf-types = { version = "^0.15.4", optional = true }
 # feature: docsrs
 document-features = { version = "0.2.7", optional = true }
 
+# feature: jsonld-http-loader
+reqwest = { version = "0.11.22", optional = true, default-features = false }
+http-cache-reqwest = { version = "0.12.0", default-features = false, features = ["manager-moka"], optional = true }
+
 [features]
 ##! Enables async wrapper parsers and serializers.
 async = ["dep:futures", "dep:bytes", "dep:tokio", "dep:async-compat", "dep:tokio-util", "dep:tokio-stream"]
@@ -62,7 +66,15 @@ async = ["dep:futures", "dep:bytes", "dep:tokio", "dep:async-compat", "dep:tokio
 rdf-xml = ["dep:sophia_xml", "dep:rio_xml"]
 ##! Enables json-ld parsers and serializers.
 jsonld = ["dep:json-ld", "dep:sophia_jsonld", "dep:locspan", "dep:futures", "dep:rdf-types"]
-default = ["rdf-xml"]
+##! Provides `HttpDocumentLoader` to be used with json-ld parser, serializers.
+jsonld-http-loader = ["dep:reqwest"]
+##! Enables http cache support for `HttpDocumentLoader` .
+jsonld-http-loader-cache = ["http-cache-reqwest"]
+##! Enables tls with rustls.
+rustls-tls =["reqwest?/rustls-tls"]
+##! Enables tls with native-tls.
+native-tls =["reqwest?/native-tls"]
+default = ["rdf-xml", "rustls-tls"]
 
 [dev-dependencies]
 env_logger = "0.10.0"
