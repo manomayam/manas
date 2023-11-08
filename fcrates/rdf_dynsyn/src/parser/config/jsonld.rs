@@ -125,11 +125,37 @@ impl JsonLdConfig {
 }
 
 #[cfg(feature = "jsonld-http-loader")]
+pub use http_loader::*;
+
+#[cfg(feature = "jsonld-http-loader")]
 mod http_loader {
+    use http_cache_reqwest::{CacheManager, HttpCache};
     // use reqwest::Client;
 
-    // /// A [`Loader``] that loads http served documents.
-    // pub struct HttpDocumentLoader {
+    use super::ArcIri;
+
+    /// Options for [`HttpDocumentLoader`].
+    #[derive(Debug)]
+    pub struct HttpDocumentLoaderOptions<CM: CacheManager> {
+        /// IRIs to use in the request as a profile parameter.
+        pub request_profile: Vec<ArcIri>,
+
+        /// Http cache.
+        pub http_cache: HttpCache<CM>,
+
+        /// Maximum number of "alternate" link follows.
+        /// Defaults to 8.
+        pub max_alternate_link_follows: u8,
+    }
+
+    // /// Error in loading http document.
+    // #[derive(Debug, thiserror::Error)]
+    // pub enum HttpDocumentLoadingError {
+
+    // }
+
+    // /// A [`Loader``] that loads http served json-ld documents.
+    // pub struct HttpDocumentLoader<CM: CacheManager> {
     //     client: Client,
     // }
 }

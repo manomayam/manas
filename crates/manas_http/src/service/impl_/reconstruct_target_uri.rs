@@ -83,12 +83,18 @@ where
         // Construct original uri.
 
         // Initialize with defaults.
-        let (mut scheme, mut authority) = (EcoString::from(self.default_scheme.as_str()), None);
+        let (mut scheme, mut authority) = (
+            EcoString::from(self.default_scheme.as_str()),
+            // http2 includes authority in request target.
+            req.uri().authority().cloned().map(|v| v.into()),
+        );
 
-        // Update from request headers.
-        if let Some(h_host) = req.headers().typed_get::<Host>() {
-            debug!("Host header present.");
-            authority = Some(h_host);
+        // http1 includes authority info in `Host` header.
+        if authority.is_none() {
+            if let Some(h_host) = req.headers().typed_get::<Host>() {
+                debug!("Host header present.");
+                authority = Some(h_host);
+            }
         }
 
         // Update from `Forwarded` header.

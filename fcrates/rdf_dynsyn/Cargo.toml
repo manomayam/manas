@@ -67,9 +67,7 @@ rdf-xml = ["dep:sophia_xml", "dep:rio_xml"]
 ##! Enables json-ld parsers and serializers.
 jsonld = ["dep:json-ld", "dep:sophia_jsonld", "dep:locspan", "dep:futures", "dep:rdf-types"]
 ##! Provides `HttpDocumentLoader` to be used with json-ld parser, serializers.
-jsonld-http-loader = ["dep:reqwest"]
-##! Enables http cache support for `HttpDocumentLoader` .
-jsonld-http-loader-cache = ["http-cache-reqwest"]
+jsonld-http-loader = ["dep:reqwest", "dep:http-cache-reqwest"]
 ##! Enables tls with rustls.
 rustls-tls =["reqwest?/rustls-tls"]
 ##! Enables tls with native-tls.
