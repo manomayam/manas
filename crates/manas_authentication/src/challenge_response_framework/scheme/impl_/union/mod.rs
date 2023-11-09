@@ -5,7 +5,7 @@ use std::{collections::HashMap, str::FromStr, sync::Arc};
 use either::Either;
 use futures::future::BoxFuture;
 use http::{header::AUTHORIZATION, HeaderMap, Method};
-use http_headers::{common::field::rules::token::Token, www_authenticate::WWWAuthenticate};
+use http_typed_headers::{common::field::rules::token::Token, www_authenticate::WWWAuthenticate};
 use http_uri::invariant::AbsoluteHttpUri;
 use itertools::Itertools;
 use tracing::warn;

@@ -22,7 +22,7 @@ use either::Either;
 use futures::future::BoxFuture;
 use headers::{authorization::Credentials, Authorization, HeaderMapExt};
 use http::{HeaderMap, Method};
-use http_headers::{
+use http_typed_headers::{
     common::field::rules::{
         parameter::FieldParameter, parameter_name::FieldParameterName,
         parameter_value::FieldParameterValue, parameters::FieldParameters, token::Token,

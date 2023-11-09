@@ -20,7 +20,7 @@ serde = { version = "1.0.169", features = ["derive"] }
 thiserror = { version = "1.0.43", optional = true }
 tracing = { version = "0.1.37", optional = true }
 mime = { version = "0.3.17", optional = true }
-http_headers = { version = "0.2.0", path = "../../fcrates/http_headers", default-features = false, features = ["www-authenticate"], optional = true}
+http_typed_headers = { version = "0.1.0", path = "../../fcrates/http_typed_headers", default-features = false, features = ["www-authenticate"], optional = true}
 manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "service",
 ], optional = true }
@@ -58,7 +58,7 @@ rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", optional = tr
 
 
 [features]
-cr-framework = ["dep:tracing", "dep:thiserror", "dep:mime", "dep:http_headers", "dep:manas_http", "dep:dyn_problem", "dep:either", "dep:itertools", "dep:headers", "dep:futures", "dep:tower", "http_uri/serde", "webid/invariants"]
+cr-framework = ["dep:tracing", "dep:thiserror", "dep:mime", "dep:http_typed_headers", "dep:manas_http", "dep:dyn_problem", "dep:either", "dep:itertools", "dep:headers", "dep:futures", "dep:tower", "http_uri/serde", "webid/invariants"]
 scheme-impl-solid-oidc = ["cr-framework", "webid/profile-req-agent", "dep:moka", "dep:rdf_vocabularies", "dep:sophia_api", "dep:reqwest", "picky", "picky/jose", "dep:dpop", "dep:solid_oidc_types", "dep:serde_json", "dep:once_cell"]
 scheme-impl-httpsig = ["picky"]
 creds-context = ["dep:acp", "dep:rdf_utils", "dep:rdf_vocabularies", "webid/sophia", "http_uri/sophia"]

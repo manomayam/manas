@@ -22,4 +22,4 @@ pub mod service;
 pub mod uri;
 
 #[cfg(feature = "typed-headers")]
-pub use http_headers::define_static_rel_types;
+pub use http_typed_headers::define_static_rel_types;

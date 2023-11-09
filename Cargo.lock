@@ -1640,8 +1640,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "http_headers"
-version = "0.2.0"
+name = "http_typed_headers"
+version = "0.1.0"
 dependencies = [
  "claims",
  "document-features",
@@ -2248,7 +2248,7 @@ dependencies = [
  "dyn_problem",
  "futures",
  "ghost",
- "http_headers",
+ "http_typed_headers",
  "http_uri",
  "itertools",
  "manas_authentication",
@@ -2280,7 +2280,7 @@ dependencies = [
  "gdp_rs",
  "headers",
  "http",
- "http_headers",
+ "http_typed_headers",
  "http_uri",
  "itertools",
  "manas_http",
@@ -2325,7 +2325,7 @@ dependencies = [
  "headers",
  "http",
  "http-api-problem",
- "http_headers",
+ "http_typed_headers",
  "http_uri",
  "hyper",
  "if_chain",

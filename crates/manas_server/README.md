@@ -3,4 +3,4 @@
 
 Currently two single pod final recipes are provided. These will be constantly expanding.
 
-See [`manas_server_single_fs_wac`](./recipies/single_fs_wac/), and [`manas_server_single_s3_wac`](./recipies/single_s3_wac/)
+See [`manas_server_single_fs_wac`](./recipes/single_fs_wac/), and [`manas_server_single_s3_wac`](./recipes/single_s3_wac/)
