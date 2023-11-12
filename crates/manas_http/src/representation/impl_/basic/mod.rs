@@ -273,7 +273,10 @@ impl BasicRepresentation<BytesInmem> {
                     &mut ds,
                 )
                 .map(|_| QuadsInmem::new(ds))
-                .map_err(Into::into)
+                .map_err(|e| {
+                    error!("Error in parsing quads.{:?}", e);
+                    e.into()
+                })
         })
         .await
         .map_or_else(

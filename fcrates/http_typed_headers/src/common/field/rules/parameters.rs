@@ -61,7 +61,7 @@ impl DerefMut for FieldParameters {
 }
 
 #[derive(Debug, Clone, thiserror::Error)]
-/// Error of onvalid field parameters.
+/// Error of invalid field parameters.
 pub enum InvalidEncodedFieldParameters {
     /// Invalid parameter.
     #[error("Invalid parameter")]

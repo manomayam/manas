@@ -28,7 +28,7 @@ impl<MPod> StaticPodSet<MPod>
 where
     MPod: Pod,
 {
-    /// Get a new [`EnumeratedPodSet`] with given enumeration of pre provisioned pods.
+    /// Get a new [`StaticPodSet`] with given enumeration of pre provisioned pods.
     pub fn new(mut pods: Vec<Arc<MPod>>) -> Self {
         // Sort pods by length of the storage root resource uri.
         pods.sort_by_key(|pod| pod.deref().id().as_str().len());

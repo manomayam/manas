@@ -10,7 +10,8 @@ use sophia_api::{
 };
 
 use self::{
-    error::DynSynParseError, quads::DynSynQuadParserFactory, triples::DynSynTripleParserFactory,
+    config::DynSynParserConfig, error::DynSynParseError, quads::DynSynQuadParserFactory,
+    triples::DynSynTripleParserFactory,
 };
 use crate::syntax::{
     invariant::parsable::DynSynParsableSyntax,
@@ -33,6 +34,19 @@ pub struct DynSynParserFactorySet {
 }
 
 impl DynSynParserFactorySet {
+    /// Create a new [`DynSynParserFactorySet`] with given
+    /// configurations.
+    #[inline]
+    pub fn new_with_config(
+        quad_parser_config: DynSynParserConfig,
+        triple_parser_config: DynSynParserConfig,
+    ) -> Self {
+        Self {
+            quads_parsing: DynSynQuadParserFactory::new(quad_parser_config),
+            triples_parsing: DynSynTripleParserFactory::new(triple_parser_config),
+        }
+    }
+
     /// Parse quads from given reader,and collect into
     /// provided dataset..
     /// If syntax is triples representing syntax, then

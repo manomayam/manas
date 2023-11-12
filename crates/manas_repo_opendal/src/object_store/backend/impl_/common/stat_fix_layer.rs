@@ -1,5 +1,5 @@
 //! I provide an opendal service layer for fixing incorrect stat
-//! behavior on various cloud backends. (https://github.com/apache/incubator-opendal/issues/3199)
+//! behavior on various cloud backends. (<https://github.com/apache/incubator-opendal/issues/3199>)
 
 use once_cell::sync::Lazy;
 use opendal::raw::Accessor;

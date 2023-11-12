@@ -11,7 +11,7 @@ use self::jsonld::{DynDocumentLoader, JsonLdConfig};
 pub mod jsonld;
 
 /// Config for dynsyn parsers.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct DynSynParserConfig {
     #[cfg(feature = "jsonld")]
     pub(crate) jsonld: Option<JsonLdConfig>,
@@ -27,6 +27,9 @@ impl DynSynParserConfig {
 
     #[cfg(feature = "jsonld")]
     pub(crate) fn resolved_jsonld_options(&self) -> JsonLdOptions<DynDocumentLoader> {
+        // use tracing::debug;
+
+        // debug!("jsonld config: {:?}", self.jsonld);
         self.jsonld.as_ref().map_or_else(
             || JsonLdOptions::new().with_document_loader(DynDocumentLoader::new_no_loading()),
             |config| config.effective_options(),

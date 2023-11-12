@@ -83,4 +83,5 @@ rstest = "0.18.1"
 
 [package.metadata.docs.rs]
 all-features = true
+features = ["document-features"]
 rustdoc-args = ["--cfg", "doc_cfg"]

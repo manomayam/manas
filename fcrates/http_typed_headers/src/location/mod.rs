@@ -21,7 +21,7 @@ use tracing::error;
 ///  target URI.
 ///
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Location(UriReferenceString);
+pub struct Location(pub UriReferenceString);
 
 /// Static for `location` header-name.
 pub static LOCATION: HeaderName = HeaderName::from_static("location");

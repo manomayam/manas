@@ -10,7 +10,10 @@ use sophia_api::{
     source::{QuadSource, StreamResult},
 };
 
-use self::{quads::DynSynQuadSerializerFactory, triples::DynSynTripleSerializerFactory};
+use self::{
+    config::DynSynSerializerConfig, quads::DynSynQuadSerializerFactory,
+    triples::DynSynTripleSerializerFactory,
+};
 use crate::syntax::{
     invariant::serializable::DynSynSerializableSyntax,
     predicate::{IsDatasetEncoding, IsGraphEncoding},
@@ -31,6 +34,19 @@ pub struct DynSynSerializerFactorySet {
 }
 
 impl DynSynSerializerFactorySet {
+    /// Create a new [`DynSynSerializerFactorySet`] with given
+    /// configurations.
+    #[inline]
+    pub fn new_with_config(
+        quad_serializer_config: DynSynSerializerConfig,
+        triple_serializer_config: DynSynSerializerConfig,
+    ) -> Self {
+        Self {
+            quads_serializing: DynSynQuadSerializerFactory::new(quad_serializer_config),
+            triples_serializing: DynSynTripleSerializerFactory::new(triple_serializer_config),
+        }
+    }
+
     /// Wrapping serialize the given quad source.
     ///
     /// If syntax supports representing quads, it serializes all quads.

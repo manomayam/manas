@@ -1,10 +1,11 @@
 //! I define type to represent in-memory bytes data.
 //!
 
-use std::io::{Read, Write};
+use std::io::{self, Cursor, Read};
 
 use bytes::Bytes;
 use ecow::{eco_vec, EcoVec};
+use tracing::error;
 
 /// Bytes inmem data.
 #[derive(Debug, Clone, Default)]
@@ -77,24 +78,47 @@ impl BytesInmem {
 #[derive(Debug, Clone)]
 pub struct BytesInmemReader {
     data: EcoVec<Bytes>,
-    pos: usize,
+    ch_index: usize,
+    ch_cursor: Option<Cursor<Bytes>>,
 }
 
 impl BytesInmemReader {
     /// Create a new [`BytesInmemReader`].
-    pub fn new(data: EcoVec<Bytes>) -> Self {
-        Self { data, pos: 0 }
+    pub fn new(mut data: EcoVec<Bytes>) -> Self {
+        // Remove empty chunks.
+        data.retain(|chunk| !chunk.is_empty());
+
+        Self {
+            data,
+            ch_index: 0,
+            ch_cursor: None,
+        }
     }
 }
 
 impl Read for BytesInmemReader {
-    fn read(&mut self, mut buf: &mut [u8]) -> std::io::Result<usize> {
-        if let Some(chunk) = self.data.get(self.pos) {
-            buf.write_all(chunk)?;
-            self.pos += 1;
-            Ok(chunk.len())
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        // Resolve the cursor for this read.
+        let mut ch_cursor = if let Some(c) = self.ch_cursor.take() {
+            c
+        } else if let Some(chunk) = self.data.get(self.ch_index) {
+            self.ch_index += 1;
+            Cursor::new(chunk.clone())
         } else {
-            Ok(0)
+            return Ok(0);
+        };
+
+        // Read from the resolved cursor.
+        let count = ch_cursor.read(buf).map_err(|e| {
+            error!("Error in reading to buffer. ${e}");
+            e
+        })?;
+
+        // If cursor stull has remaining slice, then store it back for next read.
+        if ch_cursor.position() < ch_cursor.get_ref().len() as u64 {
+            self.ch_cursor = Some(ch_cursor);
         }
+
+        Ok(count)
     }
 }

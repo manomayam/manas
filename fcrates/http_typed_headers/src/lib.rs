@@ -1,13 +1,16 @@
 //! This crate provides few typed http headers.
 //!
-//! ## Feature flags
-#![cfg_attr(
-    doc_cfg,
-    cfg_attr(doc, doc = ::document_features::document_features!())
-)]
+//  ## Feature flags
+// #![cfg_attr(
+//     feature = "document-features",
+//     cfg_attr(doc, doc = ::document_features::document_features!())
+// )]
+
 #![warn(missing_docs)]
 #![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
+
+pub use headers::{Header, HeaderMap, HeaderMapExt, HeaderName, HeaderValue};
 
 pub mod common;
 

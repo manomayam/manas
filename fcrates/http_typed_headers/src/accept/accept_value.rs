@@ -42,16 +42,10 @@ pub enum InvalidEncodedAcceptValue {
     InvalidWeight,
 }
 
-impl FromStr for AcceptValue {
-    type Err = InvalidEncodedAcceptValue;
+impl TryFrom<Mime> for AcceptValue {
+    type Error = InvalidEncodedAcceptValue;
 
-    fn from_str(value_str: &str) -> Result<Self, Self::Err> {
-        // Parse as media range.
-        // Is valid, as rfc9110 removes accept-ext requirement.
-        let media_range: Mime = value_str
-            .parse()
-            .map_err(|_| InvalidEncodedAcceptValue::InvalidHeaderEncoding)?;
-
+    fn try_from(media_range: Mime) -> Result<Self, Self::Error> {
         // Resolve effective weight
         let weight: QValue =
             if let Some(q_value) = media_range.get_param(Q_PARAM_NAME.as_token().as_ref()) {
@@ -73,6 +67,20 @@ impl FromStr for AcceptValue {
             media_range,
             accept_precedence,
         })
+    }
+}
+
+impl FromStr for AcceptValue {
+    type Err = InvalidEncodedAcceptValue;
+
+    fn from_str(value_str: &str) -> Result<Self, Self::Err> {
+        // Parse as media range.
+        // Is valid, as rfc9110 removes accept-ext requirement.
+        let media_range: Mime = value_str
+            .parse()
+            .map_err(|_| InvalidEncodedAcceptValue::InvalidHeaderEncoding)?;
+
+        media_range.try_into()
     }
 }
 

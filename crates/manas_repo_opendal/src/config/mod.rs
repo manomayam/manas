@@ -6,7 +6,6 @@ use std::sync::Arc;
 use rdf_dynsyn::DynSynFactorySet;
 
 /// Configuration struct for ODR.
-#[non_exhaustive]
 #[derive(Debug, Clone, Default)]
 pub struct ODRConfig {
     // /// Size bounds on user supplied rep data.
@@ -73,8 +72,4 @@ pub struct ODRConfig {
 
 /// Policy for container representation in ODR.
 #[derive(Debug, Default, Clone)]
-pub struct ODRContainerRepPolicy {
-    // /// Number of maximum containment triples to serve in container representation.
-    // pub max_containment_triples: Option<usize>,
-    // TODO Must include some overflow hint in container rep if max exceeded.
-}
+pub struct ODRContainerRepPolicy {}

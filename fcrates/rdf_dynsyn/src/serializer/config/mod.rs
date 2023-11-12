@@ -14,7 +14,7 @@ use crate::parser::config::jsonld::{DynDocumentLoader, JsonLdConfig};
 use sophia_jsonld::JsonLdOptions;
 
 /// Config for dynsyn parsers.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct DynSynSerializerConfig {
     pub(crate) nquads: Option<NqConfig>,
     pub(crate) nt: Option<NtConfig>,

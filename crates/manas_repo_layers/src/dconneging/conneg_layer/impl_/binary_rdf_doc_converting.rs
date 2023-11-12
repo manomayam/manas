@@ -5,7 +5,7 @@
 use std::{collections::HashSet, marker::PhantomData, ops::Deref, sync::Arc};
 
 use dyn_problem::{type_::UNKNOWN_IO_ERROR, ProbFuture, ProbResult, Problem};
-use futures::TryFutureExt;
+use futures::{FutureExt, TryFutureExt};
 use if_chain::if_chain;
 use manas_http::{
     header::{
@@ -41,7 +41,7 @@ use rdf_dynsyn::{
 };
 use rdf_utils::model::{dataset::EcoDataset, quad::ArcQuad};
 use tower::{Layer, Service};
-use tracing::{debug, error, info};
+use tracing::{debug, error, info, warn};
 use typed_record::TypedRecord;
 
 use crate::dconneging::conneg_layer::DerivedContentNegotiationLayer;
@@ -254,6 +254,17 @@ pub(super) async fn resolve_negotiated_response<R: Repo>(
     let mut effective_rep = None;
     if let Some(Ok(quads_inmem)) = rep_inmem
         .try_parse_quads::<EcoDataset<ArcQuad>>(conneg_config.dynsyn_factories.parser.clone())
+        .inspect(|v| {
+            match v.as_ref() {
+                Some(Err(e)) => {
+                    warn!("Error in parsing quads. {}", e);
+                }
+                None => {
+                    warn!("Negotiator intervened even as the source syntax is not parsable.");
+                }
+                _ => (),
+            };
+        })
         .await
     {
         // TODO must cache rdf data.
@@ -263,6 +274,9 @@ pub(super) async fn resolve_negotiated_response<R: Repo>(
             conneg_config.dynsyn_factories.serializer.clone(),
             dsyntax,
         )
+        .inspect_err(|e| {
+            warn!("Error in wrap serializing quads. Error:{}", e);
+        })
         .await
             as Result<BasicRepresentation<BytesInmem>, _>
         {
