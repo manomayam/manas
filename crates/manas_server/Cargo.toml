@@ -31,7 +31,7 @@ tower = { version = "0.4.13", features = ["make", "util"] }
 webid = { version = "0.1.0", path = "../../fcrates/webid" }
 rust-embed = { version = "8.0.0" }
 # Opendal is pinned, as it breaks frequently.
-opendal = {version = "^0.39.0", features = ["rustls"]}
+opendal = {version = "^0.41.0", features = ["rustls"]}
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-http",
 ] }
