@@ -50,10 +50,18 @@ tokio-stream = { version = "0.1.14", optional = true }
 json-ld = { version = "^0.15.0", optional = true}
 sophia_jsonld = { version = "0.8.0-alpha.3", optional = true}
 locspan = { version = "^0.7.16", optional = true }
+json-syntax = { version = "^0.9.0", optional = true }
 rdf-types = { version = "^0.15.4", optional = true }
 
 # feature: docsrs
 document-features = { version = "0.2.7", optional = true }
+
+# feature: jsonld-http-loader
+reqwest = { version = "0.11.22", optional = true, default-features = false }
+reqwest-middleware = { version = "0.2.4", optional = true }
+http_typed_headers = { version = "0.1.0", path = "../http_typed_headers", default-features = false, features = ["accept", "location", "link"], optional = true }
+headers = { version = "0.3.9", optional = true }
+iref = { version = "2.2", optional = true }
 
 [features]
 ##! Enables async wrapper parsers and serializers.
@@ -62,7 +70,13 @@ async = ["dep:futures", "dep:bytes", "dep:tokio", "dep:async-compat", "dep:tokio
 rdf-xml = ["dep:sophia_xml", "dep:rio_xml"]
 ##! Enables json-ld parsers and serializers.
 jsonld = ["dep:json-ld", "dep:sophia_jsonld", "dep:locspan", "dep:futures", "dep:rdf-types"]
-default = ["rdf-xml"]
+##! Provides `HttpDocumentLoader` to be used with json-ld parser, serializers.
+jsonld-http-loader = ["dep:reqwest", "dep:json-syntax", "dep:reqwest-middleware", "dep:http_typed_headers", "dep:headers", "dep:iref", "jsonld"]
+##! Enables tls with rustls.
+rustls-tls =["reqwest?/rustls-tls"]
+##! Enables tls with native-tls.
+native-tls =["reqwest?/native-tls"]
+default = ["rdf-xml", "rustls-tls"]
 
 [dev-dependencies]
 env_logger = "0.10.0"
@@ -72,4 +86,5 @@ rstest = "0.18.1"
 
 [package.metadata.docs.rs]
 all-features = true
+features = ["document-features"]
 rustdoc-args = ["--cfg", "doc_cfg"]

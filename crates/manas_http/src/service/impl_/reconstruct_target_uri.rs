@@ -8,8 +8,8 @@ use std::{
 
 use ecow::EcoString;
 use futures::future::{self, Either, Ready};
-use headers::{HeaderMapExt, Host};
-use http::{uri::Scheme, Request, Response, StatusCode};
+use headers::{Header, HeaderMapExt, Host};
+use http::{uri::Scheme, HeaderName, Request, Response, StatusCode};
 use http_api_problem::ApiError;
 use hyper::Body;
 use iri_string::types::{UriAbsoluteStr, UriAbsoluteString, UriStr};
@@ -22,6 +22,16 @@ use crate::{
     },
     uri::invariant::AbsoluteHttpUri,
 };
+
+/// Params for uri reconstruction.
+#[derive(Debug, Clone)]
+pub struct UriReconstructionParams {
+    /// Default scheme.
+    pub default_scheme: Scheme,
+
+    /// Trusted proxy headers.
+    pub trusted_proxy_headers: Vec<HeaderName>,
+}
 
 /// A [`Service`] that reconstructs absolute uri of
 /// the request target, before forwarding to inner service.
@@ -41,8 +51,8 @@ where
     /// Inner service
     inner: S,
 
-    /// Default scheme.
-    default_scheme: Scheme,
+    /// Uri reconstruction params.
+    params: UriReconstructionParams,
 }
 
 impl<S> ReconstructTargetUri<S>
@@ -51,11 +61,8 @@ where
 {
     /// Create a new [`ReconstructTargetUri`] with given default scheme, and an inner service.
     #[inline]
-    pub fn new(default_scheme: Scheme, inner: S) -> Self {
-        Self {
-            inner,
-            default_scheme,
-        }
+    pub fn new(params: UriReconstructionParams, inner: S) -> Self {
+        Self { inner, params }
     }
 }
 
@@ -83,32 +90,42 @@ where
         // Construct original uri.
 
         // Initialize with defaults.
-        let (mut scheme, mut authority) = (EcoString::from(self.default_scheme.as_str()), None);
+        let (mut scheme, mut authority) = (
+            EcoString::from(self.params.default_scheme.as_str()),
+            req.uri()
+                // http2 includes authority in request target.
+                .authority()
+                .cloned()
+                .map(Into::into)
+                // http1 includes authority in `Host` header.
+                .or_else(|| req.headers().typed_get::<Host>()),
+        );
 
-        // Update from request headers.
-        if let Some(h_host) = req.headers().typed_get::<Host>() {
-            debug!("Host header present.");
-            authority = Some(h_host);
-        }
+        let trusted_proxy_headers = &self.params.trusted_proxy_headers;
 
         // Update from `Forwarded` header.
-        if let Some(h_forwarded) = req.headers().typed_get::<Forwarded>() {
-            debug!("Forwarded header present. {:?}", h_forwarded);
+        if trusted_proxy_headers.contains(Forwarded::name()) {
+            if let Some(h_forwarded) = req.headers().typed_get::<Forwarded>() {
+                debug!("Forwarded header present. {:?}", h_forwarded);
 
-            if let Some(forwarded_host) = h_forwarded.elements[0].host_decoded() {
-                authority = Some(forwarded_host);
-            }
+                if let Some(forwarded_host) = h_forwarded.elements[0].host_decoded() {
+                    authority = Some(forwarded_host);
+                }
 
-            if let Some(forwarded_proto) = h_forwarded.elements[0].proto() {
-                scheme = forwarded_proto.deref().into()
+                if let Some(forwarded_proto) = h_forwarded.elements[0].proto() {
+                    scheme = forwarded_proto.deref().into()
+                }
             }
         }
-        // Else fallback on X-Forwarded-() headers.
-        else {
+
+        // Update from X-Forwarded-() headers.
+        if trusted_proxy_headers.contains(XForwardedHost::name()) {
             if let Some(x_forwarded_host) = req.headers().typed_get::<XForwardedHost>() {
                 authority = Some(x_forwarded_host.into())
             }
+        }
 
+        if trusted_proxy_headers.contains(XForwardedProto::name()) {
             if let Some(x_forwarded_proto) = req.headers().typed_get::<XForwardedProto>() {
                 scheme = x_forwarded_proto.deref().deref().into();
             }

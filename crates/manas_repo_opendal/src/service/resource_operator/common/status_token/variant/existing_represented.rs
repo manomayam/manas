@@ -609,8 +609,11 @@ pub(crate) fn decode_rep_content_type<Setup: ODRSetup>(
         }
     );
 
-    // Otherwise guess from uri.
-    MediaType::guess_from_path(res_context.uri().as_ref().inner().path_str()).unwrap_or_default()
+    // Otherwise guess from uri
+    mime_guess::from_path(res_context.uri().as_ref().inner().path_str())
+        .first()
+        .map(|m| MediaType::try_from(m).expect("Must be valid media type."))
+        .unwrap_or_default()
 }
 
 /// Callback function to handle error in reading content of an

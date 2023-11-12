@@ -21,7 +21,6 @@ pub static TP_N_TRIPLES: TriplesParsableSyntax = unsafe { Proven::new_unchecked(
 pub static TP_TURTLE: TriplesParsableSyntax = unsafe { Proven::new_unchecked(TURTLE) };
 
 /// rdf/xml triples parsable syntax.
-#[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
 #[cfg(feature = "rdf-xml")]
 pub static TP_RDF_XML: TriplesParsableSyntax = unsafe { Proven::new_unchecked(RDF_XML) };
 
@@ -29,7 +28,6 @@ pub static TP_RDF_XML: TriplesParsableSyntax = unsafe { Proven::new_unchecked(RD
 pub static TP_ALL: &[TriplesParsableSyntax] = &[
     TP_N_TRIPLES,
     TP_TURTLE,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
     #[cfg(feature = "rdf-xml")]
     TP_RDF_XML,
 ];

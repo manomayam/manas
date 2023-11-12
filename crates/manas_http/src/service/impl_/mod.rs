@@ -10,5 +10,5 @@ mod route_by_method;
 
 pub use normal_validate_target_uri::NormalValidateTargetUri;
 pub use overriding::OverridingHttpService;
-pub use reconstruct_target_uri::ReconstructTargetUri;
+pub use reconstruct_target_uri::{ReconstructTargetUri, UriReconstructionParams};
 pub use route_by_method::RouteByMethod;

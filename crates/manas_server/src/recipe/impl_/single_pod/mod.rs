@@ -7,12 +7,24 @@ use std::{borrow::Cow, marker::PhantomData, sync::Arc};
 
 use futures::future::{BoxFuture, TryFutureExt};
 use http::uri::Scheme;
+use http_cache_reqwest::{Cache, CacheMode, HttpCache, MokaManager};
+use manas_http::service::impl_::UriReconstructionParams;
 use manas_repo::RepoExt;
 use manas_repo_layers::dconneging::conneg_layer::impl_::binary_rdf_doc_converting::BinaryRdfDocContentNegotiationConfig;
+use manas_repo_opendal::config::ODRConfig;
 use manas_space::BoxError;
 use manas_storage::service::impl_::{KPreferredReqTargetQueryParamMode, ReqTargetQueryParamMode};
 use name_locker::impl_::InmemNameLocker;
 use opendal::Builder as _;
+use rdf_dynsyn::{
+    parser::config::{
+        jsonld::{HttpDocumentLoader, HttpDocumentLoaderOptions, JsonLdConfig},
+        DynSynParserConfig,
+    },
+    serializer::config::DynSynSerializerConfig,
+    DynSynFactorySet,
+};
+use sophia_turtle::serializer::turtle::TurtleConfig;
 use tracing::error;
 use typed_record::TypedRecord;
 
@@ -67,6 +79,40 @@ impl<RSetup: SinglePodRecipeSetup> Default for SinglePodRecipe<RSetup> {
 type SinglePodStorage<RSetup> = RcpStorage<SinglePodStorageSetup<RSetup>>;
 
 impl<RSetup: SinglePodRecipeSetup> SinglePodRecipe<RSetup> {
+    fn resolve_dynsyn_factory_set() -> DynSynFactorySet {
+        let jsonld_doc_loader = HttpDocumentLoader::new(
+            HttpDocumentLoaderOptions {
+                max_redirections: 4,
+                request_profile: Default::default(),
+            },
+            Some(Arc::new(Cache(HttpCache {
+                mode: CacheMode::Default,
+                manager: MokaManager::default(),
+                options: Default::default(),
+            }))),
+        );
+        let loader_factory = Arc::new(move || jsonld_doc_loader.clone().into());
+        let dynsyn_jsonld_config = JsonLdConfig {
+            context_loader_factory: loader_factory,
+            options: Default::default(),
+        };
+
+        let parsers_config =
+            DynSynParserConfig::default().with_jsonld_config(dynsyn_jsonld_config.clone());
+
+        let serializers_config = DynSynSerializerConfig::default()
+            .with_jsonld_config(dynsyn_jsonld_config)
+            // TODO should configure prefix map.
+            .with_turtle_config(TurtleConfig::new().with_pretty(true));
+
+        DynSynFactorySet::new_with_config(
+            parsers_config.clone(),
+            parsers_config,
+            serializers_config.clone(),
+            serializers_config,
+        )
+    }
+
     async fn resolve_initialized_pod(
         space_config: RcpStorageSpaceConfig,
         backend: RSetup::Backend,
@@ -88,12 +134,19 @@ impl<RSetup: SinglePodRecipeSetup> SinglePodRecipe<RSetup> {
             space_config.owner_id.clone(),
         );
 
+        let dynsyn_factories = Arc::new(Self::resolve_dynsyn_factory_set());
+
         let mut storage = SinglePodStorage::<RSetup>::new_with_simple_pep(
             st_space,
             backend,
-            Default::default(),
+            ODRConfig {
+                dynsyn_factories: dynsyn_factories.clone(),
+                ..Default::default()
+            },
             adapt_dconneg_layer_config(
-                Arc::new(BinaryRdfDocContentNegotiationConfig::default()),
+                Arc::new(BinaryRdfDocContentNegotiationConfig {
+                    dynsyn_factories: dynsyn_factories.as_ref().clone(),
+                }),
                 opt_databrowser_context,
             ),
             pdp,
@@ -175,14 +228,16 @@ impl<RSetup: SinglePodRecipeSetup> Recipe for SinglePodRecipe<RSetup> {
                 config.dev_mode,
             );
 
-            let svc_maker = resolve_authenticating_svc_maker(
-                podset_svc,
-                if config.server.tls.is_some() {
+            let uri_reconstruction_params = UriReconstructionParams {
+                default_scheme: if config.server.tls.is_some() {
                     Scheme::HTTPS
                 } else {
                     Scheme::HTTP
                 },
-            );
+                trusted_proxy_headers: config.server.trusted_proxy_headers.clone(),
+            };
+
+            let svc_maker = resolve_authenticating_svc_maker(podset_svc, uri_reconstruction_params);
 
             tracing::info!("Serving at {}", config.server.addr);
             tracing::info!(

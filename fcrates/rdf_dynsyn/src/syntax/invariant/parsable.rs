@@ -37,7 +37,6 @@ pub static P_N_TRIPLES: DynSynParsableSyntax = unsafe { Proven::new_unchecked(N_
 pub static P_TURTLE: DynSynParsableSyntax = unsafe { Proven::new_unchecked(TURTLE) };
 
 /// rdf/xml DynSyn parsable syntax.
-#[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
 #[cfg(feature = "rdf-xml")]
 pub static P_RDF_XML: DynSynParsableSyntax = unsafe { Proven::new_unchecked(RDF_XML) };
 
@@ -48,7 +47,6 @@ pub static P_N_QUADS: DynSynParsableSyntax = unsafe { Proven::new_unchecked(N_QU
 pub static P_TRIG: DynSynParsableSyntax = unsafe { Proven::new_unchecked(TRIG) };
 
 /// json-ld DynSyn parsable syntax.
-#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
 #[cfg(feature = "jsonld")]
 pub static P_JSON_LD: DynSynParsableSyntax = unsafe {
     use crate::syntax::JSON_LD;
@@ -59,12 +57,10 @@ pub static P_JSON_LD: DynSynParsableSyntax = unsafe {
 pub static P_ALL: &[DynSynParsableSyntax] = &[
     P_N_TRIPLES,
     P_TURTLE,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
     #[cfg(feature = "rdf-xml")]
     P_RDF_XML,
     P_N_QUADS,
     P_TRIG,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
     #[cfg(feature = "jsonld")]
     P_JSON_LD,
 ];

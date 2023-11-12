@@ -76,13 +76,20 @@ impl<R: BufRead> DynSynQuadSource<R> {
         SinkErr: Error,
         F: FnMut(DynSynQuad<'_>) -> Result<(), SinkErr>,
     {
+        use tracing::error;
+
         QuadSource::try_for_some_quad(qs, |q| {
             f(DynSynQuad(InnerQuad::Simple((
                 q.0.map(|t| t.into_term()),
                 q.1.map(|g| g.into_term()),
             ))))
         })
-        .map_err(|e| e.map_source(|se| DynSynParseError(Box::new(se))))
+        .map_err(|e| {
+            e.map_source(|se| {
+                error!("Error in parsing jsonld quad. {:?}", se);
+                DynSynParseError(Box::new(se))
+            })
+        })
     }
 }
 

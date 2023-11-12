@@ -20,9 +20,7 @@ http_uri = { version = "1.0.1", path = "../../fcrates/http_uri", features = [
     "sophia"
 ] }
 manas_authentication = { version = "0.1.0", path = "../manas_authentication", features = ["creds-context"]}
-manas_http = { version = "0.1.1", path = "../manas_http", features = [
-    "typed-headers",
-] }
+http_typed_headers = { version = "0.1.0", path = "../../fcrates/http_typed_headers", default-features = false, features = ["wac-allow"] }
 manas_space = { version = "0.1.0", path = "../manas_space" }
 async-recursion = "1.0.4"
 itertools = "0.11.0"

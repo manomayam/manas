@@ -36,7 +36,7 @@ flagset = "0.4.3"
 # Opendal is pinned, as it breaks frequently.
 opendal = { version = "^0.39.0", features = ["rustls"]}
 gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs" }
-regex = "1.9.1"
+regex = "1.10.2"
 percent-encoding = "2.3.0"
 async-stream = "0.3.5"
 smallvec = "1.10.0"
@@ -77,6 +77,7 @@ mime = "0.3.17"
 itertools = "0.11.0"
 sophia_turtle = "0.8.0-alpha.3"
 manas_semslot = { version = "0.1.0", path = "../manas_semslot"}
+mime_guess = { version = "2.0.4"}
 
 # feature; service-embedded
 rust-embed = { version = "8.0.0", optional = true }
@@ -95,7 +96,7 @@ unwrap-infallible = "0.1.5"
 acp = { version = "0.1.0", path = "../../fcrates/acp", optional = true }
 async-convert = "1.0.0"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
-ecow = "0.1.2"
+ecow = "0.2.0"
 capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream" }
 
 

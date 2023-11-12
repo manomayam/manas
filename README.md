@@ -69,6 +69,12 @@ Along with these main crates, Manas project provides many utility crates that he
 - [`webid`](https://docs.rs/webid): Rust crate for webid.
 - ... etc.
 
+## Contributors
+
+Thanks to every contributor, who helped in making `manas` possible. A not so exhaustive list in no perticular order:
+
+- [@hexagon6](https://github.com/hexagon6)
+
 ## License
 
 Licensed under either of

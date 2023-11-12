@@ -14,7 +14,7 @@ use crate::parser::config::jsonld::{DynDocumentLoader, JsonLdConfig};
 use sophia_jsonld::JsonLdOptions;
 
 /// Config for dynsyn parsers.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct DynSynSerializerConfig {
     pub(crate) nquads: Option<NqConfig>,
     pub(crate) nt: Option<NtConfig>,
@@ -57,7 +57,6 @@ impl DynSynSerializerConfig {
         self
     }
 
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "rdf-xml")))]
     #[cfg(feature = "rdf-xml")]
     #[inline]
     /// Get serializer config augmented with given rdf_xml serializer config.
@@ -66,7 +65,6 @@ impl DynSynSerializerConfig {
         self
     }
 
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
     #[cfg(feature = "jsonld")]
     #[inline]
     /// Get serializer config augmented with given jsonld serializer config.

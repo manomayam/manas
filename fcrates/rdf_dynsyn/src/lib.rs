@@ -1,5 +1,5 @@
 #![warn(missing_docs)]
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
 
 //! This crate provides sophia-compatible and sophia-based rdf
@@ -92,16 +92,16 @@
 //! # }
 //! ```
 //!
-//! ## Feature flags
-#![cfg_attr(
-    doc_cfg,
-    cfg_attr(doc, doc = ::document_features::document_features!())
-)]
+// ## Feature flags
+// #![cfg_attr(
+//     feature = "document-features",
+//     cfg_attr(doc, doc = ::document_features::document_features!())
+// )]
 
 use std::sync::Arc;
 
-use parser::DynSynParserFactorySet;
-use serializer::DynSynSerializerFactorySet;
+use parser::{config::DynSynParserConfig, DynSynParserFactorySet};
+use serializer::{config::DynSynSerializerConfig, DynSynSerializerFactorySet};
 
 pub mod correspondence;
 pub mod file_extension;
@@ -121,6 +121,29 @@ pub struct DynSynFactorySet {
 
     /// Serializer factory set.
     pub serializer: Arc<DynSynSerializerFactorySet>,
+}
+
+impl DynSynFactorySet {
+    /// Create a new [`DynSynFactorySet`] with given
+    /// configurations.
+    #[inline]
+    pub fn new_with_config(
+        quad_parser_config: DynSynParserConfig,
+        triple_parser_config: DynSynParserConfig,
+        quad_serializer_config: DynSynSerializerConfig,
+        triple_serializer_config: DynSynSerializerConfig,
+    ) -> Self {
+        Self {
+            parser: Arc::new(DynSynParserFactorySet::new_with_config(
+                quad_parser_config,
+                triple_parser_config,
+            )),
+            serializer: Arc::new(DynSynSerializerFactorySet::new_with_config(
+                quad_serializer_config,
+                triple_serializer_config,
+            )),
+        }
+    }
 }
 
 // impl DynSynFactorySet {

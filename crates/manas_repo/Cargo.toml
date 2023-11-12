@@ -38,7 +38,7 @@ async-compat = "0.2.1"
 either = "1.8.1"
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils"}
 anyhow = "1.0.71"
-regex = "1.9.1"
+regex = "1.10.2"
 tokio = { version = "1.29.1", features = ["rt"] }
 tokio-util = { version = "0.7.8", features = ["io", "io-util"] }
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [

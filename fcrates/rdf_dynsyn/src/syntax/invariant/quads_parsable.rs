@@ -20,7 +20,6 @@ pub static QP_N_QUADS: QuadsParsableSyntax = unsafe { Proven::new_unchecked(N_QU
 pub static QP_TRIG: QuadsParsableSyntax = unsafe { Proven::new_unchecked(TRIG) };
 
 /// jsonld quads parsable syntax.
-#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
 #[cfg(feature = "jsonld")]
 pub static QP_JSON_LD: QuadsParsableSyntax = unsafe { Proven::new_unchecked(JSON_LD) };
 
@@ -28,7 +27,6 @@ pub static QP_JSON_LD: QuadsParsableSyntax = unsafe { Proven::new_unchecked(JSON
 pub static QP_ALL: &[QuadsParsableSyntax] = &[
     QP_N_QUADS,
     QP_TRIG,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
     #[cfg(feature = "jsonld")]
     QP_JSON_LD,
 ];

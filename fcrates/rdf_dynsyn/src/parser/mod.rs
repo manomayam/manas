@@ -10,7 +10,8 @@ use sophia_api::{
 };
 
 use self::{
-    error::DynSynParseError, quads::DynSynQuadParserFactory, triples::DynSynTripleParserFactory,
+    config::DynSynParserConfig, error::DynSynParseError, quads::DynSynQuadParserFactory,
+    triples::DynSynTripleParserFactory,
 };
 use crate::syntax::{
     invariant::parsable::DynSynParsableSyntax,
@@ -33,6 +34,19 @@ pub struct DynSynParserFactorySet {
 }
 
 impl DynSynParserFactorySet {
+    /// Create a new [`DynSynParserFactorySet`] with given
+    /// configurations.
+    #[inline]
+    pub fn new_with_config(
+        quad_parser_config: DynSynParserConfig,
+        triple_parser_config: DynSynParserConfig,
+    ) -> Self {
+        Self {
+            quads_parsing: DynSynQuadParserFactory::new(quad_parser_config),
+            triples_parsing: DynSynTripleParserFactory::new(triple_parser_config),
+        }
+    }
+
     /// Parse quads from given reader,and collect into
     /// provided dataset..
     /// If syntax is triples representing syntax, then
@@ -99,7 +113,6 @@ mod async_ {
         /// Parse quads from given bytes stream, in given parsable syntax.
         /// If syntax is triples representing syntax, then
         /// default graph will be the graph name of parsed quads.
-        #[cfg_attr(doc_cfg, doc(cfg(feature = "async")))]
         pub async fn parse_quads_from_bytes_stream<S, T>(
             &self,
             data: S,
@@ -118,7 +131,6 @@ mod async_ {
         /// Parse quads from given bytes stream, in given parsable syntax.
         /// If syntax is triples representing syntax, then
         /// default graph will be the graph component of parsed quads.
-        #[cfg_attr(doc_cfg, doc(cfg(feature = "async")))]
         pub async fn parse_quads_async<R, T>(
             &self,
             data: R,

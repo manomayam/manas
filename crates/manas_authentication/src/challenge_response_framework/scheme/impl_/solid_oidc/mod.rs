@@ -22,16 +22,16 @@ use either::Either;
 use futures::future::BoxFuture;
 use headers::{authorization::Credentials, Authorization, HeaderMapExt};
 use http::{HeaderMap, Method};
-use http_uri::{
-    invariant::{AbsoluteHttpUri, SecureHttpUri},
-    security::transport_policy::{LocalhostExemptingSTP, SecureTransportPolicy},
-};
-use manas_http::{
-    field::rules::{
+use http_typed_headers::{
+    common::field::rules::{
         parameter::FieldParameter, parameter_name::FieldParameterName,
         parameter_value::FieldParameterValue, parameters::FieldParameters, token::Token,
     },
-    header::www_authenticate::{Challenge, WWWAuthenticate},
+    www_authenticate::{Challenge, WWWAuthenticate},
+};
+use http_uri::{
+    invariant::{AbsoluteHttpUri, SecureHttpUri},
+    security::transport_policy::{LocalhostExemptingSTP, SecureTransportPolicy},
 };
 use once_cell::sync::Lazy;
 use picky::jose::jwk::JwkSet;

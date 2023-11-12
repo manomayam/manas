@@ -4,11 +4,8 @@
 //!
 
 #![warn(missing_docs)]
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
-
-#[cfg(feature = "typed-headers")]
-pub mod field;
 
 #[cfg(feature = "typed-headers")]
 pub mod header;
@@ -23,3 +20,6 @@ pub mod representation;
 pub mod service;
 
 pub mod uri;
+
+#[cfg(feature = "typed-headers")]
+pub use http_typed_headers::define_static_rel_types;

@@ -19,7 +19,6 @@ pub static QS_N_QUADS: QuadsSerializableSyntax = unsafe { Proven::new_unchecked(
 /// trig quads serializable syntax.
 pub static QS_TRIG: QuadsSerializableSyntax = unsafe { Proven::new_unchecked(TRIG) };
 
-#[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
 #[cfg(feature = "jsonld")]
 /// json-ld quads serializable syntax.
 pub static QS_JSON_LD: QuadsSerializableSyntax = unsafe { Proven::new_unchecked(JSON_LD) };
@@ -28,7 +27,6 @@ pub static QS_JSON_LD: QuadsSerializableSyntax = unsafe { Proven::new_unchecked(
 pub static QS_ALL: &[QuadsSerializableSyntax] = &[
     QS_N_QUADS,
     QS_TRIG,
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "jsonld")))]
     #[cfg(feature = "jsonld")]
     QS_JSON_LD,
 ];

@@ -133,7 +133,9 @@ impl<Assets: RustEmbed + 'static> EmbeddedAccessor<Assets> {
         let mut metadata = Metadata::new(EntryMode::FILE)
             .with_content_length(file.data.len() as u64)
             .with_content_type(
-                MediaType::guess_from_path(path)
+                mime_guess::from_path(path.as_str())
+                    .first()
+                    .map(|m| MediaType::try_from(m).expect("Must be valid."))
                     .unwrap_or_default()
                     .to_string(),
             )

@@ -10,8 +10,8 @@ use std::{
 };
 
 use acp::model::access_mode::{HAccessMode, H_APPEND, H_CONTROL, H_READ, H_WRITE};
+use http_typed_headers::wac_allow::{AccessMode, AccessParam, PermissionGroup, WacAllow};
 use manas_authentication::common::credentials::RequestCredentials;
-use manas_http::header::wac_allow::{AccessMode, AccessParam, PermissionGroup, WacAllow};
 use manas_space::resource::{operation::SolidResourceOperation, uri::SolidResourceUri};
 use once_cell::sync::Lazy;
 use rdf_utils::model::{handle::Handle, term::ArcTerm};

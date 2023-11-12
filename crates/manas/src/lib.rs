@@ -11,7 +11,7 @@
 //! > ⚠️ Note that, though much of the feature set is implemented, and architecture is relatively stable, it's test suite is constantly evolving. Many of devops bells are being integrated, and apis are being refined. Thus project is considered to be in alpha stage until it reaches at least version 0.5
 //!
 //! ## Default server recipes
-//! For end users, Manas provides officially supported assembled servers in [manas_server] crate. They support following features:
+//! For end users, Manas provides officially supported assembled servers in [`manas_server``] crate. They support following features:
 //!
 //! * Support for Fs/S3/GCS and other object stores as backends through [OpenDAL](https://github.com/apache/incubator-opendal) abstraction layer.
 //! * Authentication using Solid-OIDC protocol
