@@ -156,7 +156,6 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
     type Reader = oio::Cursor;
     type BlockingReader = ();
     type Writer = ();
-    type Appender = ();
     type BlockingWriter = ();
     type Pager = NsPage<Assets>;
     type BlockingPager = ();
@@ -165,7 +164,7 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
         let mut info = AccessorInfo::default();
         info.set_scheme(opendal::Scheme::Custom("Embedded"))
             .set_name(self.name.as_str())
-            .set_capability(Capability {
+            .set_native_capability(Capability {
                 stat: true,
                 read: true,
                 read_with_range: true,
@@ -201,7 +200,10 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
         metadata = metadata.with_content_length(bs.len() as u64);
         // TODO content-range should be included.
 
-        Ok((RpRead::with_metadata(metadata), oio::Cursor::from(bs)))
+        Ok((
+            RpRead::new().with_size(Some(metadata.content_length())),
+            oio::Cursor::from(bs),
+        ))
     }
 
     async fn list(&self, path: &str, args: OpList) -> Result<(RpList, Self::Pager)> {

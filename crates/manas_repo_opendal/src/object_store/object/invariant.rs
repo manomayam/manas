@@ -11,7 +11,7 @@ use manas_http::{
     header::common::media_type::MediaType,
     representation::impl_::common::data::bytes_stream::BoxBytesStream,
 };
-use opendal::{EntryMode, Lister, Metakey, Writer};
+use opendal::{EntryMode, Lister, Writer};
 use tracing::{error, warn};
 
 use super::{
@@ -19,7 +19,7 @@ use super::{
         is_file_object::IsFileObject, is_namespace_object::IsNamespaceObject,
         ObjectKindBasedClassification,
     },
-    ODRObject,
+    ODRObject, ODR_OBJECT_METAKEY,
 };
 use crate::object_store::{
     backend::ODRObjectStoreBackend, ODRObjectStoreSetup, OstBackendPathDecodeError,
@@ -222,8 +222,8 @@ impl<'id, OstSetup: ODRObjectStoreSetup> ODRNamespaceObjectExt<OstSetup>
         let backend_listing: Lister = self
             .backend
             .operator()
-            .list(self.backend_entry.path())
-            // .metakey(*ODR_OBJECT_METAKEY)
+            .lister_with(self.backend_entry.path())
+            .metakey(*ODR_OBJECT_METAKEY)
             .inspect_err(|_| error!("Error in getting backend entries."))
             .await?;
 
@@ -234,8 +234,7 @@ impl<'id, OstSetup: ODRObjectStoreSetup> ODRNamespaceObjectExt<OstSetup>
             for await entry in backend_listing {
                 let entry = entry?;
                 // Get mode from metadata.
-                // let mode = entry.metadata().mode();
-                let mode = backend.operator().metadata(&entry, Metakey::Mode).await?.mode();
+                let mode = entry.metadata().mode();
 
                 // If unknown mode, yield error.
                 if mode ==EntryMode::Unknown {

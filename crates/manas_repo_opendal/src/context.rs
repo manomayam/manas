@@ -45,7 +45,11 @@ where
     /// Get backend capabilities.
     #[inline]
     pub fn backend_caps(&self) -> Capability {
-        self.object_store.backend.operator().info().capability()
+        self.object_store
+            .backend
+            .operator()
+            .info()
+            .full_capability()
     }
 
     /// Create a new [`ODRContext`] from given params.

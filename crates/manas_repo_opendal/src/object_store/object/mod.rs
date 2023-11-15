@@ -184,13 +184,7 @@ impl<'id, OstSetup: ODRObjectStoreSetup> ODRObject<'id, OstSetup> {
     pub async fn metadata(&self) -> Result<Metadata, opendal::Error> {
         match &self.backend_entry {
             OpendalBackendEntry::Simple { path } => self.backend.operator().stat(path).await,
-            OpendalBackendEntry::Cached(cached_entry) => {
-                // Ok(cached_entry.metadata().clone())
-                self.backend
-                    .operator()
-                    .metadata(cached_entry, *ODR_OBJECT_METAKEY)
-                    .await
-            }
+            OpendalBackendEntry::Cached(cached_entry) => Ok(cached_entry.metadata().clone()),
         }
     }
 
