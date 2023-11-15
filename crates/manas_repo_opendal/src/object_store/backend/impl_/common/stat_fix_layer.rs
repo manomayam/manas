@@ -32,7 +32,6 @@ impl<A: Accessor> LayeredAccessor for StatFixAccessor<A> {
     type Inner = A;
     type Reader = A::Reader;
     type BlockingReader = A::BlockingReader;
-    type Appender = A::Appender;
     type Writer = A::Writer;
     type BlockingWriter = A::BlockingWriter;
     type Pager = A::Pager;
@@ -52,10 +51,6 @@ impl<A: Accessor> LayeredAccessor for StatFixAccessor<A> {
 
     async fn write(&self, path: &str, args: OpWrite) -> Result<(RpWrite, Self::Writer)> {
         self.inner.write(path, args).await
-    }
-
-    async fn append(&self, path: &str, args: OpAppend) -> Result<(RpAppend, Self::Appender)> {
-        self.inner.append(path, args).await
     }
 
     fn blocking_write(&self, path: &str, args: OpWrite) -> Result<(RpWrite, Self::BlockingWriter)> {

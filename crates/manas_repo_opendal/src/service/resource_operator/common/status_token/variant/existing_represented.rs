@@ -234,7 +234,7 @@ impl<Setup: ODRSetup> ODRExistingRepresentedResourceToken<Setup> {
 
             if let Some(cty_str) = opt_cty_str {
                 if let Ok(cty) = MediaType::from_str(cty_str).map_err(|e| {
-                    warn!("Invalid base object content-type metadata. Err: {}", e);
+                    warn!("Invalid assoc object content-type metadata. Err: {}", e);
                     e
                 }) {
                     return Ok(cty);
