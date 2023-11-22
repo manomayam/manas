@@ -10,6 +10,7 @@ members = [
     "fcrates/capped_stream",
     "fcrates/http_uri",
     "fcrates/http_typed_headers",
+    "fcrates/hms",
     "fcrates/dpop",
     "fcrates/rdf_dynsyn",
     "fcrates/rdf_utils",

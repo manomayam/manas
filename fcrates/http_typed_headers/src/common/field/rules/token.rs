@@ -4,10 +4,10 @@ use std::{borrow::Borrow, fmt::Display, ops::Deref, str::FromStr};
 
 use ecow::EcoString;
 use once_cell::sync::Lazy;
-use regex::Regex;
+use regex_lite::Regex;
 
 static TOKEN_RE: Lazy<Regex> = Lazy::new(|| {
-    let tchar_non_alpha_numeric = regex::escape("!#$%&'*+-.^_`|~");
+    let tchar_non_alpha_numeric = regex_lite::escape("!#$%&'*+-.^_`|~");
     let token_pattern = format!("^[{}0-9a-zA-Z]+$", tchar_non_alpha_numeric);
     Regex::new(&token_pattern).expect("regex is claimed valid")
 });

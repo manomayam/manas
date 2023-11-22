@@ -4,11 +4,11 @@
 use std::{ops::Deref, str::FromStr};
 
 use once_cell::sync::Lazy;
-use regex::Regex;
+use regex_lite::Regex;
 
 /// Regex to match a `token68` value.
 static TOKEN68_RE: Lazy<Regex> = Lazy::new(|| {
-    let t68char_non_alpha_numeric = regex::escape("-._~+/");
+    let t68char_non_alpha_numeric = regex_lite::escape("-._~+/");
     Regex::new(&(format!("^[{}0-9a-zA-Z]+=*$", t68char_non_alpha_numeric)))
         .expect("regex is claimed valid")
 });

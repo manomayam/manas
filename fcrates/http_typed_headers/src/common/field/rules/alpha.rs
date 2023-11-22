@@ -4,7 +4,7 @@ use std::{borrow::Borrow, fmt::Display, ops::Deref, str::FromStr};
 
 use ecow::EcoString;
 use once_cell::sync::Lazy;
-use regex::Regex;
+use regex_lite::Regex;
 
 static ALPHA_RE: Lazy<Regex> = Lazy::new(|| {
     let alpha_pattern = "^[a-zA-Z]+$";

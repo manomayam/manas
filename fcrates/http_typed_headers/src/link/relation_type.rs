@@ -5,7 +5,7 @@ use std::{borrow::Borrow, str::FromStr, sync::Arc};
 
 use iri_string::types::UriStr;
 use once_cell::sync::Lazy;
-use regex::Regex;
+use regex_lite::Regex;
 use unicase::Ascii;
 
 use crate::common::field::rules::token::Token;

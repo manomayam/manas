@@ -898,6 +898,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "data-encoding"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c2e66c9d817f1720209181c316d28635c050fa304f9c79e47a520882661b7308"
+
+[[package]]
 name = "decoded-char"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1525,6 +1531,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "hms"
+version = "0.1.0"
+dependencies = [
+ "claims",
+ "ecow",
+ "frunk_core",
+ "gdp_rs",
+ "once_cell",
+ "regex-lite",
+ "rstest",
+ "sfv",
+ "thiserror",
+]
+
+[[package]]
 name = "home"
 version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1654,7 +1675,7 @@ dependencies = [
  "mime",
  "once_cell",
  "percent-encoding",
- "regex",
+ "regex-lite",
  "rstest",
  "rust_decimal",
  "smallvec",
@@ -3693,6 +3714,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "regex-lite"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "30b661b2f27137bdbc16f00eda72866a92bb28af1753ffbd56744fb6e2e9cd8e"
+
+[[package]]
 name = "regex-syntax"
 version = "0.6.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4290,6 +4317,17 @@ dependencies = [
  "ryu",
  "serde",
  "unsafe-libyaml",
+]
+
+[[package]]
+name = "sfv"
+version = "0.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4f1641177943b4e6faf7622463ae6dfe0f143eb88799e91e2e2e68ede568af5"
+dependencies = [
+ "data-encoding",
+ "indexmap 1.9.3",
+ "rust_decimal",
 ]
 
 [[package]]
