@@ -79,7 +79,7 @@ native-tls =["reqwest?/native-tls"]
 default = ["rdf-xml", "rustls-tls"]
 
 [dev-dependencies]
-env_logger = "0.10.0"
+env_logger = "0.10.1"
 tracing = { version = "0.1.37", features = ["log"] }
 sophia_isomorphism = "0.8.0-alpha.3"
 rstest = "0.18.1"
