@@ -125,6 +125,9 @@ where
 
                 let normal_subject_uri = subject_uri.and_infer::<Normalization<_>>(Default::default());
 
+                // If subject is not container itself.
+                if normal_subject_uri != container_slot.id().uri;
+
                 // If subject uri can be valid uri for a
                 // contained resource.
                 // TODO bring it to sanity.
