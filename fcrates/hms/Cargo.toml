@@ -1,0 +1,27 @@
+[package]
+name = "hms"
+version = "0.1.0"
+edition = "2021"
+description = "An implementation of HTTP Message Signatures for rust."
+repository = "https://github.com/manomayam/manas"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+thiserror = "1.0.41"
+gdp_rs = { version = "0.1.1", path = "../gdp_rs" }
+frunk_core = { version = "0.4.2", optional = true }
+ecow = "0.2.0"
+once_cell = "1.18.0"
+sfv = "0.9.3"
+regex-lite = "0.1.5"
+
+
+[features]
+
+[dev-dependencies]
+claims = "0.7.1"
+rstest = "0.18.1"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
