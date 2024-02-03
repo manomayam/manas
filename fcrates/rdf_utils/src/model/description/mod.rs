@@ -315,6 +315,7 @@ macro_rules! define_handle_and_description_types {
 
 
         paste::paste! {
+#[allow(unused_imports)]
 pub use [<descr_impl_$D:snake>]::$D;
 
 #[allow(unused_imports)]

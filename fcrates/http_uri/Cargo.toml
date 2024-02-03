@@ -19,7 +19,7 @@ gdp_rs = { version = "0.1.1", path = "../gdp_rs", optional = true }
 frunk_core = { version = "0.4.2", optional = true }
 
 # feature: sophia-term-impl
-sophia_api = { version = "0.8.0-alpha.3", optional = true }
+sophia_api = { version = "0.8.0", optional = true }
 
 
 [features]

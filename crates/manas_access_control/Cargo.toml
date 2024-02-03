@@ -27,7 +27,7 @@ itertools = "0.11.0"
 paste = "1.0.14"
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl", "ns-foaf","ns-rdf"] }
-sophia_api = "0.8.0-alpha.3"
+sophia_api = "0.8.0"
 thiserror = "1.0.43"
 tower = "0.4.13"
 tracing = { version = "0.1.37", features = ["attributes"] }

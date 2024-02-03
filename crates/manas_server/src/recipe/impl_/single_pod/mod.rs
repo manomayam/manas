@@ -18,7 +18,10 @@ use name_locker::impl_::InmemNameLocker;
 use opendal::Builder as _;
 use rdf_dynsyn::{
     parser::config::{
-        jsonld::{HttpDocumentLoader, HttpDocumentLoaderOptions, JsonLdConfig},
+        jsonld::{
+            DynDocumentLoaderFactory, HttpDocumentLoader, HttpDocumentLoaderOptions, JsonLdConfig,
+            JsonLdOptions,
+        },
         DynSynParserConfig,
     },
     serializer::config::DynSynSerializerConfig,
@@ -91,10 +94,10 @@ impl<RSetup: SinglePodRecipeSetup> SinglePodRecipe<RSetup> {
                 options: Default::default(),
             }))),
         );
-        let loader_factory = Arc::new(move || jsonld_doc_loader.clone().into());
+        let loader_factory =
+            DynDocumentLoaderFactory::new(Arc::new(move || jsonld_doc_loader.clone().into()));
         let dynsyn_jsonld_config = JsonLdConfig {
-            context_loader_factory: loader_factory,
-            options: Default::default(),
+            options: JsonLdOptions::new().with_document_loader_factory(loader_factory),
         };
 
         let parsers_config =

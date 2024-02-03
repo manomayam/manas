@@ -14,7 +14,7 @@ use crate::syntax::{self, invariant::quads_serializable::QuadsSerializableSyntax
 use sophia_jsonld::JsonLdSerializer;
 
 #[cfg(feature = "jsonld")]
-use crate::parser::config::jsonld::DynDocumentLoader;
+use crate::parser::config::jsonld::DynDocumentLoaderFactory;
 
 /// This is a sum-type that wraps around different
 /// quad-serializers from sophia.
@@ -22,7 +22,7 @@ pub(crate) enum InnerQuadSerializer<W: io::Write> {
     NQuads(NqSerializer<W>),
     Trig(TrigSerializer<W>),
     #[cfg(feature = "jsonld")]
-    JsonLd(JsonLdSerializer<W, DynDocumentLoader>),
+    JsonLd(JsonLdSerializer<W, DynDocumentLoaderFactory>),
 }
 
 impl<W: io::Write> Debug for InnerQuadSerializer<W> {

@@ -10,9 +10,9 @@ license = "MIT OR Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sophia_api = "0.8.0-alpha.3"
-sophia_turtle = "0.8.0-alpha.3"
-sophia_rio = "0.8.0-alpha.3"
+sophia_api = "0.8.0"
+sophia_turtle = "0.8.0"
+sophia_rio = "0.8.0"
 rio_turtle = "0.8.4"
 rio_api = "0.8.4"
 once_cell = "1.18.0"
@@ -24,10 +24,10 @@ gdp_rs = { version = "0.1.1", path = "../gdp_rs" }
 frunk_core = "0.4.2"
 if_chain = "1.0.2"
 resiter = "0.5.0"
-sophia_iri = { version = "0.8.0-alpha.3" }
+sophia_iri = { version = "0.8.0" }
 
 # feature: rdf-xml
-sophia_xml = { version = "0.8.0-alpha.3", optional = true }
+sophia_xml = { version = "0.8.0", optional = true }
 rio_xml = { version = "0.8.4", optional = true }
 
 
@@ -48,7 +48,7 @@ tokio-stream = { version = "0.1.14", optional = true }
 
 # feature: jsonld
 json-ld = { version = "^0.15.0", optional = true}
-sophia_jsonld = { version = "0.8.0-alpha.3", optional = true}
+sophia_jsonld = { version = "0.8.0", optional = true}
 locspan = { version = "^0.7.16", optional = true }
 json-syntax = { version = "^0.9.0", optional = true }
 rdf-types = { version = "^0.15.4", optional = true }
@@ -81,7 +81,7 @@ default = ["rdf-xml", "rustls-tls"]
 [dev-dependencies]
 env_logger = "0.10.0"
 tracing = { version = "0.1.37", features = ["log"] }
-sophia_isomorphism = "0.8.0-alpha.3"
+sophia_isomorphism = "0.8.0"
 rstest = "0.18.1"
 
 [package.metadata.docs.rs]

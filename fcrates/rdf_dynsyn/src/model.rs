@@ -6,18 +6,21 @@
 use rio_api::model::{Quad as RioQuad, Term as RioTerm, Triple as RioTriple};
 use sophia_api::{
     quad::{QBorrowTerm, Quad, Spog},
-    term::{BnodeId, CmpTerm, GraphName, IriRef, LanguageTag, SimpleTerm, Term, TermKind, VarName},
+    term::{BnodeId, CmpTerm, GraphName, IriRef, LanguageTag, Term, TermKind, VarName},
     triple::{TBorrowTerm, Triple},
     MownStr,
 };
+#[cfg(feature = "jsonld")]
+use sophia_jsonld::RdfTerm;
 use sophia_rio::model::Trusted;
 
 /// An enum of different variants of borrow-terms produced by different parsers.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy)]
 pub(crate) enum InnerBorrowTerm<'a> {
     /// Trusted rio terms variant.
     Rio(CmpTerm<Trusted<RioTerm<'a>>>),
-    Simple(&'a SimpleTerm<'a>),
+    #[cfg(feature = "jsonld")]
+    RdfTerm(&'a RdfTerm),
 }
 
 impl<'a> From<Trusted<RioTerm<'a>>> for InnerBorrowTerm<'a> {
@@ -34,15 +37,16 @@ impl<'a> From<CmpTerm<Trusted<RioTerm<'a>>>> for InnerBorrowTerm<'a> {
     }
 }
 
-impl<'a> From<&'a SimpleTerm<'a>> for InnerBorrowTerm<'a> {
+#[cfg(feature = "jsonld")]
+impl<'a> From<&'a RdfTerm> for InnerBorrowTerm<'a> {
     #[inline]
-    fn from(value: &'a SimpleTerm<'a>) -> Self {
-        Self::Simple(value)
+    fn from(value: &'a RdfTerm) -> Self {
+        Self::RdfTerm(value)
     }
 }
 
 /// Type of borrow-terms produced by dynsyn parsers.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy)]
 pub struct DynSynBorrowTerm<'a>(pub(crate) InnerBorrowTerm<'a>);
 
 impl<'a> Term for DynSynBorrowTerm<'a> {
@@ -52,7 +56,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn kind(&self) -> TermKind {
         match self.0 {
             InnerBorrowTerm::Rio(v) => v.kind(),
-            InnerBorrowTerm::Simple(v) => v.kind(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.kind(),
         }
     }
 
@@ -65,7 +70,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn iri(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.iri(),
-            InnerBorrowTerm::Simple(v) => v.iri(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.iri(),
         }
     }
 
@@ -73,7 +79,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn bnode_id(&self) -> Option<BnodeId<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.bnode_id(),
-            InnerBorrowTerm::Simple(v) => v.bnode_id(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.bnode_id(),
         }
     }
 
@@ -81,7 +88,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn lexical_form(&self) -> Option<MownStr> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.lexical_form(),
-            InnerBorrowTerm::Simple(v) => v.lexical_form(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.lexical_form(),
         }
     }
 
@@ -89,7 +97,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn datatype(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.datatype(),
-            InnerBorrowTerm::Simple(v) => v.datatype(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.datatype(),
         }
     }
 
@@ -97,7 +106,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn language_tag(&self) -> Option<LanguageTag<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.language_tag(),
-            InnerBorrowTerm::Simple(v) => v.language_tag(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.language_tag(),
         }
     }
 
@@ -105,7 +115,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
     fn variable(&self) -> Option<VarName<MownStr>> {
         match &self.0 {
             InnerBorrowTerm::Rio(v) => v.variable(),
-            InnerBorrowTerm::Simple(v) => v.variable(),
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v.variable(),
         }
     }
 
@@ -115,7 +126,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
             InnerBorrowTerm::Rio(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
-            InnerBorrowTerm::Simple(v) => v
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
@@ -130,7 +142,8 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
             InnerBorrowTerm::Rio(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
-            InnerBorrowTerm::Simple(v) => v
+            #[cfg(feature = "jsonld")]
+            InnerBorrowTerm::RdfTerm(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
@@ -138,11 +151,12 @@ impl<'a> Term for DynSynBorrowTerm<'a> {
 }
 
 /// An enum of different variants of terms produced by different parsers.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub(crate) enum InnerTerm<'a> {
     /// Trusted rio terms variant.
     Rio(CmpTerm<Trusted<RioTerm<'a>>>),
-    Simple(SimpleTerm<'a>),
+    #[cfg(feature = "jsonld")]
+    RdfTerm(RdfTerm),
 }
 
 impl<'a> From<Trusted<RioTerm<'a>>> for InnerTerm<'a> {
@@ -159,15 +173,16 @@ impl<'a> From<CmpTerm<Trusted<RioTerm<'a>>>> for InnerTerm<'a> {
     }
 }
 
-impl<'a> From<SimpleTerm<'a>> for InnerTerm<'a> {
+#[cfg(feature = "jsonld")]
+impl<'a> From<RdfTerm> for InnerTerm<'a> {
     #[inline]
-    fn from(value: SimpleTerm<'a>) -> Self {
-        Self::Simple(value)
+    fn from(value: RdfTerm) -> Self {
+        Self::RdfTerm(value)
     }
 }
 
 /// Type of terms produced by dynsyn parsers.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone)]
 pub struct DynSynTerm<'a>(pub(crate) InnerTerm<'a>);
 
 impl<'a> Term for DynSynTerm<'a> {
@@ -177,7 +192,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn kind(&self) -> TermKind {
         match &self.0 {
             InnerTerm::Rio(v) => v.kind(),
-            InnerTerm::Simple(v) => v.kind(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.kind(),
         }
     }
 
@@ -185,7 +201,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn borrow_term(&self) -> Self::BorrowTerm<'_> {
         match &self.0 {
             InnerTerm::Rio(v) => DynSynBorrowTerm((*v).into()),
-            InnerTerm::Simple(v) => DynSynBorrowTerm(v.into()),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => DynSynBorrowTerm(v.into()),
         }
     }
 
@@ -193,7 +210,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn iri(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.iri(),
-            InnerTerm::Simple(v) => v.iri(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.iri(),
         }
     }
 
@@ -201,7 +219,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn bnode_id(&self) -> Option<BnodeId<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.bnode_id(),
-            InnerTerm::Simple(v) => v.bnode_id(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.bnode_id(),
         }
     }
 
@@ -209,7 +228,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn lexical_form(&self) -> Option<MownStr> {
         match &self.0 {
             InnerTerm::Rio(v) => v.lexical_form(),
-            InnerTerm::Simple(v) => v.lexical_form(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.lexical_form(),
         }
     }
 
@@ -217,7 +237,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn datatype(&self) -> Option<IriRef<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.datatype(),
-            InnerTerm::Simple(v) => v.datatype(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.datatype(),
         }
     }
 
@@ -225,7 +246,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn language_tag(&self) -> Option<LanguageTag<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.language_tag(),
-            InnerTerm::Simple(v) => v.language_tag(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.language_tag(),
         }
     }
 
@@ -233,7 +255,8 @@ impl<'a> Term for DynSynTerm<'a> {
     fn variable(&self) -> Option<VarName<MownStr>> {
         match &self.0 {
             InnerTerm::Rio(v) => v.variable(),
-            InnerTerm::Simple(v) => v.variable(),
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v.variable(),
         }
     }
 
@@ -243,7 +266,8 @@ impl<'a> Term for DynSynTerm<'a> {
             InnerTerm::Rio(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
-            InnerTerm::Simple(v) => v
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v
                 .triple()
                 .map(|triple| triple.map(|term| DynSynBorrowTerm(term.into()))),
         }
@@ -258,7 +282,8 @@ impl<'a> Term for DynSynTerm<'a> {
             InnerTerm::Rio(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynTerm(term.into()))),
-            InnerTerm::Simple(v) => v
+            #[cfg(feature = "jsonld")]
+            InnerTerm::RdfTerm(v) => v
                 .to_triple()
                 .map(|triple| triple.map(|term| DynSynTerm(term.into()))),
         }
@@ -320,13 +345,22 @@ impl<'a> Triple for DynSynTriple<'a> {
 pub(crate) enum InnerQuad<'a> {
     /// Trusted rio quad variant.
     Rio(Trusted<rio_api::model::Quad<'a>>),
-    Simple(Spog<SimpleTerm<'a>>),
+    #[cfg(feature = "jsonld")]
+    Jsonld(Spog<RdfTerm>),
 }
 
 impl<'a> From<Trusted<RioQuad<'a>>> for InnerQuad<'a> {
     #[inline]
     fn from(value: Trusted<RioQuad<'a>>) -> Self {
         Self::Rio(value)
+    }
+}
+
+#[cfg(feature = "jsonld")]
+impl<'a> From<Spog<RdfTerm>> for InnerQuad<'a> {
+    #[inline]
+    fn from(value: Spog<RdfTerm>) -> Self {
+        Self::Jsonld(value)
     }
 }
 
@@ -341,7 +375,8 @@ impl<'a> Quad for DynSynQuad<'a> {
     fn s(&self) -> QBorrowTerm<Self> {
         match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.s().into()),
-            InnerQuad::Simple(v) => DynSynBorrowTerm(v.s().into()),
+            #[cfg(feature = "jsonld")]
+            InnerQuad::Jsonld(v) => DynSynBorrowTerm(v.s().into()),
         }
     }
 
@@ -349,7 +384,8 @@ impl<'a> Quad for DynSynQuad<'a> {
     fn p(&self) -> QBorrowTerm<Self> {
         match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.p().into()),
-            InnerQuad::Simple(v) => DynSynBorrowTerm(v.p().into()),
+            #[cfg(feature = "jsonld")]
+            InnerQuad::Jsonld(v) => DynSynBorrowTerm(v.p().into()),
         }
     }
 
@@ -357,7 +393,8 @@ impl<'a> Quad for DynSynQuad<'a> {
     fn o(&self) -> QBorrowTerm<Self> {
         match &self.0 {
             InnerQuad::Rio(v) => DynSynBorrowTerm(v.o().into()),
-            InnerQuad::Simple(v) => DynSynBorrowTerm(v.o().into()),
+            #[cfg(feature = "jsonld")]
+            InnerQuad::Jsonld(v) => DynSynBorrowTerm(v.o().into()),
         }
     }
 
@@ -365,7 +402,8 @@ impl<'a> Quad for DynSynQuad<'a> {
     fn g(&self) -> GraphName<QBorrowTerm<Self>> {
         match &self.0 {
             InnerQuad::Rio(v) => v.g().map(|gn| DynSynBorrowTerm(gn.into())),
-            InnerQuad::Simple(v) => v.g().map(|gn| DynSynBorrowTerm(gn.into())),
+            #[cfg(feature = "jsonld")]
+            InnerQuad::Jsonld(v) => v.g().map(|gn| DynSynBorrowTerm(gn.into())),
         }
     }
 
@@ -379,7 +417,8 @@ impl<'a> Quad for DynSynQuad<'a> {
                     spog.1.map(|term| DynSynTerm(term.into())),
                 )
             }
-            InnerQuad::Simple(v) => {
+            #[cfg(feature = "jsonld")]
+            InnerQuad::Jsonld(v) => {
                 let spog = v.to_spog();
                 (
                     spog.0.map(|term| DynSynTerm(term.into())),

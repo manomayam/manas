@@ -13,14 +13,14 @@ use crate::{
 use sophia_jsonld::JsonLdParser;
 
 #[cfg(feature = "jsonld")]
-use crate::parser::config::jsonld::DynDocumentLoader;
+use crate::parser::config::jsonld::DynDocumentLoaderFactory;
 
 /// A sum-type that wraps around different quad-parsers from sophia.
 enum InnerQuadParser {
     NQuads(NQuadsParser),
     TriG(TriGParser),
     #[cfg(feature = "jsonld")]
-    JsonLd(JsonLdParser<DynDocumentLoader>),
+    JsonLd(JsonLdParser<DynDocumentLoaderFactory>),
 }
 
 impl std::fmt::Debug for InnerQuadParser {
@@ -47,8 +47,8 @@ impl From<TriGParser> for InnerQuadParser {
 }
 
 #[cfg(feature = "jsonld")]
-impl From<JsonLdParser<DynDocumentLoader>> for InnerQuadParser {
-    fn from(p: JsonLdParser<DynDocumentLoader>) -> Self {
+impl From<JsonLdParser<DynDocumentLoaderFactory>> for InnerQuadParser {
+    fn from(p: JsonLdParser<DynDocumentLoaderFactory>) -> Self {
         Self::JsonLd(p)
     }
 }
