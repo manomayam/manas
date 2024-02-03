@@ -8,7 +8,12 @@ use json_ld::{syntax::Value, Loader, RemoteDocument};
 use locspan::Location;
 use rdf_types::IriVocabularyMut;
 use sophia_iri::Iri;
-use sophia_jsonld::{loader::NoLoader, vocabulary::ArcVoc, JsonLdOptions};
+pub use sophia_jsonld::JsonLdOptions;
+use sophia_jsonld::{
+    loader::NoLoader,
+    loader_factory::{DefaultLoaderFactory, LoaderFactory},
+    vocabulary::ArcVoc,
+};
 
 type ArcIri = Iri<Arc<str>>;
 type DynDisplay = dyn Display + Send + 'static;
@@ -86,32 +91,63 @@ impl DynDocumentLoader {
     }
 }
 
-/// Type for jsonld parser/serializer configuration.
-pub struct JsonLdConfig {
-    /// jsonld options.
-    pub options: JsonLdOptions<NoLoader>,
-
-    /// Context loader factory.
-    pub context_loader_factory: Arc<dyn Fn() -> DynDocumentLoader + Send + Sync>,
+/// A factory that yields [`DynDocumentLoader`].
+#[derive(Clone)]
+pub struct DynDocumentLoaderFactory {
+    inner: Arc<dyn Fn() -> DynDocumentLoader + Send + Sync>,
 }
 
-impl Clone for JsonLdConfig {
-    fn clone(&self) -> Self {
+impl Default for DynDocumentLoaderFactory {
+    #[inline]
+    fn default() -> Self {
+        Self::wrap(DefaultLoaderFactory::<NoLoader>::new())
+    }
+}
+
+impl DynDocumentLoaderFactory {
+    /// Create a new [`DynDocumentLoaderFactory`]
+    pub fn new(inner: Arc<dyn Fn() -> DynDocumentLoader + Send + Sync>) -> Self {
+        Self { inner }
+    }
+
+    /// Wrap the given loader factory.
+    pub fn wrap<LF>(factory: LF) -> Self
+    where
+        LF: LoaderFactory + Send + Sync + 'static,
+        LF::LoaderError: Display + Send + 'static,
+        for<'a> LF::Loader<'a>: Loader<ArcIri, Location<ArcIri>, Output = Value<Location<ArcIri>>>
+            + Send
+            + Sync
+            + 'static,
+    {
         Self {
-            options: self.clone_no_loader_options(),
-            context_loader_factory: self.context_loader_factory.clone(),
+            inner: Arc::new(move || DynDocumentLoader::new(factory.yield_loader())),
         }
     }
 }
 
-impl std::fmt::Debug for JsonLdConfig {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("JsonLdConfig").finish()
+impl LoaderFactory for DynDocumentLoaderFactory {
+    type Loader<'l> = DynDocumentLoader
+    where
+        Self: 'l;
+
+    type LoaderError = Box<DynDisplay>;
+
+    #[inline]
+    fn yield_loader(&self) -> Self::Loader<'_> {
+        (self.inner)()
     }
 }
 
-impl JsonLdConfig {
-    fn clone_no_loader_options(&self) -> JsonLdOptions<NoLoader> {
+/// Type for jsonld parser/serializer configuration.
+#[derive(Default)]
+pub struct JsonLdConfig {
+    /// jsonld options.
+    pub options: JsonLdOptions<DynDocumentLoaderFactory>,
+}
+
+impl Clone for JsonLdConfig {
+    fn clone(&self) -> Self {
         let mut options = JsonLdOptions::new()
             .with_compact_arrays(self.options.compact_arrays)
             .with_compact_to_relative(self.options.compact_to_relative)
@@ -121,7 +157,8 @@ impl JsonLdConfig {
             .with_use_native_types(self.options.use_native_types())
             .with_use_rdf_type(self.options.use_rdf_type())
             .with_expansion_policy(self.options.expansion_policy)
-            .with_spaces(self.options.spaces());
+            .with_spaces(self.options.spaces())
+            .with_document_loader_factory(self.options.document_loader_factory().clone());
 
         if let Some(v) = &self.options.base {
             options = options.with_base(v.clone());
@@ -130,13 +167,13 @@ impl JsonLdConfig {
         //     options = options.with_expand_context(v.clone());
         // }
 
-        options
+        Self { options }
     }
+}
 
-    /// Resolve effective options.
-    pub fn effective_options(&self) -> JsonLdOptions<DynDocumentLoader> {
-        self.clone_no_loader_options()
-            .with_document_loader((self.context_loader_factory)())
+impl std::fmt::Debug for JsonLdConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("JsonLdConfig").finish()
     }
 }
 

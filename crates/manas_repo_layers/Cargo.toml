@@ -38,7 +38,7 @@ rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils"}
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 if_chain = "1.0.2"
 tokio = { version = "1.29.1", features = ["rt"] }
-sophia_api = "0.8.0-alpha.3"
+sophia_api = "0.8.0"
 anyhow = "1.0.71"
 
 rdf_vocabularies = { version = "0.2.0", features = [

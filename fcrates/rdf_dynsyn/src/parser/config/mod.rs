@@ -5,7 +5,7 @@
 use sophia_jsonld::JsonLdOptions;
 
 #[cfg(feature = "jsonld")]
-use self::jsonld::{DynDocumentLoader, JsonLdConfig};
+use self::jsonld::{DynDocumentLoaderFactory, JsonLdConfig};
 
 #[cfg(feature = "jsonld")]
 pub mod jsonld;
@@ -26,13 +26,20 @@ impl DynSynParserConfig {
     }
 
     #[cfg(feature = "jsonld")]
-    pub(crate) fn resolved_jsonld_options(&self) -> JsonLdOptions<DynDocumentLoader> {
+    pub(crate) fn resolved_jsonld_options(&self) -> JsonLdOptions<DynDocumentLoaderFactory> {
         // use tracing::debug;
 
         // debug!("jsonld config: {:?}", self.jsonld);
+
+        use sophia_jsonld::{loader::NoLoader, loader_factory::DefaultLoaderFactory};
+
         self.jsonld.as_ref().map_or_else(
-            || JsonLdOptions::new().with_document_loader(DynDocumentLoader::new_no_loading()),
-            |config| config.effective_options(),
+            || {
+                JsonLdOptions::new().with_document_loader_factory(DynDocumentLoaderFactory::wrap(
+                    DefaultLoaderFactory::<NoLoader>::new(),
+                ))
+            },
+            |config| config.clone().options,
         )
     }
 }

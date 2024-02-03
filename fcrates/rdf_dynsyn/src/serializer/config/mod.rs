@@ -9,7 +9,7 @@ use sophia_turtle::serializer::{
 use sophia_xml::serializer::RdfXmlConfig;
 
 #[cfg(feature = "jsonld")]
-use crate::parser::config::jsonld::{DynDocumentLoader, JsonLdConfig};
+use crate::parser::config::jsonld::{DynDocumentLoaderFactory, JsonLdConfig};
 #[cfg(feature = "jsonld")]
 use sophia_jsonld::JsonLdOptions;
 
@@ -74,10 +74,16 @@ impl DynSynSerializerConfig {
     }
 
     #[cfg(feature = "jsonld")]
-    pub(crate) fn resolved_jsonld_options(&self) -> JsonLdOptions<DynDocumentLoader> {
+    pub(crate) fn resolved_jsonld_options(&self) -> JsonLdOptions<DynDocumentLoaderFactory> {
+        use sophia_jsonld::{loader::NoLoader, loader_factory::DefaultLoaderFactory};
+
         self.jsonld.as_ref().map_or_else(
-            || JsonLdOptions::new().with_document_loader(DynDocumentLoader::new_no_loading()),
-            |config| config.effective_options(),
+            || {
+                JsonLdOptions::new().with_document_loader_factory(DynDocumentLoaderFactory::wrap(
+                    DefaultLoaderFactory::<NoLoader>::new(),
+                ))
+            },
+            |config| config.clone().options,
         )
     }
 }

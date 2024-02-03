@@ -8,7 +8,7 @@ mod utils;
 
 mod n3_simple;
 
-pub use error::TurtleError;
+// pub use error::TurtleError;
 pub use n3_simple::N3SimpleParser;
 
 /// Maximal number of nested structures (collections, blank node, quoted triples...).

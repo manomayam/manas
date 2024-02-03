@@ -56,7 +56,7 @@ impl<C: RequestCredentials> CRAuthenticationScheme for UnionCRAuthenticationSche
             .cloned()
         {
             // Delegate to matched scheme.
-            return scheme.resolve_or_challenge(uri, method, headers);
+            scheme.resolve_or_challenge(uri, method, headers)
         } else {
             // Return the default challenges.
             let schemes = self
