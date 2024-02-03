@@ -68,7 +68,7 @@ typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", feature
     "ext-anymap",
 ] }
 async-once-cell = "0.5.3"
-http-body = "0.4.5"
+http-body = "1.0.0"
 hyper = { version = "0.14.27", features = ["stream"] }
 manas_space = { version = "0.1.0", path = "../manas_space"}
 vec1 = "1.10.1"
