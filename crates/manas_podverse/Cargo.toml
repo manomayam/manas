@@ -8,10 +8,10 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
-futures = "0.3.28"
-ghost = "0.1.13"
+futures = "0.3.30"
+ghost = "0.1.17"
 http-api-problem = { version = "0.57.0", features = ["api-error", "hyper"] }
-hyper = "0.14.27"
+hyper = "0.14.28"
 manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "service",
 ] }
@@ -23,14 +23,14 @@ rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = 
 ] }
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-rdf", "ns-pim"] }
-regex = "1.10.2"
+regex = "1.10.3"
 sophia_api = "0.8.0"
 tower = "0.4.13"
-tracing = { version = "0.1.37", features = ["attributes"] }
+tracing = { version = "0.1.40", features = ["attributes"] }
 
 # feature: impl-podset-templated
 dashmap = { version = "5.5.3", optional = true }
-moka = { version = "0.12.0", features = ["future"], optional = true }
+moka = { version = "0.12.5", features = ["future"], optional = true }
 
 
 [features]

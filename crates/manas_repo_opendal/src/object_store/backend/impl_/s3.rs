@@ -10,7 +10,7 @@ use crate::object_store::backend::{
     BuildableODRObjectStoreBackend, ODRObjectStoreBackend,
 };
 
-use super::common::stat_fix_layer::StatFixLayer;
+// use super::common::stat_fix_layer::StatFixLayer;
 
 /// An implementation of [`ODRObjectStoreBackend`]
 /// with s3 backend.
@@ -41,7 +41,9 @@ impl TryFrom<S3> for S3Backend {
     #[inline]
     fn try_from(builder: S3) -> Result<Self, Self::Error> {
         Ok(Self {
-            operator: Operator::new(builder)?.layer(StatFixLayer).finish(),
+            operator: Operator::new(builder)?
+                // .layer(StatFixLayer)
+                .finish(),
         })
     }
 }
