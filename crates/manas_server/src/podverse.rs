@@ -150,7 +150,7 @@ pub mod assets_overriden_static {
 
         /// Get a new assets overriden pod set service serving
         /// single pod.
-        pub fn new_for<Assets: RustEmbed + 'static>(
+        pub fn new_for<Assets: RustEmbed + Send + Sync + 'static>(
             pod: Arc<RcpPod<StSetup>>,
             assets_space: Arc<RcpStorageSpace>,
             assets_label: String,

@@ -7,7 +7,7 @@ repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-http = "0.2.9"
+http = "0.2.11"
 manas_podverse = { version = "0.1.0", path = "../manas_podverse" }
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 manas_repo_opendal = { version = "0.1.0", path = "../manas_repo_opendal", features = ["access-prp", "backend-embedded"]}
@@ -15,23 +15,23 @@ manas_storage = { version = "0.1.0", path = "../manas_storage" }
 name_locker = { version = "0.1.1", path = "../../fcrates/name_locker", features = [
     "inmem",
 ] }
-tracing = { version = "0.1.37", features = ["attributes"] }
-tracing-subscriber = { version = "0.3.17", features = ["env-filter", "fmt", "ansi"] }
-tracing-log = "0.1.3"
+tracing = { version = "0.1.40", features = ["attributes"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "fmt", "ansi"] }
+tracing-log = "0.1.4"
 manas_http = { version = "0.1.1", path = "../manas_http" }
-flagset = "0.4.3"
-hyper = { version = "0.14.27", features = ["server", "stream"] }
-tower-http = { version = "0.4.1", features = ["cors", "catch-panic"] }
+flagset = "0.4.4"
+hyper = { version = "0.14.28", features = ["server", "stream"] }
+tower-http = { version = "0.4.4", features = ["cors", "catch-panic"] }
 manas_space = { version = "0.1.0", path = "../manas_space" }
-once_cell = "1.18.0"
-serde = { version = "1.0.171", features = ["derive"] }
-bytes = { version = "1.4.0" }
+once_cell = "1.19.0"
+serde = { version = "1.0.196", features = ["derive"] }
+bytes = { version = "1.5.0" }
 mime = { version = "0.3.17" }
 tower = { version = "0.4.13", features = ["make", "util"] }
 webid = { version = "0.1.0", path = "../../fcrates/webid" }
-rust-embed = { version = "8.0.0" }
+rust-embed = { version = "8.2.0" }
 # Opendal is pinned, as it breaks frequently.
-opendal = {version = "^0.42.0", git = "https://github.com/apache/incubator-opendal/", tag = "v0.42.0-rc.3", features = ["rustls"]}
+opendal = {version = "^0.44.2", features = ["rustls"]}
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-http",
 ] }
@@ -42,21 +42,21 @@ manas_access_control = { version = "0.1.0", path = "../manas_access_control", fe
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 manas_semslot = { version = "0.1.0", path = "../manas_semslot" }
 upon = { version = "0.7.1", default-features = false, features = ["serde"] }
-futures = "0.3.28"
+futures = "0.3.30"
 axum-server = { version = "0.5.1", features = ["tls-rustls"] }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"] }
-anyhow = "1.0.75"
-clap = { version = "4.3.11", features = [
+anyhow = "1.0.79"
+clap = { version = "4.4.18", features = [
     "derive", "string"
 ] }
-config = { version = "0.13.3", default-features = false, features = ["toml"] }
-tokio = { version = "1.32.0", features = ["fs"] }
+config = { version = "0.14.0", default-features = false, features = ["toml"] }
+tokio = { version = "1.36.0", features = ["fs"] }
 dpop = { version = "0.1.1", path = "../../fcrates/dpop", features = ["unsafe-optional-ath-claim"] }
 paste = "1.0.14"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 manas_repo_layers = { version = "0.1.0", path = "../manas_repo_layers", features = ["dconneging", "patching", "validating"] }
 frunk_core = "0.4.2"
-serde_with = "3.4.0"
+serde_with = "3.6.0"
 http-cache-reqwest = { version = "0.12.0", default-features = false, features = ["manager-moka"] }
 rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = ["jsonld-http-loader"] }
 sophia_turtle = "0.8.0"

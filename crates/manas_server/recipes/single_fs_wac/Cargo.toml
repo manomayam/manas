@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 manas_server = { version = "0.1.0", path = "../..", features = ["backend-fs", "pdp-wac"] }
-tokio = { version = "1.32.0", features = ["rt", "rt-multi-thread"] }
+tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread"] }
 
 
 [package.metadata.docs.rs]

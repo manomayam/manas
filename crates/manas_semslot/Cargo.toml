@@ -11,18 +11,18 @@ bimap = "0.6.3"
 if_chain = "1.0.2"
 manas_http = { version = "0.1.1", path = "../manas_http" }
 manas_space = { version = "0.1.0", path = "../manas_space" }
-once_cell = "1.18.0"
-smallvec = "1.11.0"
-thiserror = "1.0.47"
+once_cell = "1.19.0"
+smallvec = "1.13.1"
+thiserror = "1.0.56"
 
 # feature: test-utils
 claims = { version = "0.7.1", optional = true }
-rstest = { version = "0.18.1", optional = true }
+rstest = { version = "0.18.2", optional = true }
 
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.1"
+rstest = "0.18.2"
 manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "test-utils",
 ] }

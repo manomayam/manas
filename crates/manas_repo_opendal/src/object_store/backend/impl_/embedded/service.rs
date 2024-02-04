@@ -5,7 +5,12 @@
 // NOTE: rust-embed returns root-less paths of assets.
 // It doesn't include any dir paths in assets.
 
-use std::{borrow::Cow, collections::HashMap, marker::PhantomData};
+use std::{
+    borrow::Cow,
+    collections::HashMap,
+    marker::PhantomData,
+    task::{Context, Poll},
+};
 
 use async_trait::async_trait;
 use bytes::Bytes;
@@ -14,7 +19,7 @@ use either::Either;
 use manas_http::header::common::media_type::MediaType;
 use opendal::{
     raw::{
-        oio::{self, Entry, Page},
+        oio::{self, Entry, List},
         Accessor, AccessorInfo, BytesRange, OpList, OpRead, OpStat, RpList, RpRead, RpStat,
     },
     Builder, Capability, EntryMode, Error, ErrorKind, Metadata, Result, Scheme,
@@ -56,7 +61,7 @@ impl<Assets> Embedded<Assets> {
     }
 }
 
-impl<Assets: RustEmbed + 'static> Builder for Embedded<Assets> {
+impl<Assets: RustEmbed + Send + Sync + 'static> Builder for Embedded<Assets> {
     const SCHEME: Scheme = Scheme::Custom("Embedded");
 
     type Accessor = EmbeddedAccessor<Assets>;
@@ -152,13 +157,13 @@ impl<Assets: RustEmbed + 'static> EmbeddedAccessor<Assets> {
 }
 
 #[async_trait]
-impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
+impl<Assets: RustEmbed + Send + Sync + 'static> Accessor for EmbeddedAccessor<Assets> {
     type Reader = oio::Cursor;
     type BlockingReader = ();
     type Writer = ();
     type BlockingWriter = ();
-    type Pager = NsPage<Assets>;
-    type BlockingPager = ();
+    type Lister = NsList<Assets>;
+    type BlockingLister = ();
 
     fn info(&self) -> AccessorInfo {
         let mut info = AccessorInfo::default();
@@ -169,7 +174,6 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
                 read: true,
                 read_with_range: true,
                 list: true,
-                list_with_delimiter_slash: true,
 
                 ..Default::default()
             })
@@ -206,11 +210,11 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
         ))
     }
 
-    async fn list(&self, path: &str, args: OpList) -> Result<(RpList, Self::Pager)> {
-        if args.delimiter() != "/" {
+    async fn list(&self, path: &str, args: OpList) -> Result<(RpList, Self::Lister)> {
+        if args.recursive() {
             return Err(Error::new(
                 ErrorKind::Unsupported,
-                "Non slash delimiter is not yet supported.",
+                "Recursive listing is not yet supported.",
             ));
         }
 
@@ -220,53 +224,47 @@ impl<Assets: RustEmbed + 'static> Accessor for EmbeddedAccessor<Assets> {
 
         Ok((
             Default::default(),
-            NsPage::<Assets> {
+            NsList::<Assets> {
                 ns_path,
-                is_exhausted: false,
+                iterator: Assets::iter().collect::<Vec<_>>().into_iter(),
                 _phantom: PhantomData,
             },
         ))
     }
 }
 
-/// Pager for [`Embedded`] service.
-pub struct NsPage<Assets> {
+/// Lister for [`Embedded`] service.
+pub struct NsList<Assets> {
     ns_path: NsPath<'static>,
-    is_exhausted: bool,
+    iterator: std::vec::IntoIter<Cow<'static, str>>,
     _phantom: PhantomData<fn() -> Assets>,
 }
 
-#[async_trait]
-impl<Assets: RustEmbed + 'static> Page for NsPage<Assets> {
-    async fn next(&mut self) -> Result<Option<Vec<Entry>>> {
-        Ok((!self.is_exhausted).then(|| {
-            Assets::iter()
-                .filter_map(|path| {
-                    let is_child = path
-                        .rsplit_once('/')
-                        .map(|(prefix, name)| {
-                            prefix == self.ns_path.trim_end_matches('/') && !name.is_empty()
-                        })
-                        .unwrap_or_default();
-
-                    if !is_child {
-                        return None;
-                    }
-
-                    let path = ClassifiedPath::new(NormalPath::try_new(path.as_ref()).ok()?);
-
-                    let metadata = match &path.0 {
-                        Either::Left(ns_path) => EmbeddedAccessor::<Assets>::ns_info(ns_path),
-                        Either::Right(file_path) => {
-                            EmbeddedAccessor::<Assets>::file_info(file_path)
-                                .map(|(metadata, _)| metadata)
-                        }
-                    }?;
-
-                    Some(Entry::new(path.as_str(), metadata))
+impl<Assets: RustEmbed + Send + Sync + 'static> List for NsList<Assets> {
+    fn poll_next(&mut self, _cx: &mut Context<'_>) -> Poll<Result<Option<Entry>>> {
+        Poll::Ready(Ok(self.iterator.find_map(|path| {
+            let is_child = path
+                .rsplit_once('/')
+                .map(|(prefix, name)| {
+                    prefix == self.ns_path.trim_end_matches('/') && !name.is_empty()
                 })
-                .collect()
-        }))
+                .unwrap_or_default();
+
+            if !is_child {
+                return None;
+            }
+
+            let path = ClassifiedPath::new(NormalPath::try_new(path.as_ref()).ok()?);
+
+            let metadata = match &path.0 {
+                Either::Left(ns_path) => EmbeddedAccessor::<Assets>::ns_info(ns_path),
+                Either::Right(file_path) => {
+                    EmbeddedAccessor::<Assets>::file_info(file_path).map(|(metadata, _)| metadata)
+                }
+            }?;
+
+            Some(Entry::new(path.as_str(), metadata))
+        })))
     }
 }
 

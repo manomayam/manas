@@ -8,19 +8,19 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-anyhow = "1.0.71"
-dyn-clone = "1.0.14"
+anyhow = "1.0.79"
+dyn-clone = "1.0.16"
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = [
     "ext-typed-record",
 ] }
-either = "1.8.1"
-futures = "0.3.28"
+either = "1.9.0"
+futures = "0.3.30"
 gdp_rs = { version = "0.1.1", path = "../../fcrates/gdp_rs" }
-ghost = "0.1.13"
-headers = "0.3.8"
-http = "0.2.9"
+ghost = "0.1.17"
+headers = "0.3.9"
+http = "0.2.11"
 http-api-problem = { version = "0.57.0", features = ["api-error", "hyper"] }
-hyper = "0.14.27"
+hyper = "0.14.28"
 if_chain = "1.0.2"
 iri-string = "0.7.0"
 manas_access_control = { version = "0.1.0", path = "../manas_access_control" }
@@ -34,7 +34,7 @@ manas_space = { version = "0.1.0", path = "../manas_space" }
 manas_specs = { version = "0.1.0", path = "../manas_specs" }
 mime = "0.3.17"
 name_locker = { version = "0.1.1", path = "../../fcrates/name_locker" }
-once_cell = "1.18.0"
+once_cell = "1.19.0"
 rand = "0.8.5"
 rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn" }
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", features = ["compat-iri-string"] }
@@ -44,10 +44,10 @@ rdf_vocabularies = { version = "0.2.0", features = [
     "ns-solid",
 ] }
 sophia_api = "0.8.0"
-thiserror = "1.0.43"
+thiserror = "1.0.56"
 tower = "0.4.13"
-tower-http = { version = "0.4.1", features = ["cors"] }
-tracing = { version = "0.1.37", features = ["attributes"] }
+tower-http = { version = "0.4.4", features = ["cors"] }
+tracing = { version = "0.1.40", features = ["attributes"] }
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-http",
 ] }

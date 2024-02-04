@@ -10,10 +10,10 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 http_uri = { version = "1.0.1", path = "../http_uri", default-features = false, features = ["sophia"]}
 iri-string = "0.7.0"
-thiserror = "1.0.43"
+thiserror = "1.0.56"
 
 # feature: serde
-serde = { version = "1.0.167", features = ["derive"], optional = true }
+serde = { version = "1.0.196", features = ["derive"], optional = true }
 
 # feature: invariant
 gdp_rs = { version = "0.1.1", path = "../gdp_rs", optional = true }
@@ -22,14 +22,14 @@ gdp_rs = { version = "0.1.1", path = "../gdp_rs", optional = true }
 sophia_api = { version = "0.8.0", optional = true }
 
 # feature: profile-req-agent
-reqwest = { version = "0.11.18", optional = true, features = ["stream"], default-features = false}
-tracing = { version = "0.1.37", features = ["attributes"] }
+reqwest = { version = "0.11.24", optional = true, features = ["stream"], default-features = false}
+tracing = { version = "0.1.40", features = ["attributes"] }
 rdf_dynsyn = { version = "0.4.0", path = "../rdf_dynsyn", optional = true, features = [
     "async",
 ] }
-headers = { version = "0.3.8", optional = true }
+headers = { version = "0.3.9", optional = true }
 mime = { version = "0.3.17", optional = true }
-futures = { version = "0.3.28", optional = true }
+futures = { version = "0.3.30", optional = true }
 
 
 [features]

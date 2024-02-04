@@ -37,7 +37,7 @@ impl ODRObjectStoreBackend for EmbeddedBackend {
     }
 }
 
-impl<Assets: RustEmbed + 'static> TryFrom<Embedded<Assets>> for EmbeddedBackend {
+impl<Assets: RustEmbed + Send + Sync + 'static> TryFrom<Embedded<Assets>> for EmbeddedBackend {
     type Error = opendal::Error;
 
     #[inline]
@@ -48,7 +48,7 @@ impl<Assets: RustEmbed + 'static> TryFrom<Embedded<Assets>> for EmbeddedBackend 
     }
 }
 
-impl<Assets: RustEmbed + 'static> BuildableODRObjectStoreBackend<Embedded<Assets>>
+impl<Assets: RustEmbed + Send + Sync + 'static> BuildableODRObjectStoreBackend<Embedded<Assets>>
     for EmbeddedBackend
 {
 }
