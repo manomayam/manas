@@ -2540,6 +2540,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manas_server_single_fs_noauth"
+version = "0.1.0"
+dependencies = [
+ "manas_server",
+ "tokio",
+]
+
+[[package]]
 name = "manas_server_single_fs_wac"
 version = "0.1.0"
 dependencies = [

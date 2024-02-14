@@ -47,3 +47,25 @@ jobs:
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
           include: crates/manas_server/recipes/single_fs_wac/README.md,crates/manas_server/recipes/single_fs_wac/config-template.toml,LICENSE-MIT
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
+          bin: manas_server_single_s3_wac
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
+          tar: unix
+          # (required) GitHub token for uploading assets to GitHub Releases.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          include: crates/manas_server/recipes/single_s3_wac/README.md,crates/manas_server/recipes/single_s3_wac/config-template.toml,LICENSE-MIT
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
+          bin: manas_server_single_fs_noauth
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
+          tar: unix
+          # (required) GitHub token for uploading assets to GitHub Releases.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          include: crates/manas_server/recipes/single_fs_noauth/README.md,crates/manas_server/recipes/single_fs_noauth/config-template.toml,LICENSE-MIT

@@ -89,6 +89,7 @@
         "MODR",
         "moka",
         "multimap",
+        "noauth",
         "nquads",
         "ntriples",
         "Ogps",
