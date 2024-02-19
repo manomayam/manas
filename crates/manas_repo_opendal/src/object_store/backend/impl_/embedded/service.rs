@@ -13,21 +13,21 @@ use std::{
 };
 
 use async_trait::async_trait;
-use bytes::Bytes;
 use chrono::{LocalResult, TimeZone, Utc};
 use either::Either;
 use manas_http::header::common::media_type::MediaType;
 use opendal::{
     raw::{
         oio::{self, Entry, List},
-        Accessor, AccessorInfo, BytesRange, OpList, OpRead, OpStat, RpList, RpRead, RpStat,
+        Accessor, AccessorInfo, OpList, OpRead, OpStat, RpList, RpRead, RpStat,
     },
     Builder, Capability, EntryMode, Error, ErrorKind, Metadata, Result, Scheme,
 };
 use rust_embed::RustEmbed;
 
-use crate::object_store::backend::impl_::common::service_object_path::{
-    ClassifiedPath, FilePath, NormalPath, NsPath,
+use crate::object_store::backend::impl_::common::{
+    service_object_path::{ClassifiedPath, FilePath, NormalPath, NsPath},
+    util::apply_range,
 };
 
 /// An implementation of builder for opendal service that
@@ -108,29 +108,14 @@ impl<Assets: RustEmbed> EmbeddedAccessor<Assets> {
     }
 }
 
-fn apply_range(mut bs: Bytes, br: BytesRange) -> Bytes {
-    match (br.offset(), br.size()) {
-        (Some(offset), Some(size)) => {
-            let mut bs = bs.split_off(offset as usize);
-            if (size as usize) < bs.len() {
-                let _ = bs.split_off(size as usize);
-            }
-            bs
-        }
-        (Some(offset), None) => bs.split_off(offset as usize),
-        (None, Some(size)) => bs.split_off(bs.len() - size as usize),
-        (None, None) => bs,
-    }
-}
-
 impl<Assets: RustEmbed + 'static> EmbeddedAccessor<Assets> {
-    fn ns_info(path: &NsPath<'_>) -> Option<Metadata> {
+    fn ns_info(path: &NsPath) -> Option<Metadata> {
         Assets::iter()
             .any(|f| f.starts_with(path.as_str()))
             .then(|| Metadata::new(EntryMode::DIR))
     }
 
-    fn file_info(path: &FilePath<'_>) -> Option<(Metadata, Cow<'static, [u8]>)> {
+    fn file_info(path: &FilePath) -> Option<(Metadata, Cow<'static, [u8]>)> {
         let file = Assets::get(path)?;
 
         let f_metadata = file.metadata;
@@ -218,9 +203,7 @@ impl<Assets: RustEmbed + Send + Sync + 'static> Accessor for EmbeddedAccessor<As
             ));
         }
 
-        let ns_path = NormalPath::try_new(path)?
-            .into_owned()
-            .assert_is_ns_path()?;
+        let ns_path = NormalPath::try_new(path)?.assert_is_ns_path()?;
 
         Ok((
             Default::default(),
@@ -235,7 +218,7 @@ impl<Assets: RustEmbed + Send + Sync + 'static> Accessor for EmbeddedAccessor<As
 
 /// Lister for [`Embedded`] service.
 pub struct NsList<Assets> {
-    ns_path: NsPath<'static>,
+    ns_path: NsPath,
     iterator: std::vec::IntoIter<Cow<'static, str>>,
     _phantom: PhantomData<fn() -> Assets>,
 }

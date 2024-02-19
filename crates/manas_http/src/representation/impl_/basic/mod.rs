@@ -267,7 +267,7 @@ impl BasicRepresentation<BytesInmem> {
             let mut ds = D::default();
             parser_factories
                 .parse_collect_quads(
-                    BufReader::new(data.as_read()),
+                    BufReader::new(data.reader()),
                     base_uri.as_ref().map(From::from),
                     parsable_syntax,
                     &mut ds,

@@ -1,5 +1,8 @@
-use headers::{IfRange, Range};
-use manas_http::representation::metadata::{KDerivedETag, KLastModified, RepresentationMetadata};
+use headers::IfRange;
+use manas_http::{
+    header::range::Range,
+    representation::metadata::{KDerivedETag, KLastModified, RepresentationMetadata},
+};
 use typed_record::TypedRecord;
 
 use crate::service::resource_operator::reader::message::rep_preferences::range_negotiator::RangeNegotiator;

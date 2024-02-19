@@ -1613,6 +1613,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "add0ab9360ddbd88cfeb3bd9574a1d85cfdfa14db10b3e21d3700dbc4328758f"
 
 [[package]]
+name = "http-range-header"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ce4ef31cda248bbdb6e6820603b82dfcd9e833db65a43e997a0ccec777d11fe"
+
+[[package]]
 name = "http-serde"
 version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1632,6 +1638,7 @@ dependencies = [
  "either",
  "headers",
  "http",
+ "http-range-header 0.4.0",
  "iri-string",
  "itertools",
  "mime",
@@ -1845,9 +1852,9 @@ dependencies = [
 
 [[package]]
 name = "itertools"
-version = "0.11.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
 dependencies = [
  "either",
 ]
@@ -2445,6 +2452,7 @@ dependencies = [
  "manas_space",
  "mime",
  "mime_guess",
+ "name_locker",
  "once_cell",
  "opendal",
  "percent-encoding",
@@ -4873,7 +4881,7 @@ dependencies = [
  "futures-util",
  "http",
  "http-body",
- "http-range-header",
+ "http-range-header 0.3.1",
  "pin-project-lite",
  "tower-layer",
  "tower-service",

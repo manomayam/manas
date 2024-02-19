@@ -35,6 +35,9 @@ pub mod prefer;
 #[cfg(feature = "prefer")]
 pub mod preference_applied;
 
+#[cfg(feature = "range")]
+pub mod range;
+
 #[cfg(feature = "slug")]
 pub mod slug;
 

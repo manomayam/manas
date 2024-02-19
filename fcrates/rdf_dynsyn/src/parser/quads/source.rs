@@ -3,6 +3,7 @@ use std::{error::Error, io::BufRead};
 use rio_api::parser::QuadsParser as RioQuadsParser;
 use rio_turtle::{NQuadsParser as RioNQuadsParser, TriGParser as RioTriGParser};
 use sophia_api::source::{QuadSource, StreamResult};
+    #[cfg(feature = "jsonld")]
 use sophia_jsonld::JsonLdQuadSource;
 use sophia_rio::parser::StrictRioSource;
 

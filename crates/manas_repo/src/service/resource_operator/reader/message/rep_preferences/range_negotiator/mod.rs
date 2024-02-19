@@ -7,8 +7,7 @@ pub mod impl_;
 use std::fmt::Debug;
 
 use dyn_clone::DynClone;
-use headers::Range;
-use manas_http::representation::metadata::RepresentationMetadata;
+use manas_http::{header::range::Range, representation::metadata::RepresentationMetadata};
 
 /// A [`RangeNegotiator`] will be used by a caller to
 /// negotiate it's preferred rep range, for any service that

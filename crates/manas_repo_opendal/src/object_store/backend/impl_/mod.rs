@@ -14,3 +14,6 @@ pub mod gcs;
 
 #[cfg(feature = "backend-embedded")]
 pub mod embedded;
+
+#[cfg(feature = "backend-inmem")]
+pub mod inmem;

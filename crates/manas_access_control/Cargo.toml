@@ -23,7 +23,7 @@ manas_authentication = { version = "0.1.0", path = "../manas_authentication", fe
 http_typed_headers = { version = "0.1.0", path = "../../fcrates/http_typed_headers", default-features = false, features = ["wac-allow"] }
 manas_space = { version = "0.1.0", path = "../manas_space" }
 async-recursion = "1.0.5"
-itertools = "0.11.0"
+itertools = "0.12.1"
 paste = "1.0.14"
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl", "ns-foaf","ns-rdf"] }

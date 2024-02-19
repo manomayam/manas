@@ -16,10 +16,11 @@ enum LockGuard<'g> {
     Write(RwLockWriteGuard<'g, ()>),
 }
 
-/// An implememntation of [`NameLocker`], that uses inmemory lock table.
+/// An implementation of [`NameLocker`], that uses inmemory lock table.
 ///
 /// As this uses inmemory lock table, it cannot lock a name across different processes.
 ///
+#[derive(Debug)]
 pub struct InmemNameLocker<Name>
 where
     Name: Ord + Hash + Clone + Send + Sync + 'static,

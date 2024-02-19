@@ -206,7 +206,7 @@ where
             // Parse [`SolidInsertDeletePatchDoc`].
             let patch_doc = spawn_blocking(move || {
                 SolidInsertDeletePatchDoc::<HashSet<ArcQuad>>::parse(
-                    BufReader::new(patch_rep_inmem.data().as_read()),
+                    BufReader::new(patch_rep_inmem.data().reader()),
                     patch_rep_inmem.base_uri().as_ref().map(Into::into),
                 )
             })

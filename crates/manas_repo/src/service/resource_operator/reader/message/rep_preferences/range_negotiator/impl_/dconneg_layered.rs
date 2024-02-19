@@ -1,7 +1,8 @@
 use std::fmt::Debug;
 
 use manas_http::{
-    header::common::media_type::MediaType, representation::metadata::RepresentationMetadata,
+    header::{common::media_type::MediaType, range::Range},
+    representation::metadata::RepresentationMetadata,
 };
 
 use crate::service::resource_operator::reader::message::rep_preferences::range_negotiator::{
@@ -30,10 +31,7 @@ impl<CN> RangeNegotiator for DConnegLayeredRangeNegotiator<CN>
 where
     CN: DContentTypeNegotiator,
 {
-    fn resolve_pref_range(
-        self: Box<Self>,
-        rep_metadata: &RepresentationMetadata,
-    ) -> Option<headers::Range> {
+    fn resolve_pref_range(self: Box<Self>, rep_metadata: &RepresentationMetadata) -> Option<Range> {
         // Get negotiated content-type.
         let negotiated_content_type = self
             .dconneger

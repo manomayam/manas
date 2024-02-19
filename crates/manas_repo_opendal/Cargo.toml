@@ -74,12 +74,12 @@ manas_space = { version = "0.1.0", path = "../manas_space"}
 vec1 = "1.10.1"
 chrono = { version = "0.4.33", default-features = false, features = ["serde"] }
 mime = "0.3.17"
-itertools = "0.11.0"
+itertools = "0.12.1"
 sophia_turtle = "0.8.0"
 manas_semslot = { version = "0.1.0", path = "../manas_semslot"}
 mime_guess = { version = "2.0.4"}
 
-# feature; service-embedded
+# feature; backend-embedded
 rust-embed = { version = "8.2.0", optional = true }
 
 # feature: test-utils
@@ -99,12 +99,16 @@ manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 ecow = "0.2.0"
 capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream" }
 
+# feature: backend-inmem
+name_locker = { version = "0.1.1", path = "../../fcrates/name_locker", features = ["inmem"], optional = true}
+
 
 [features]
 backend-embedded = ["dep:rust-embed"]
 backend-fs = ["opendal/services-fs"]
 backend-s3 = ["opendal/services-s3"]
 backend-gcs = ["opendal/services-gcs"]
+backend-inmem = ["dep:name_locker"]
 test-utils = ["dep:rstest", "dep:claims", "manas_repo/test-utils", "manas_http/test-utils", "manas_space/test-utils", "manas_semslot/test-utils", 'opendal/services-memory']
 access-prp = ["dep:manas_access_control", "dep:acp"]
 

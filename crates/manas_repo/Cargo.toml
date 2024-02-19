@@ -46,7 +46,7 @@ typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", feature
     "ext-http",
 ] }
 unwrap-infallible = "0.1.5"
-itertools = "0.11.0"
+itertools = "0.12.1"
 sophia_api = "0.8.0"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 

@@ -1,4 +1,4 @@
-use manas_http::representation::metadata::RepresentationMetadata;
+use manas_http::{header::range::Range, representation::metadata::RepresentationMetadata};
 
 use crate::service::resource_operator::reader::message::rep_preferences::range_negotiator::RangeNegotiator;
 
@@ -11,7 +11,7 @@ impl RangeNegotiator for CompleteRangeNegotiator {
     fn resolve_pref_range(
         self: Box<Self>,
         _rep_metadata: &RepresentationMetadata,
-    ) -> Option<headers::Range> {
+    ) -> Option<Range> {
         None
     }
 }
