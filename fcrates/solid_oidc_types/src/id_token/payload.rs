@@ -65,6 +65,7 @@ mod predicate {
 
     /// A predicate over [`SolidOidcIdTokenClaims`] that
     /// asserts for their validity.
+    #[allow(dead_code)]
     #[derive(Debug)]
     pub struct AreValidSolidOidcIdTokenClaims;
 

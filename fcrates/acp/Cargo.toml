@@ -9,11 +9,11 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 rdf_utils = { version = "0.3.1", path = "../rdf_utils" }
 rdf_vocabularies = { version = "0.2.0", features = ["ns-acp", "ns-acl"] }
-paste = { version = "1.0.14" }
+paste = { version = "1.0.15" }
 sophia_api = { version = "0.8.0" }
 
 # feature: engine
-dyn-clone = { version = "1.0.16", optional = true }
+dyn-clone = { version = "1.0.17", optional = true }
 dyn_problem = { version = "0.1.1", path = "../dyn_problem", optional = true, features = ["alias-future"]}
 futures = { version = "0.3.30", optional = true }
 ghost = { version = "0.1.17", optional = true }

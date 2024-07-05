@@ -68,7 +68,7 @@ where
         Box::pin(self.inner.call(req).map_ok(|resp| {
             // Replace body with empty body.
             let (parts, _body) = resp.into_parts();
-            Response::from_parts(parts, hyper::Body::empty())
+            Response::from_parts(parts, Body::empty())
         }))
     }
 }

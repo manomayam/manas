@@ -7,12 +7,12 @@ repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-iri-string = "0.7.0"
+iri-string = "0.7.2"
 unicase = "2.7.0"
-thiserror = "1.0.56"
+thiserror = "1.0.61"
 
 # feature: serde
-serde = { version = "1.0.196", optional = true }
+serde = { version = "1.0.203", optional = true }
 
 # feature: invariants
 gdp_rs = { version = "0.1.1", path = "../gdp_rs", optional = true }

@@ -9,8 +9,8 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 futures = "0.3.30"
-pin-project-lite = "0.2.13"
-thiserror = "1.0.56"
+pin-project-lite = "0.2.14"
+thiserror = "1.0.61"
 
 [package.metadata.docs.rs]
 all-features = true
