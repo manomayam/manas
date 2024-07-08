@@ -126,6 +126,7 @@ where
 }
 
 /// Iter over the bindings of triple `tq` for graph `g`, given the binding `b`.
+#[allow(clippy::useless_vec)]
 fn bindings_for_triple<'a, G>(
     g: &'a G,
     tq: &'a [ArcTerm; 3],
@@ -134,7 +135,7 @@ fn bindings_for_triple<'a, G>(
 where
     G: Graph,
 {
-    let tm = [
+    let tm = vec![
         matcher(tq.s(), &b),
         matcher(tq.p(), &b),
         matcher(tq.o(), &b),
