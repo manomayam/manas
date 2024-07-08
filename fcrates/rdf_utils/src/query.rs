@@ -63,7 +63,7 @@ impl Query {
                             matcher(t.o(), initial_bindings),
                         ];
                         let hint = triples_matching(graph, &tm).size_hint();
-                        (hint.1.unwrap_or(std::usize::MAX), hint.0)
+                        (hint.1.unwrap_or(usize::MAX), hint.0)
                     })
                     .collect();
                 for i in 1..hints.len() {
@@ -134,7 +134,7 @@ fn bindings_for_triple<'a, G>(
 where
     G: Graph,
 {
-    let tm = vec![
+    let tm = [
         matcher(tq.s(), &b),
         matcher(tq.p(), &b),
         matcher(tq.o(), &b),

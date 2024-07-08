@@ -1,11 +1,11 @@
 [package]
 name = "webid"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "A crate for handling web-ids"
 repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
-
 
 [dependencies]
 http_uri = { version = "1.0.1", path = "../http_uri", default-features = false, features = ["sophia"]}

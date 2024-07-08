@@ -1,6 +1,7 @@
 [package]
 name = "manas_tauri"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate provides utilities to integrate manas as a backend in tauri apps."
 repository = "https://github.com/manomayam/manas"

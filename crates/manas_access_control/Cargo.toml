@@ -1,6 +1,7 @@
 [package]
 name = "manas_access_control"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate Defines traits for access control systems compatible with solid storage space. Provides default implementations confirming to [`ACP`](https://solid.github.io/authorization-panel/acp-specification/), [`WAC`](https://solid.github.io/web-access-control-spec/) authorization systems."
 repository = "https://github.com/manomayam/manas"

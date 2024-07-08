@@ -69,6 +69,8 @@ Along with these main crates, Manas project provides many utility crates that he
 - [`webid`](https://docs.rs/webid): Rust crate for webid.
 - ... etc.
 
+Rust MSRV: 1.79.0
+
 ## Contributors
 
 Thanks to every contributor, who helped in making `manas` possible. A not so exhaustive list in no perticular order:

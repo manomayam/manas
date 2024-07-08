@@ -1,6 +1,7 @@
 [package]
 name = "manas_repo_opendal"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate provides default repository implementation on top of [OpenDAL](https://docs.rs/opendal/latest/opendal/) object store abstraction layer for manas ecosystem."
 repository = "https://github.com/manomayam/manas"

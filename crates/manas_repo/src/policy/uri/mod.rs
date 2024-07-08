@@ -20,14 +20,14 @@ pub trait RepoUriPolicy: Clone + Send + Sync + 'static + RepoContextual {
 
     /// Get the mutex normal hash for given res uri.
     /// This method doesn't guarantee res uri is conformant to
-    /// it's uri policy.
+    /// repo's uri policy.
     fn mutex_normal_res_uri_hash(&self, res_uri: &SolidResourceUri) -> String;
 
     /// This method suggests a uri for a new child resource,
     /// given it's parent resource uri and a slug_hint.
     /// This method's semantics are purely advisory.
     /// It only guarantees that returned uri is a valid child
-    /// res uri as per space's naming policy.
+    /// res uri as per repo's naming policy.
     fn suggest_res_uri(
         &self,
         parent_res_uri: &SolidResourceUri,
@@ -36,10 +36,10 @@ pub trait RepoUriPolicy: Clone + Send + Sync + 'static + RepoContextual {
     ) -> Result<SolidResourceUri, BoxError>;
 
     /// Check if given relative resource slot path is allowed as
-    /// per space's uri policy.
+    /// per repo's uri policy.
     /// It only guarantees that all uris are valid and can be
     /// assigned to resources in a  slot path in that order, in
-    /// conformance with naming policy of the space.
+    /// conformance with naming policy of the repo.
     fn is_allowed_relative_slot_path(
         &self,
         relative_slot_path: &RelativeSolidResourceSlotPath<'_, <Self::Repo as Repo>::StSpace>,

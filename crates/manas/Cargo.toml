@@ -1,6 +1,7 @@
 [package]
 name = "manas"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "A modular framework for implementing solid compatible servers in rust"
 repository = "https://github.com/manomayam/manas"

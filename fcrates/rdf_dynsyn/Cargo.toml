@@ -1,6 +1,7 @@
 [package]
 name = "rdf_dynsyn"
 version = "0.4.0"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate provides sophia-compatible and sophia-based rdf parsers/serializers, that can be instantiated against any of supported syntaxes dynamically at run time."
 keywords = ["rdf", "parse", "serialize", "sophia"]
