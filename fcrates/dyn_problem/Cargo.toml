@@ -1,6 +1,7 @@
 [package]
 name = "dyn_problem"
 version = "0.1.1"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate provides a `Problem` type to represent dynamic problems, with problem types identified by uri."
 repository = "https://github.com/manomayam/manas"
@@ -8,16 +9,16 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-http = "0.2.11"
-http-api-problem = {version = "0.57.0", features = ["api-error"]}
-iri-string = "0.7.0"
+http = "1.1.0"
+http-api-problem = {version = "0.58.0", features = ["api-error"]}
+iri-string = "0.7.2"
 once_cell = "1.19.0"
 
 # feature: ext-typed-record
 typed_record = { version = "0.1.1", path = "../typed_record", features = ["ext-http"], optional = true}
 
 # feature: anon-problem-type
-uuid = { version = "1.7.0", features = ["v4"], optional = true }
+uuid = { version = "1.9.1", features = ["v4"], optional = true }
 
 # feature: alias-future
 futures = { version = "0.3.30", optional = true }

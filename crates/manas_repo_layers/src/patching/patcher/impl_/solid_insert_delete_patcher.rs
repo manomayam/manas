@@ -9,13 +9,16 @@ use dyn_problem::{
     type_::{INTERNAL_ERROR, UNKNOWN_IO_ERROR},
     ProbFuture, Problem,
 };
-use manas_http::representation::{
-    impl_::{
-        basic::BasicRepresentation,
-        binary::BinaryRepresentation,
-        common::data::{bytes_inmem::BytesInmem, quads_inmem::QuadsInmem},
+use manas_http::{
+    representation::{
+        impl_::{
+            basic::BasicRepresentation,
+            binary::BinaryRepresentation,
+            common::data::{bytes_inmem::BytesInmem, quads_inmem::QuadsInmem},
+        },
+        Representation,
     },
-    Representation,
+    BoxError,
 };
 use manas_repo::service::{
     patcher_resolver::{
@@ -187,9 +190,9 @@ where
             let patch_rep_inmem: BinaryRepresentation<BytesInmem> =
                 async_convert::TryFrom::try_from(patch_doc_rep)
                     .await
-                    .map_err(|e: anyhow::Error| {
+                    .map_err(|e: BoxError| {
                         error!("Error in loading patch body into memory. Error:\n {}", e);
-                        if e.is::<OutOfSizeLimitError>() {
+                        if e.downcast_ref::<OutOfSizeLimitError>().is_some() {
                             PAYLOAD_TOO_LARGE
                                 .new_problem_builder()
                                 .message("Patch payload too large.")

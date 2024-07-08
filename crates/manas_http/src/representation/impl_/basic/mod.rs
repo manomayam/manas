@@ -138,7 +138,7 @@ impl From<BasicRepresentation<EcoQuadsInmem>> for BasicRepresentation<QuadsData>
 
 #[async_trait]
 impl async_convert::TryFrom<BasicRepresentation<BytesData>> for BasicRepresentation<BytesInmem> {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(rep: BasicRepresentation<BytesData>) -> Result<Self, Self::Error> {
         match rep.into_either() {
@@ -150,7 +150,7 @@ impl async_convert::TryFrom<BasicRepresentation<BytesData>> for BasicRepresentat
 
 #[async_trait]
 impl async_convert::TryFrom<BasicRepresentation<BytesStream>> for BasicRepresentation<BytesInmem> {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(rep: BasicRepresentation<BytesStream>) -> Result<Self, Self::Error> {
         Ok(BasicRepresentation {

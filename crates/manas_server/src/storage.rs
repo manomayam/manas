@@ -229,11 +229,11 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
 
     /// Create a new [`RcpStorage`] with [``RcpSimplePEP`] as pep..
     pub fn new_with_simple_pep<
-        Backend: ODRObjectStoreBackend,
+        // Backend: ODRObjectStoreBackend,
         PDP: PolicyDecisionPoint<StSpace = RcpStorageSpace, Graph = HashSet<ArcTriple>>,
     >(
         storage_space: Arc<RcpStorageSpace>,
-        backend: StSetup::Backend,
+        backend: <StSetup as RcpStorageSetup>::Backend,
         odr_config: ODRConfig,
         conneg_layer_config: Arc<RcpCNLConfig<StSetup::CNL, StSetup::Backend>>,
         pdp: Arc<PDP>,
@@ -241,14 +241,16 @@ impl<StSetup: RcpStorageSetup> RcpStorage<StSetup> {
         resource_locker: StSetup::ResourceLocker,
     ) -> Self
     where
-        StSetup: SimpleAccessRcpStorageSetup<Backend_ = Backend, PDP = PDP>,
+        StSetup: SimpleAccessRcpStorageSetup<PDP = PDP>,
     {
         let odr_context = Arc::new(ODRContext::new(storage_space.clone(), backend, odr_config));
 
         let pep = RcpSimplePEP {
             storage_space,
             pdp,
-            prp: Arc::new(RcpPRP::<Backend>::new_with_context(odr_context.clone())),
+            prp: Arc::new(RcpPRP::<StSetup::Backend>::new_with_context(
+                odr_context.clone(),
+            )),
         };
 
         Self::_new(

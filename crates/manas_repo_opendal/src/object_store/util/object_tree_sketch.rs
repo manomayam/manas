@@ -46,10 +46,13 @@ impl<'s> ODRObjectTreeSketch<'s> {
 
     /// Setup the tree represented by this sketch in given object store.
     #[async_recursion]
-    pub async fn setup<OstSetup: ODRObjectStoreSetup>(
+    pub async fn setup<OstSetup>(
         &self,
         object_store: &ODRObjectStore<OstSetup>,
-    ) -> Result<(), BoxError> {
+    ) -> Result<(), BoxError>
+    where
+        OstSetup: ODRObjectStoreSetup,
+    {
         let root_odr_object = object_store.odr_object(self.tree_root_path.clone())?;
 
         match self.tree_content_sketch.as_ref() {

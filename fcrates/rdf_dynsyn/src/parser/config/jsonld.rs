@@ -1,7 +1,7 @@
 //! I define types to represent jsonld parser options.
 //!
 
-use std::{fmt::Display, sync::Arc};
+use std::{fmt::Display, ptr::addr_of_mut, sync::Arc};
 
 use futures::{future::BoxFuture, TryFutureExt};
 use json_ld::{syntax::Value, Loader, RemoteDocument};
@@ -24,6 +24,8 @@ trait _Loader: Send + Sync + 'static {
     fn load(&mut self, url: ArcIri) -> LoaderFut<'_>;
 }
 
+// The ArcVoc is unit struct without any state. But implements jsonld's
+// vocabulary traits. Hence safe for static mut.
 static mut VOC: ArcVoc = ArcVoc {};
 
 impl<L> _Loader for L
@@ -33,12 +35,16 @@ where
 {
     fn load(&mut self, url: ArcIri) -> LoaderFut<'_> {
         Box::pin(
-            Loader::<ArcIri, Location<ArcIri>>::load_with(self, unsafe { &mut VOC }, url).map_err(
-                |e| {
-                    error!("Error in loading the document. {}", e);
-                    Box::new(e) as Box<DynDisplay>
-                },
-            ),
+            // See https://github.com/rust-lang/rust/issues/114447
+            Loader::<ArcIri, Location<ArcIri>>::load_with(
+                self,
+                unsafe { &mut *addr_of_mut!(VOC) },
+                url,
+            )
+            .map_err(|e| {
+                error!("Error in loading the document. {}", e);
+                Box::new(e) as Box<DynDisplay>
+            }),
         )
     }
 }
@@ -497,10 +503,8 @@ mod http_loader {
                 let document = String::from_utf8(bytes.to_vec())
                     .map_err(JsonDocumentParseError::InvalidEncoding)
                     .and_then(|content| {
-                        json_syntax::Value::parse_str(&content, |span| {
-                            locspan::Location::new(uri.clone(), span)
-                        })
-                        .map_err(JsonDocumentParseError::Json)
+                        Value::parse_str(&content, |span| locspan::Location::new(uri.clone(), span))
+                            .map_err(JsonDocumentParseError::Json)
                     })
                     .map_err(|e| {
                         error!("Invalid document content. {}", e);

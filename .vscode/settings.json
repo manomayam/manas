@@ -179,5 +179,6 @@
             "language": "markdown",
             "scheme": "file"
         }
-    ]
+    ],
+    "rust-analyzer.check.command": "clippy"
 }

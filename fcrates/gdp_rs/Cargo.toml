@@ -1,6 +1,7 @@
 [package]
 name = "gdp_rs"
 version = "0.1.1"
+rust = "1.79.0"
 edition = "2021"
 description = "A library for implementing Ghosts-of-departed-proofs pattern in rust"
 repository = "https://github.com/manomayam/manas"
@@ -8,12 +9,12 @@ license = "MIT OR Apache-2.0"
 
 
 [dependencies]
-either = "1.9.0"
+either = "1.13.0"
 frunk_core = "0.4.2"
-thiserror = "1.0.56"
+thiserror = "1.0.61"
 
 # feature: serde
-serde = { version = "1.0.196", optional = true }
+serde = { version = "1.0.203", optional = true }
 
 [features]
 serde = ["dep:serde"]

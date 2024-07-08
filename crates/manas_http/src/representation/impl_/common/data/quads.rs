@@ -1,8 +1,9 @@
 //! I define type to represent quads data that can be streaming/in-memory..
 //!
 
+use crate::BoxError;
 use async_convert::async_trait;
-use hyper::body::SizeHint;
+use http_body::SizeHint;
 
 use super::{quads_inmem::EcoQuadsInmem, quads_stream::QuadsStream};
 
@@ -51,7 +52,7 @@ impl QuadsData {
 
 #[async_trait]
 impl async_convert::TryFrom<QuadsData> for EcoQuadsInmem {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(data: QuadsData) -> Result<Self, Self::Error> {
         match data {

@@ -12,8 +12,8 @@ use futures::{future::BoxFuture, TryFutureExt};
 use headers::{HeaderMap, HeaderMapExt};
 use http::{request::Parts, Method, Request, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use manas_access_control::model::KResolvedAccessControl;
+use manas_http::body::Body;
 use manas_http::{
     conditional_req::PreconditionsResolvedAction,
     representation::impl_::{

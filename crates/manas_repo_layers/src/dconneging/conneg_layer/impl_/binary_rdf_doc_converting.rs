@@ -91,8 +91,6 @@ where
 {
     type Config = BinaryRdfDocContentNegotiationConfig;
 
-    type WService = BinaryRdfDocContentNegotiatingResourceReader<R, S>;
-
     fn new(config: Arc<Self::Config>) -> Self {
         Self {
             config,

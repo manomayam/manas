@@ -11,7 +11,7 @@ pub mod impl_;
 
 /// A trait for derived content negotiation layers.
 pub trait DerivedContentNegotiationLayer<R, LRep, S>:
-    Debug + Layer<S, Service = Self::WService> + Send + 'static
+    Debug + Layer<S, Service: FlexibleResourceReader<R, LRep>> + Send + 'static
 where
     R: Repo,
     LRep: Representation + Send + 'static,
@@ -19,9 +19,6 @@ where
 {
     /// Type of the layer config.
     type Config: Debug + Send + Sync + 'static;
-
-    /// Type of wrapped services.
-    type WService: FlexibleResourceReader<R, LRep>;
 
     /// Create a new layer with given config.
     fn new(config: Arc<Self::Config>) -> Self;

@@ -108,6 +108,7 @@ impl<Assets: RustEmbed> EmbeddedAccessor<Assets> {
     }
 }
 
+/// Applies range over given bytes.
 fn apply_range(mut bs: Bytes, br: BytesRange) -> Bytes {
     match (br.offset(), br.size()) {
         (Some(offset), Some(size)) => {
@@ -167,7 +168,7 @@ impl<Assets: RustEmbed + Send + Sync + 'static> Accessor for EmbeddedAccessor<As
 
     fn info(&self) -> AccessorInfo {
         let mut info = AccessorInfo::default();
-        info.set_scheme(opendal::Scheme::Custom("Embedded"))
+        info.set_scheme(Scheme::Custom("Embedded"))
             .set_name(self.name.as_str())
             .set_native_capability(Capability {
                 stat: true,

@@ -7,7 +7,8 @@ use std::{convert::Infallible, sync::Arc, task::Poll};
 use headers::HeaderMapExt;
 use http::{Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
+use manas_http::body::Body;
+use manas_http::problem::ApiErrorExt;
 use manas_http::{
     header::link::{Link, LinkValue},
     service::BoxHttpResponseFuture,
@@ -147,6 +148,6 @@ where
             attach_authorization_context::<Storage>(&mut error);
         }
 
-        error.into_hyper_response()
+        error.into_http_response()
     }
 }

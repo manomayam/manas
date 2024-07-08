@@ -1,4 +1,4 @@
-//!
+//! I define typed header for `Accept-Patch`.
 use headers::{Header, HeaderName};
 use mime::Mime;
 use tracing::error;

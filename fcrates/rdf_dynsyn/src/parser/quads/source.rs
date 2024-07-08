@@ -3,8 +3,10 @@ use std::{error::Error, io::BufRead};
 use rio_api::parser::QuadsParser as RioQuadsParser;
 use rio_turtle::{NQuadsParser as RioNQuadsParser, TriGParser as RioTriGParser};
 use sophia_api::source::{QuadSource, StreamResult};
-use sophia_jsonld::JsonLdQuadSource;
 use sophia_rio::parser::StrictRioSource;
+
+#[cfg(feature = "jsonld")]
+use sophia_jsonld::JsonLdQuadSource;
 
 use crate::{model::DynSynQuad, parser::error::DynSynParseError};
 

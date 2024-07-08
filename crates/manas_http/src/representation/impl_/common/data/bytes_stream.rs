@@ -6,12 +6,14 @@ use bytes::Bytes;
 use capped_stream::{BytesWeigher, CappedStream};
 use ecow::EcoVec;
 use futures::{stream::BoxStream, TryStreamExt};
-use hyper::body::{HttpBody, SizeHint};
+use http_body::{Body as HttpBody, SizeHint};
+
+use crate::{body::Body, BoxError};
 
 use super::bytes_inmem::BytesInmem;
 
 /// Type alias for a boxed fallible bytes stream.
-pub type BoxBytesStream = BoxStream<'static, Result<Bytes, anyhow::Error>>;
+pub type BoxBytesStream = BoxStream<'static, Result<Bytes, BoxError>>;
 
 /// Bytes stream data.
 pub struct BytesStream {
@@ -30,9 +32,9 @@ impl std::fmt::Debug for BytesStream {
     }
 }
 
-impl From<hyper::Body> for BytesStream {
-    fn from(value: hyper::Body) -> Self {
-        Self::from_hyper_body(value, None)
+impl From<Body> for BytesStream {
+    fn from(value: Body) -> Self {
+        Self::from_http_body(value, None)
     }
 }
 
@@ -47,7 +49,7 @@ impl From<BytesInmem> for BytesStream {
 
 #[async_trait]
 impl async_convert::TryFrom<BytesStream> for BytesInmem {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(data: BytesStream) -> Result<Self, Self::Error> {
         Ok(BytesInmem::from(
@@ -67,11 +69,11 @@ impl BytesStream {
         self
     }
 
-    /// Try to create [`BytesStream`] from hyper body.
-    pub fn from_hyper_body(body: hyper::Body, size_hint: Option<SizeHint>) -> Self {
+    /// Try to create [`BytesStream`] from http body.
+    pub fn from_http_body(body: Body, size_hint: Option<SizeHint>) -> Self {
         Self {
             size_hint: size_hint.unwrap_or(body.size_hint()),
-            stream: Box::pin(TryStreamExt::map_err(body, anyhow::Error::new)),
+            stream: Box::pin(body.into_data_stream()),
         }
     }
 }

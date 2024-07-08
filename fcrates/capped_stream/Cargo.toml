@@ -1,6 +1,7 @@
 [package]
 name = "capped_stream"
 version = "0.1.1"
+rust = "1.79.0"
 edition = "2021"
 description = "This crate provides types for size capped streams."
 repository = "https://github.com/manomayam/manas"
@@ -9,8 +10,8 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 futures = "0.3.30"
-pin-project-lite = "0.2.13"
-thiserror = "1.0.56"
+pin-project-lite = "0.2.14"
+thiserror = "1.0.61"
 
 [package.metadata.docs.rs]
 all-features = true

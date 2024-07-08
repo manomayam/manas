@@ -10,7 +10,7 @@ use http::{
     StatusCode,
 };
 use http_api_problem::ApiError;
-use hyper::body::SizeHint;
+use http_body::SizeHint;
 use manas_http::{
     header::common::media_type::MediaType, representation::metadata::derived_etag::DerivedETag,
 };

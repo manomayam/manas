@@ -46,7 +46,7 @@ pub type RcpSimplePEP<Backend, PDP> =
 pub trait SimpleAccessRcpStorageSetup:
     RcpStorageSetup<PEP = RcpSimplePEP<Self::Backend_, Self::PDP>, Backend = Self::Backend_>
 {
-    /// Type of the backend.
+    /// Same as Self::Backend, but to avoid rrustc resolution cycle.
     type Backend_: ODRObjectStoreBackend;
 
     /// Type of the pdp.
@@ -60,7 +60,6 @@ impl<
     > SimpleAccessRcpStorageSetup for S
 {
     type Backend_ = Backend;
-
     type PDP = PDP;
 }
 
@@ -95,7 +94,7 @@ pub fn resolve_initial_root_acr_content(
     engine
         .get_template("initial_root_acr")
         .expect("Template must exist")
-        .render(&context)
+        .render(context)
         .to_string()
         .expect("Must be valid")
 }

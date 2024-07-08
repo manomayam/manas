@@ -6,9 +6,12 @@ use std::sync::Arc;
 use capped_stream::OutOfSizeLimitError;
 use dyn_problem::{type_::UNKNOWN_IO_ERROR, Problem};
 use futures::TryFutureExt;
-use manas_http::representation::impl_::{
-    binary::BinaryRepresentation,
-    common::data::{bytes_inmem::BytesInmem, quads_inmem::EcoQuadsInmem},
+use manas_http::{
+    representation::impl_::{
+        binary::BinaryRepresentation,
+        common::data::{bytes_inmem::BytesInmem, quads_inmem::EcoQuadsInmem},
+    },
+    BoxError,
 };
 use manas_repo::{
     service::resource_operator::common::problem::{
@@ -62,10 +65,10 @@ where
         // Load representation into memory.
         let resolved_rep_inmem: BinaryRepresentation<BytesInmem> =
             async_convert::TryFrom::try_from(resolved_rep)
-                .map_err(|e: anyhow::Error| {
+                .map_err(|e: BoxError| {
                     error!("Error in loading rep data into memory. {e}");
 
-                    if e.is::<OutOfSizeLimitError>() {
+                    if e.downcast_ref::<OutOfSizeLimitError>().is_some() {
                         PAYLOAD_TOO_LARGE
                             .new_problem_builder()
                             .message(

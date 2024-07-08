@@ -13,8 +13,14 @@ pub mod header;
 #[cfg(feature = "conditional_req")]
 pub mod conditional_req;
 
+#[cfg(feature = "body")]
+pub mod body;
+
 #[cfg(feature = "representation")]
 pub mod representation;
+
+#[cfg(feature = "problem")]
+pub mod problem;
 
 #[cfg(feature = "service")]
 pub mod service;
@@ -23,3 +29,6 @@ pub mod uri;
 
 #[cfg(feature = "typed-headers")]
 pub use http_typed_headers::define_static_rel_types;
+
+/// Alias for a type-erased error type.
+pub type BoxError = Box<dyn std::error::Error + Send + Sync>;

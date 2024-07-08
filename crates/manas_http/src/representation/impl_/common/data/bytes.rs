@@ -2,7 +2,9 @@
 //!
 
 use async_convert::async_trait;
-use hyper::body::SizeHint;
+use http_body::SizeHint;
+
+use crate::{body::Body, BoxError};
 
 use super::{bytes_inmem::BytesInmem, bytes_stream::BytesStream};
 
@@ -23,9 +25,9 @@ impl Default for BytesData {
     }
 }
 
-impl From<hyper::Body> for BytesData {
+impl From<Body> for BytesData {
     #[inline]
-    fn from(value: hyper::Body) -> Self {
+    fn from(value: Body) -> Self {
         Self::Stream(value.into())
     }
 }
@@ -65,7 +67,7 @@ impl BytesData {
 
 #[async_trait]
 impl async_convert::TryFrom<BytesData> for BytesInmem {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(data: BytesData) -> Result<Self, Self::Error> {
         match data {

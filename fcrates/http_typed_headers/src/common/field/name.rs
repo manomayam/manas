@@ -16,4 +16,4 @@ use super::rules::token::Token;
 ///
 ///
 /// [RFC 9110 Field Names]: https://www.rfc-editor.org/rfc/rfc9110.html#name-field-names
-pub struct FieldName(Ascii<Token>);
+pub struct FieldName(pub Ascii<Token>);

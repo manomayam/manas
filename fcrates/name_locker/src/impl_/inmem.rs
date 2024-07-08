@@ -11,6 +11,7 @@ use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 use crate::{LockKind, NameLocker};
 
 /// An enum to hold lock guard.
+#[allow(dead_code)]
 enum LockGuard<'g> {
     Read(RwLockReadGuard<'g, ()>),
     Write(RwLockWriteGuard<'g, ()>),

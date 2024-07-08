@@ -9,8 +9,8 @@ use futures::{future::BoxFuture, TryFutureExt};
 use headers::HeaderMapExt;
 use http::{Method, Request, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use manas_access_control::model::{KResolvedAccessControl, KResolvedHostAccessControl};
+use manas_http::body::Body;
 use manas_http::{
     header::{
         link::{Link, LinkValue, TYPE_REL_TYPE},
@@ -222,7 +222,7 @@ where
             BasicRepresentation {
                 metadata: RepresentationMetadata::new()
                     .with::<KContentType>(resolve_req_content_type(&req_parts.headers)?),
-                data: BytesStream::from_hyper_body(
+                data: BytesStream::from_http_body(
                     body,
                     Some(resolve_req_content_length_hint(&req_parts.headers)),
                 ),

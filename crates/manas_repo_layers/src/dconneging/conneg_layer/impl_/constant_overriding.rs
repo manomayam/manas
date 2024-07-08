@@ -119,8 +119,6 @@ where
 {
     type Config = Option<ConstantOverrideNegotiationConfig>;
 
-    type WService = ConstantOverrideNegotiatingResourceReader<R, S>;
-
     fn new(config: Arc<Self::Config>) -> Self {
         Self {
             config,

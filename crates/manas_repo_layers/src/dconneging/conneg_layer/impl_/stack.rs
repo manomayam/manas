@@ -35,11 +35,9 @@ where
     ORep: Representation + Send + 'static,
     S: FlexibleResourceReader<R, R::Representation>,
     Inner: DerivedContentNegotiationLayer<R, R::Representation, S>,
-    Outer: DerivedContentNegotiationLayer<R, ORep, Inner::WService>,
+    Outer: DerivedContentNegotiationLayer<R, ORep, Inner::Service>,
 {
     type Config = StackConfig<Inner::Config, Outer::Config>;
-
-    type WService = Outer::WService;
 
     fn new(config: Arc<Self::Config>) -> Self {
         Self::new(

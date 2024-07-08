@@ -4,9 +4,12 @@
 
 use std::{convert::Infallible, sync::Arc};
 
-use hyper::{Body, Request, Response};
-use manas_http::service::{
-    impl_::OverridingHttpService, namespaced::NamespacedHttpService, BoxHttpResponseFuture,
+use http::{Request, Response};
+use manas_http::{
+    body::Body,
+    service::{
+        impl_::OverridingHttpService, namespaced::NamespacedHttpService, BoxHttpResponseFuture,
+    },
 };
 use manas_space::resource::uri::SolidResourceUri;
 use tower::Service;

@@ -17,11 +17,9 @@ pub trait LayeredRepo<Inner: Repo>:
         Inner::ResourceStatusTokenTypes,
         Self,
     >,
-    Context = Self::LayeredContext,
+    Context: LayeredRepoContext<InnerRepo = Inner, Repo = Self>,
 >
 {
-    /// Type of it's context
-    type LayeredContext: LayeredRepoContext<InnerRepo = Inner, Repo = Self>;
 }
 
 /// A trait for the repo layers.
@@ -50,8 +48,7 @@ where
             IR::ResourceStatusTokenTypes,
             Self,
         >,
+        Context: LayeredRepoContext<InnerRepo = IR, Repo = LR>,
     >,
-    LR::Context: LayeredRepoContext<InnerRepo = IR, Repo = LR>,
 {
-    type LayeredContext = LR::Context;
 }

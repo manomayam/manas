@@ -1,6 +1,7 @@
 [package]
 name = "manas_server_single_s3_wac"
 version = "0.1.0"
+rust = "1.79.0"
 edition = "2021"
 description = "This binary crate provides a solid server with s3 backend, with wac access control."
 repository = "https://github.com/manomayam/manas"
@@ -8,7 +9,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 manas_server = { version = "0.1.0", path = "../..", features = ["backend-s3", "pdp-wac"] }
-tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread"] }
+tokio = { version = "1.38.0", features = ["rt", "rt-multi-thread"] }
 
 
 [package.metadata.docs.rs]

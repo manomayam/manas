@@ -7,7 +7,7 @@ use std::{convert::Infallible, marker::PhantomData, task::Poll};
 use futures::TryFutureExt;
 use http::Response;
 use http_api_problem::ApiError;
-use hyper::Body;
+use manas_http::body::Body;
 use manas_http::service::BoxHttpResponseFuture;
 use tower::Service;
 
@@ -68,7 +68,7 @@ where
         Box::pin(self.inner.call(req).map_ok(|resp| {
             // Replace body with empty body.
             let (parts, _body) = resp.into_parts();
-            Response::from_parts(parts, hyper::Body::empty())
+            Response::from_parts(parts, Body::empty())
         }))
     }
 }

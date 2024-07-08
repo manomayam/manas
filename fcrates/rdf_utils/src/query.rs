@@ -63,7 +63,7 @@ impl Query {
                             matcher(t.o(), initial_bindings),
                         ];
                         let hint = triples_matching(graph, &tm).size_hint();
-                        (hint.1.unwrap_or(std::usize::MAX), hint.0)
+                        (hint.1.unwrap_or(usize::MAX), hint.0)
                     })
                     .collect();
                 for i in 1..hints.len() {
@@ -126,6 +126,7 @@ where
 }
 
 /// Iter over the bindings of triple `tq` for graph `g`, given the binding `b`.
+#[allow(clippy::useless_vec)]
 fn bindings_for_triple<'a, G>(
     g: &'a G,
     tq: &'a [ArcTerm; 3],

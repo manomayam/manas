@@ -9,7 +9,7 @@ where
     S: TryStream<Ok = Bytes> + Send + 'static + Unpin,
     S::Error: 'static + Into<Box<dyn std::error::Error + Send + Sync>>,
 {
-    data.map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+    data.map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
         .into_async_read()
 }
 
@@ -32,7 +32,7 @@ impl<S: Stream + Unpin> BlockingStreamIterator<S> {
     #[inline]
     #[track_caller]
     pub fn new(stream: S) -> io::Result<Self> {
-        Self::new_with_handle(stream, tokio::runtime::Handle::current())
+        Self::new_with_handle(stream, Handle::current())
     }
 
     /// Get new [`BlockingStreamIterator`] backed by given stream, and given runtime handle.

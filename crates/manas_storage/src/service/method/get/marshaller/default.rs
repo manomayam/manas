@@ -7,10 +7,10 @@ use std::{convert::Infallible, sync::Arc, task::Poll};
 use headers::{AcceptRanges, ContentLength, ContentType, ETag, HeaderMapExt};
 use http::{header::VARY, Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use if_chain::if_chain;
 use iri_string::types::UriReferenceStr;
 use manas_access_control::model::KResolvedAccessControl;
+use manas_http::{body::Body, problem::HttpApiProblemExt};
 use manas_http::{
     header::link::{Link, LinkRel, LinkTarget, LinkValue},
     representation::{
@@ -271,7 +271,7 @@ where
         }
 
         builder
-            .body(Body::wrap_stream(
+            .body(Body::from_stream(
                 base_response
                     .state
                     .into_parts()
@@ -291,7 +291,7 @@ where
         }
 
         // Get hyper response.
-        let mut response = error.to_http_api_problem().to_hyper_response();
+        let mut response = error.to_http_api_problem().to_http_response();
 
         if response.status() == StatusCode::NOT_FOUND {
             // Check if mutex resource exists, and redirect instead of error if configured.

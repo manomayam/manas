@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use dyn_problem::Problem;
 use futures::future::BoxFuture;
-use manas_http::service::namespaced::NamespacedHttpService;
+use manas_http::{body::Body, service::namespaced::NamespacedHttpService};
 use tower::Service;
 
 use crate::SolidStorage;
@@ -15,9 +15,7 @@ pub mod impl_;
 pub mod method;
 
 /// A trait for solid compliant storage services.
-pub trait SolidStorageService:
-    NamespacedHttpService<hyper::Body, hyper::Body> + StorageInitializer
-{
+pub trait SolidStorageService: NamespacedHttpService<Body, Body> + StorageInitializer {
     /// Type of the storage, this service serves.
     type Storage: SolidStorage;
 

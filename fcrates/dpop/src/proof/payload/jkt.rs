@@ -1,3 +1,4 @@
+//! I provide types for representing jet key thumbprints.
 //!
 
 use std::ops::Deref;

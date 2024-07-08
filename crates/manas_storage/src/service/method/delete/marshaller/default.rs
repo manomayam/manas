@@ -6,8 +6,8 @@ use std::{convert::Infallible, sync::Arc, task::Poll};
 
 use http::{Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use manas_http::service::BoxHttpResponseFuture;
+use manas_http::{body::Body, problem::ApiErrorExt};
 use manas_repo::service::resource_operator::deleter::ResourceDeleteResponse;
 use tower::Service;
 
@@ -108,6 +108,6 @@ where
         if self.marshal_config.dev_mode {
             attach_authorization_context::<Storage>(&mut error);
         }
-        error.into_hyper_response()
+        error.into_http_response()
     }
 }

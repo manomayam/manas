@@ -7,9 +7,13 @@ use std::{convert::Infallible, ops::Deref, sync::Arc, task::Poll};
 
 use dyn_problem::Problem;
 use futures::{future::BoxFuture, TryFutureExt};
+use http::{Method, Request, Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::{service::Service, Body, Method, Request, Response, StatusCode};
-use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use manas_http::{
+    body::Body,
+    problem::ApiErrorExt,
+    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
+};
 use manas_space::{resource::uri::SolidResourceUri, SolidStorageSpace};
 use manas_storage::SolidStorageExt;
 use rdf_dynsyn::{
@@ -22,7 +26,7 @@ use sophia_api::{
     serializer::{Stringifier, TripleSerializer},
     term::Term,
 };
-use tower::ServiceExt;
+use tower::{Service, ServiceExt};
 use tracing::{error, info};
 
 use crate::pod::{
@@ -76,7 +80,7 @@ where
                     return Ok(ApiError::builder(StatusCode::METHOD_NOT_ALLOWED)
                         .message("Storage description resource is currently immutable.")
                         .finish()
-                        .into_hyper_response());
+                        .into_http_response());
                 }
 
                 // Otherwise create description response.

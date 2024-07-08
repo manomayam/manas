@@ -4,7 +4,7 @@
 
 use std::sync::Arc;
 
-use hyper::Body;
+use manas_http::body::Body;
 use manas_http::service::namespaced::NamespacedHttpService;
 
 use super::PodSet;

@@ -5,23 +5,19 @@
 use std::sync::Arc;
 
 use manas_http::{
-    header::common::qvalue::QValue,
-    representation::impl_::{binary::BinaryRepresentation, common::data::bytes_inmem::BytesInmem},
+    header::common::qvalue::QValue, representation::impl_::common::data::bytes_inmem::BytesInmem,
     uri::invariant::AbsoluteHttpUri,
 };
-use manas_repo_layers::dconneging::conneg_layer::{
-    impl_::{
-        constant_overriding::{
-            ConstantOverrideNegotiationConfig, ConstantOverrideNegotiationLayer,
-            ConstantOverridingPreferences,
-        },
-        stack::StackConfig,
+use manas_repo_layers::dconneging::conneg_layer::impl_::{
+    constant_overriding::{
+        ConstantOverrideNegotiationConfig, ConstantOverrideNegotiationLayer,
+        ConstantOverridingPreferences,
     },
-    DerivedContentNegotiationLayer,
+    stack::StackConfig,
 };
 use manas_repo_opendal::service::resource_operator::reader::ODRResourceReader;
 use once_cell::sync::Lazy;
-use tower::layer::util::Stack;
+use tower::{layer::util::Stack, Layer};
 use upon::Engine;
 
 use crate::repo::{RcpBaseRepo, RcpBaseRepoSetup, RcpRdfSourceCNL};
@@ -77,11 +73,7 @@ pub type DatabrowserAdaptedCNL<Backend, Inner> = Stack<
     Inner,
     ConstantOverrideNegotiationLayer<
         RcpBaseRepo<Backend>,
-        <Inner as DerivedContentNegotiationLayer<
-            RcpBaseRepo<Backend>,
-            BinaryRepresentation,
-            ODRResourceReader<RcpBaseRepoSetup<Backend>>,
-        >>::WService,
+        <Inner as Layer<ODRResourceReader<RcpBaseRepoSetup<Backend>>>>::Service,
     >,
 >;
 

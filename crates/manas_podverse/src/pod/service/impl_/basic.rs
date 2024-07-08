@@ -5,10 +5,14 @@ use std::{convert::Infallible, marker::PhantomData, sync::Arc, task::Poll};
 
 use dyn_problem::Problem;
 use futures::future::BoxFuture;
-use hyper::{service::Service, Body, Request, Response};
-use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use http::{Request, Response};
+use manas_http::{
+    body::Body,
+    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
+};
 use manas_space::resource::uri::SolidResourceUri;
 use manas_storage::service::{SolidStorageService, SolidStorageServiceFactory};
+use tower::Service;
 
 use crate::pod::{
     service::{PodService, PodServiceFactory},
