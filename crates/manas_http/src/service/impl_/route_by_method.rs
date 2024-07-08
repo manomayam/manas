@@ -10,10 +10,12 @@ use std::{
 
 use dyn_clone::clone_box;
 use http::{Method, Request, Response, StatusCode};
-use hyper::Body;
 use tower::{Service, ServiceExt};
 
-use crate::service::{BoxHttpResponseFuture, HttpService};
+use crate::{
+    body::Body,
+    service::{BoxHttpResponseFuture, HttpService},
+};
 
 /// A [`Service`] that routes http requests to registered
 /// service corresponding to request method.

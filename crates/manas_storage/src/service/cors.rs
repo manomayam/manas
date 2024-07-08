@@ -10,7 +10,7 @@ use http::{
     },
     HeaderName, Request, Response,
 };
-use hyper::Body;
+use manas_http::body::Body;
 use manas_http::{
     header::{
         accept_patch::ACCEPT_PATCH, accept_post::ACCEPT_POST, accept_put::ACCEPT_PUT,

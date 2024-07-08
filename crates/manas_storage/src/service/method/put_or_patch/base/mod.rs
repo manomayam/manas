@@ -8,9 +8,10 @@ use dyn_problem::{type_::INTERNAL_ERROR, Problem, ProblemBuilderExt};
 use futures::{future::BoxFuture, TryFutureExt};
 use http::{Method, Request, StatusCode};
 use http_api_problem::{ApiError, ApiErrorBuilder};
-use hyper::{body::SizeHint, Body};
+use http_body::SizeHint;
 use manas_access_control::model::{KResolvedAccessControl, KResolvedHostAccessControl};
 use manas_http::{
+    body::Body,
     conditional_req::PreconditionsResolvedAction,
     header::common::media_type::{MediaType, TEXT_TURTLE},
     representation::{
@@ -183,7 +184,7 @@ where
                 BasicRepresentation {
                     metadata: RepresentationMetadata::new()
                         .with::<KContentType>(payload_content_type),
-                    data: BytesStream::from_hyper_body(body, Some(payload_content_length_hint)),
+                    data: BytesStream::from_http_body(body, Some(payload_content_length_hint)),
                     base_uri: Some(res_uri.clone().into_subject()),
                 }
                 .into_binary(),
@@ -587,7 +588,7 @@ where
                         BasicRepresentation {
                             metadata: RepresentationMetadata::new()
                                 .with::<KContentType>(TEXT_TURTLE.clone()),
-                            data: BytesStream::from_hyper_body(
+                            data: BytesStream::from_http_body(
                                 Body::empty(),
                                 Some(SizeHint::with_exact(0)),
                             ),

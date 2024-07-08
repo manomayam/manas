@@ -5,7 +5,7 @@
 use std::sync::Arc;
 
 use dyn_problem::{ProbFuture, Problem};
-use hyper::Body;
+use manas_http::body::Body;
 use manas_http::service::namespaced::NamespacedHttpService;
 use tower::Service;
 

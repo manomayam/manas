@@ -308,87 +308,88 @@ impl<Setup: ODRSetup> ODRExistingRepresentedResourceToken<Setup> {
         let res_uri = res_context.uri().clone();
         let assoc_obj_map = res_context.assoc_odr_object_map();
 
-        let (resolved_rep_data, resolved_rep_metadata) =
-            if let Either::Left(c_res_context) = self.res_context.clone().0 {
-                // Resource is a container.
+        let (resolved_rep_data, resolved_rep_metadata) = if let Either::Left(c_res_context) =
+            self.res_context.clone().0
+        {
+            // Resource is a container.
 
-                let c_rep_preference = rep_preferences.container_rep_preference;
+            let c_rep_preference = rep_preferences.container_rep_preference;
 
-                let mut rep_metadata = self.try_resolve_user_supplied_rep_metadata()?;
+            let mut rep_metadata = self.try_resolve_user_supplied_rep_metadata()?;
 
-                // Content type of user supplied rep.
-                let us_rep_content_type = rep_metadata
-                    .remove_rec_item::<KContentType>()
-                    .unwrap_or_default();
+            // Content type of user supplied rep.
+            let us_rep_content_type = rep_metadata
+                .remove_rec_item::<KContentType>()
+                .unwrap_or_default();
 
-                rep_metadata.remove_rec_item::<KCompleteContentLength>();
+            rep_metadata.remove_rec_item::<KCompleteContentLength>();
 
-                let container_term = res_uri.deref().into_term::<ArcTerm>();
-                let type_predicate: ArcTerm = ns::rdf::type_.into_term::<ArcTerm>();
+            let container_term = res_uri.deref().into_term::<ArcTerm>();
+            let type_predicate: ArcTerm = ns::rdf::type_.into_term::<ArcTerm>();
 
-                // Construct ldp specified statements about container.
-                let mut container_ldp_statements = CONTAINER_LDP_TYPES
-                    .iter()
-                    .map(|type_| {
-                        anyhow::Result::Ok((
-                            [
-                                container_term.clone(),
-                                type_predicate.clone(),
-                                type_.into_term(),
-                            ],
-                            None,
-                        ))
-                    })
-                    .collect::<Vec<_>>();
-
-                // Push any storage related statements.
-                if c_res_context.slot().is_root_slot() {
-                    container_ldp_statements.push(Ok((
+            // Construct ldp specified statements about container.
+            let mut container_ldp_statements = CONTAINER_LDP_TYPES
+                .iter()
+                .map(|type_| {
+                    anyhow::Result::Ok((
                         [
                             container_term.clone(),
                             type_predicate.clone(),
-                            ns::pim::Storage.into_term(),
+                            type_.into_term(),
                         ],
                         None,
-                    )));
+                    ))
+                })
+                .collect::<Vec<_>>();
 
-                    container_ldp_statements.push(Ok((
-                        [
-                            container_term.clone(),
-                            ns::solid::owner.into_term(),
-                            c_res_context.slot().space().owner_id().into_term(),
-                        ],
-                        None,
-                    )));
-                }
+            // Push any storage related statements.
+            if c_res_context.slot().is_root_slot() {
+                container_ldp_statements.push(Ok((
+                    [
+                        container_term.clone(),
+                        type_predicate.clone(),
+                        ns::pim::Storage.into_term(),
+                    ],
+                    None,
+                )));
 
-                // Initialize rep with container type statements.
-                let mut rep_data: BoxQuadsStream =
-                    Box::pin(futures::stream::iter(container_ldp_statements.into_iter()));
+                container_ldp_statements.push(Ok((
+                    [
+                        container_term.clone(),
+                        ns::solid::owner.into_term(),
+                        c_res_context.slot().space().owner_id().into_term(),
+                    ],
+                    None,
+                )));
+            }
 
-                // If preferences require user supplied statements.
-                if [
-                    ContainerRepresentationPreference::Minimal,
-                    ContainerRepresentationPreference::All,
-                ]
-                .contains(&c_rep_preference)
-                {
-                    // Resolve rdf doc syntax corresponding to
-                    // user supplied rep.
-                    let us_rep_syntax = match Correspondent::<DynSynParsableSyntax>::try_from(
-                        us_rep_content_type.deref(),
-                    ) {
-                        Ok(Correspondent { value, is_total }) if is_total => value,
-                        _ => {
-                            error!("User supplied container rep is not quadable.");
-                            return Err(
-                                ODRResourceStateResolutionError::InvalidUserSuppliedContainerRep,
-                            );
-                        }
-                    };
+            // Initialize rep with container type statements.
+            let mut rep_data: BoxQuadsStream =
+                Box::pin(futures::stream::iter(container_ldp_statements.into_iter()));
 
-                    // Resolve user supplied rep data.
-                    let us_rep_data =
+            // If preferences require user supplied statements.
+            if [
+                ContainerRepresentationPreference::Minimal,
+                ContainerRepresentationPreference::All,
+            ]
+            .contains(&c_rep_preference)
+            {
+                // Resolve rdf doc syntax corresponding to
+                // user supplied rep.
+                let us_rep_syntax = match Correspondent::<DynSynParsableSyntax>::try_from(
+                    us_rep_content_type.deref(),
+                ) {
+                    Ok(Correspondent { value, is_total }) if is_total => value,
+                    _ => {
+                        error!("User supplied container rep is not quadable.");
+                        return Err(
+                            ODRResourceStateResolutionError::InvalidUserSuppliedContainerRep,
+                        );
+                    }
+                };
+
+                // Resolve user supplied rep data.
+                let us_rep_data =
                     // If alt-content object exists for 
                     // container, it will contain user supplied 
                     // rep data.
@@ -404,116 +405,116 @@ impl<Setup: ODRSetup> ODRExistingRepresentedResourceToken<Setup> {
                         Box::pin(futures::stream::empty())
                     };
 
-                    let parser_factory_set = res_context
-                        .repo_context()
-                        .as_ref()
-                        .config
-                        .dynsyn_factories
-                        .as_ref()
-                        .parser
-                        .clone();
+                let parser_factory_set = res_context
+                    .repo_context()
+                    .as_ref()
+                    .config
+                    .dynsyn_factories
+                    .as_ref()
+                    .parser
+                    .clone();
 
-                    // Parse quads from user supplied rep.
-                    let us_rep_data_quads = parser_factory_set
-                        .as_ref()
-                        .parse_quads_from_bytes_stream::<_, ArcTerm>(
-                            us_rep_data,
-                            Some(Iri::new_unchecked(res_uri.as_str().to_owned())),
-                            us_rep_syntax,
-                        )
-                        .await
-                        .map_err(anyhow::Error::new);
-
-                    // Include user supplied statements to effective rep data.
-                    rep_data = Box::pin(futures::stream::select(rep_data, us_rep_data_quads));
-                }
-
-                // If preferences requests for containment triples.
-                if [
-                    ContainerRepresentationPreference::Containment,
-                    ContainerRepresentationPreference::All,
-                ]
-                .contains(&c_rep_preference)
-                {
-                    // Resolve container index quads.
-                    let container_index_quads = ODRContainerIndexInputs { c_res_context }
-                        .resolve()
-                        .await
-                        .map_err(|e| {
-                            error!("Io error in resolving container index. Error:\n {}", e);
-                            ODRResourceStateResolutionError::UnknownIoError(e)
-                        })?;
-
-                    // Include containment statements and
-                    // contained metadata statements in effective rep.
-                    rep_data = Box::pin(futures::stream::select(rep_data, container_index_quads));
-                }
-
-                // Resolve.
-                (
-                    serialize_default_graph_to_ntriples(rep_data),
-                    // Set content type to quads.
-                    rep_metadata.with::<KContentType>((*TEXT_TURTLE).clone()),
-                )
-            } else {
-                //Resource is a non-container.
-                let base_obj = assoc_obj_map
-                    .base_object()
-                    .as_right_classified()
-                    .expect("Base object must be file object for non containers.");
-
-                // Resolve metadata of the complete representation.
-                let rep_metadata = self.try_resolve_user_supplied_rep_metadata()?;
-
-                let (rep_data, content_range) = if_chain! {
-                    // If backend can support range request.
-                    if res_context.repo_context().backend_caps().read_with_range;
-
-                    // Collect all requested sub ranges, if it is range request.
-                    if let Some(req_sub_range) = rep_preferences
-                        .non_container_rep_range_negotiator
-                        .resolve_pref_range(&rep_metadata)
-                    // ODR supports only single range requests.
-                        .and_then(|r| r.iter().exactly_one().ok());
-
-                    // If content range is resolvable from requested range,
-                    if let Ok(content_range) = ContentRange::bytes(
-                        req_sub_range,
-                        Some(self.inputs_base_obj_metadata().content_length())
+                // Parse quads from user supplied rep.
+                let us_rep_data_quads = parser_factory_set
+                    .as_ref()
+                    .parse_quads_from_bytes_stream::<_, ArcTerm>(
+                        us_rep_data,
+                        Some(Iri::new_unchecked(res_uri.as_str().to_owned())),
+                        us_rep_syntax,
                     )
-                        .map_err(|e| {
-                            info!("Invalid content range");
-                            e
-                        });
+                    .await
+                    .map_err(Into::into);
 
-                    // And if bytes range bounds can be resolved.
-                    if let Some(bytes_range_bounds) =content_range.bytes_range().map(
-                        |(s, e)| (Bound::Included(s), Bound::Included(e))
-                    );
+                // Include user supplied statements to effective rep data.
+                rep_data = Box::pin(futures::stream::select(rep_data, us_rep_data_quads));
+            }
 
-                    then {
-                        // Then satisfy range request with partial rep data.
-                        (
-                            base_obj.stream_range(bytes_range_bounds).await
-                                .map_err(on_content_read_error)?,
-                            Some(content_range),
-                        )
-                    } else {
-                        // Else with complete rep data.
-                        (
-                            base_obj.stream_complete().await
-                                .map_err(on_content_read_error)?,
-                            None,
-                        )
-                    }
-                };
+            // If preferences requests for containment triples.
+            if [
+                ContainerRepresentationPreference::Containment,
+                ContainerRepresentationPreference::All,
+            ]
+            .contains(&c_rep_preference)
+            {
+                // Resolve container index quads.
+                let container_index_quads = ODRContainerIndexInputs { c_res_context }
+                    .resolve()
+                    .await
+                    .map_err(|e| {
+                        error!("Io error in resolving container index. Error:\n {}", e);
+                        ODRResourceStateResolutionError::UnknownIoError(e)
+                    })?;
 
-                (
-                    rep_data,
-                    // Resolve metadata with resolved content range.
-                    rep_metadata.with_opt::<KContentRange>(content_range),
+                // Include containment statements and
+                // contained metadata statements in effective rep.
+                rep_data = Box::pin(futures::stream::select(rep_data, container_index_quads));
+            }
+
+            // Resolve.
+            (
+                serialize_default_graph_to_ntriples(rep_data),
+                // Set content type to quads.
+                rep_metadata.with::<KContentType>((*TEXT_TURTLE).clone()),
+            )
+        } else {
+            //Resource is a non-container.
+            let base_obj = assoc_obj_map
+                .base_object()
+                .as_right_classified()
+                .expect("Base object must be file object for non containers.");
+
+            // Resolve metadata of the complete representation.
+            let rep_metadata = self.try_resolve_user_supplied_rep_metadata()?;
+
+            let (rep_data, content_range) = if_chain! {
+                // If backend can support range request.
+                if res_context.repo_context().backend_caps().read_with_range;
+
+                // Collect all requested sub ranges, if it is range request.
+                if let Some(req_sub_range) = rep_preferences
+                    .non_container_rep_range_negotiator
+                    .resolve_pref_range(&rep_metadata)
+                // ODR supports only single range requests.
+                    .and_then(|r| r.satisfiable_ranges(self.inputs_base_obj_metadata().content_length()).exactly_one().ok());
+
+                // If content range is resolvable from requested range,
+                if let Ok(content_range) = ContentRange::bytes(
+                    req_sub_range,
+                    Some(self.inputs_base_obj_metadata().content_length())
                 )
+                    .map_err(|e| {
+                        info!("Invalid content range");
+                        e
+                    });
+
+                // And if bytes range bounds can be resolved.
+                if let Some(bytes_range_bounds) =content_range.bytes_range().map(
+                    |(s, e)| (Bound::Included(s), Bound::Included(e))
+                );
+
+                then {
+                    // Then satisfy range request with partial rep data.
+                    (
+                        base_obj.stream_range(bytes_range_bounds).await
+                            .map_err(on_content_read_error)?,
+                        Some(content_range),
+                    )
+                } else {
+                    // Else with complete rep data.
+                    (
+                        base_obj.stream_complete().await
+                            .map_err(on_content_read_error)?,
+                        None,
+                    )
+                }
             };
+
+            (
+                rep_data,
+                // Resolve metadata with resolved content range.
+                rep_metadata.with_opt::<KContentRange>(content_range),
+            )
+        };
 
         Ok(BasicRepresentation {
             metadata: resolved_rep_metadata,

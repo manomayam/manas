@@ -461,7 +461,7 @@ mod tests {
         #[case] res_uri_str: &str,
         #[case] expectation: Result<Vec<(AssocRelType, &str)>, ODRAssocMappingError>,
     ) {
-        let obj_space = mock::MockODRObjectSpace::<0>::new_mock(assoc_storage_root_uri_str);
+        let obj_space = MockODRObjectSpace::<0>::new_mock(assoc_storage_root_uri_str);
 
         let links_result_flattened = obj_space
             .assoc_links_for_res(

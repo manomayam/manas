@@ -1,7 +1,7 @@
 //! I define [`RepUpdateAction`].
 //!
 
-pub use hyper::body::SizeHint;
+pub use http_body::SizeHint;
 
 use crate::Repo;
 

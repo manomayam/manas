@@ -168,7 +168,7 @@ impl ProblemBuilder {
     ///
     /// Existing values will be overwritten
     #[inline]
-    pub fn extension<T: Send + Sync + 'static>(mut self, val: T) -> Self {
+    pub fn extension<T: Send + Sync + Clone + 'static>(mut self, val: T) -> Self {
         self.0 = self.0.extension(val);
         self
     }

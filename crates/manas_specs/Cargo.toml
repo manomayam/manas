@@ -8,8 +8,8 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["ext-typed-record"] }
-http = "0.2.12"
-http-api-problem = { version = "0.57.0", features = ["api-error"] }
+http = "1.1.0"
+http-api-problem = { version = "0.58.0", features = ["api-error"] }
 iri-string = "0.7.2"
 manas_http = { version = "0.1.1", path = "../manas_http" }
 once_cell = "1.19.0"

@@ -30,7 +30,7 @@ default = ["invariants"]
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.2"
+rstest = "0.21.0"
 
 [package.metadata.docs.rs]
 all-features = true

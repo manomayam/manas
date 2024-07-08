@@ -20,9 +20,9 @@ tracing = { version = "0.1.40", features = ["attributes"] }
 ecow = "0.2.2"
 
 # feature: typed-headers
-http_typed_headers = { version = "0.1.0", path = "../../fcrates/http_typed_headers", optional = true}
-headers = { version = "0.3.9", optional = true }
-http = { version = "0.2.12", optional = true }
+http_typed_headers = { version = "0.1.0", path = "../../fcrates/http_typed_headers", optional = true }
+headers = { version = "0.4.0", optional = true }
+http = { version = "1.1.0", optional = true }
 smallvec = { version = "1.13.2", optional = true }
 chrono = { version = "0.4.38", optional = true, default-features = false, features = [
     "std",
@@ -35,16 +35,23 @@ serde = { version = "1.0.203", features = ["derive"], optional = true }
 # feature: representation
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
-], optional = true}
-hyper = { version = "0.14.29", features = ["stream"], optional = true }
+], optional = true }
 mime = { version = "0.3.17", optional = true }
 either = { version = "1.13.0", optional = true }
+
+# feature: body
+http-body-util = { version = "0.1.2", optional = true }
+http-body = { version = "1.0.0", optional = true }
+futures-util = { version = "0.3.30", optional = true }
+pin-project-lite = { version = "0.2.14", optional = true }
+sync_wrapper = { version = "1.0.1", optional = true }
 
 # feature: impl-representation
 bytes = { version = "1.6.0", optional = true }
 futures = { version = "0.3.30", optional = true }
-anyhow = { version = "1.0.86", optional = true }
-rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", optional = true, features = ["compat-ecow"]}
+rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils", optional = true, features = [
+    "compat-ecow",
+] }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", optional = true }
 async-stream = { version = "0.3.5", optional = true }
 rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", optional = true, features = [
@@ -59,31 +66,77 @@ capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream", optio
 # feature: service
 tower = { version = "0.4.13", optional = true, features = ["util"] }
 dyn-clone = { version = "1.0.17", optional = true }
-http-api-problem = { version = "0.57.0", features = [
+http-api-problem = { version = "0.58.0", features = [
     "api-error",
-    "hyper",
 ], optional = true }
 
 # feature: conditional-req
 if_chain = { version = "1.0.2", optional = true }
 
+# feature: hyper
+hyper = { version = "1.0", optional = true }
+
 # feature: test-utils
 claims = { version = "0.7.1", optional = true }
-rstest = { version = "0.18.2", optional = true }
+rstest = { version = "0.21.0", optional = true }
 
 [features]
 serde = ["dep:serde", "iri-string/serde"]
-typed-headers = ["dep:http_typed_headers", "dep:chrono", "dep:smallvec", "dep:http", "dep:headers"]
-representation = ["typed-headers", "dep:typed_record", "dep:hyper", "dep:mime"]
-impl-representation = ["representation", "dep:either", "dep:bytes", "dep:futures", "dep:anyhow", "dep:rdf_utils", "dep:dyn_problem", "dep:async-stream", "dep:rdf_dynsyn", "dep:if_chain", "dep:tokio", "dep:tokio-util", "dep:tower", "dep:dyn-clone", "http_uri/sophia", "dep:sophia_api", "dep:async-once-cell", "dep:capped_stream"]
-service = ["dep:tower", "dep:futures", "dep:dyn-clone", "dep:http", "dep:hyper", "dep:http-api-problem", "typed-headers"]
+typed-headers = [
+    "dep:http_typed_headers",
+    "dep:chrono",
+    "dep:smallvec",
+    "dep:http",
+    "dep:headers",
+]
+body = [
+    "dep:http-body",
+    "dep:http-body-util",
+    "dep:futures-util",
+    "dep:sync_wrapper",
+    "dep:pin-project-lite",
+]
+representation = ["typed-headers", "dep:typed_record", "dep:mime"]
+impl-representation = [
+    "representation",
+    "body",
+    "dep:either",
+    "dep:bytes",
+    "dep:futures",
+    # "dep:anyhow",
+    "dep:rdf_utils",
+    "dep:dyn_problem",
+    "dep:async-stream",
+    "dep:rdf_dynsyn",
+    "dep:if_chain",
+    "dep:tokio",
+    "dep:tokio-util",
+    "dep:tower",
+    "dep:dyn-clone",
+    "http_uri/sophia",
+    "dep:sophia_api",
+    "dep:async-once-cell",
+    "dep:capped_stream",
+]
+problem = ["body", "dep:http-api-problem", "dep:http"]
+service = [
+    "problem",
+    "dep:tower",
+    "dep:futures",
+    "dep:dyn-clone",
+    "dep:http",
+    "dep:http-api-problem",
+    "typed-headers",
+    "body",
+]
 conditional_req = ["dep:if_chain", "dep:headers", "dep:http"]
 test-utils = ["dep:rstest", "dep:claims"]
+hyper = ["body", "dep:hyper"]
 
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.2"
+rstest = "0.21.0"
 
 [package.metadata.docs.rs]
 all-features = true

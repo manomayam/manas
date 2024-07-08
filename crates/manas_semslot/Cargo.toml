@@ -17,12 +17,12 @@ thiserror = "1.0.61"
 
 # feature: test-utils
 claims = { version = "0.7.1", optional = true }
-rstest = { version = "0.18.2", optional = true }
+rstest = { version = "0.21.0", optional = true }
 
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.2"
+rstest = "0.21.0"
 manas_http = { version = "0.1.1", path = "../manas_http", features = [
     "test-utils",
 ] }

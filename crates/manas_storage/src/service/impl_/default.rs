@@ -7,6 +7,7 @@ use dyn_problem::{type_::INFALLIBLE, Problem};
 use futures::future::BoxFuture;
 use http::{Method, Request, Response};
 use manas_http::{
+    body::Body,
     service::{
         impl_::{NormalValidateTargetUri, RouteByMethod},
         namespaced::NamespacedHttpService,
@@ -81,9 +82,7 @@ impl<Storage> Clone for DefaultStorageService<Storage> {
     }
 }
 
-impl<Storage: SolidStorage> NamespacedHttpService<hyper::Body, hyper::Body>
-    for DefaultStorageService<Storage>
-{
+impl<Storage: SolidStorage> NamespacedHttpService<Body, Body> for DefaultStorageService<Storage> {
     #[inline]
     fn has_in_uri_ns(&self, uri: &NormalAbsoluteHttpUri) -> bool {
         // Default implementation requires all resource uris
@@ -218,8 +217,7 @@ impl<Storage: SolidStorage> SolidStorageServiceFactory for DefaultStorageService
             ),
         };
 
-        let mut method_services =
-            HashMap::<Method, Box<dyn HttpService<hyper::Body, hyper::Body>>>::new();
+        let mut method_services = HashMap::<Method, Box<dyn HttpService<Body, Body>>>::new();
 
         method_services.insert(Method::HEAD, Box::new(head_svc));
         method_services.insert(Method::GET, Box::new(get_svc));
@@ -237,12 +235,12 @@ impl<Storage: SolidStorage> SolidStorageServiceFactory for DefaultStorageService
     }
 }
 
-impl<Storage: SolidStorage> Service<Request<hyper::Body>> for DefaultStorageService<Storage> {
-    type Response = Response<hyper::Body>;
+impl<Storage: SolidStorage> Service<Request<Body>> for DefaultStorageService<Storage> {
+    type Response = Response<Body>;
 
     type Error = Infallible;
 
-    type Future = BoxHttpResponseFuture<hyper::Body>;
+    type Future = BoxHttpResponseFuture<Body>;
 
     #[inline]
     fn poll_ready(&mut self, cx: &mut std::task::Context<'_>) -> Poll<Result<(), Self::Error>> {
@@ -251,7 +249,7 @@ impl<Storage: SolidStorage> Service<Request<hyper::Body>> for DefaultStorageServ
 
     #[inline]
     #[tracing::instrument(skip_all, name = "DefaultStorageService::call")]
-    fn call(&mut self, mut req: Request<hyper::Body>) -> Self::Future {
+    fn call(&mut self, mut req: Request<Body>) -> Self::Future {
         self.handle_query_params(&mut req);
         Box::pin(self.inner.call(req))
     }
@@ -259,7 +257,7 @@ impl<Storage: SolidStorage> Service<Request<hyper::Body>> for DefaultStorageServ
 
 impl<Storage: SolidStorage> DefaultStorageService<Storage> {
     /// Modify query prams as per extension config.
-    fn handle_query_params(&mut self, req: &mut Request<hyper::Body>) {
+    fn handle_query_params(&mut self, req: &mut Request<Body>) {
         // Get req target query param mode preferred by storage.
         let preferred_req_target_query_param_mode = self
             .storage

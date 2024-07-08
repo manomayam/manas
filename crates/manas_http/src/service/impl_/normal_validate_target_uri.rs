@@ -6,10 +6,10 @@ use std::{
     task::{Context, Poll},
 };
 
+use crate::body::Body;
 use futures::future::{self, Either, Ready};
 use gdp_rs::{inference_rule::IdentityTransform, predicate::impl_::all_of::IntoPL};
 use http::{header::LOCATION, Request, Response, StatusCode};
-use hyper::Body;
 use tower::Service;
 
 use crate::uri::{

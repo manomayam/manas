@@ -108,6 +108,7 @@ impl<Assets: RustEmbed> EmbeddedAccessor<Assets> {
     }
 }
 
+/// Applies range over given bytes.
 fn apply_range(mut bs: Bytes, br: BytesRange) -> Bytes {
     match (br.offset(), br.size()) {
         (Some(offset), Some(size)) => {

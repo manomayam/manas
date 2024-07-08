@@ -8,8 +8,8 @@ use dyn_problem::{type_::INTERNAL_ERROR, Problem, ProblemBuilderExt};
 use futures::{future::BoxFuture, TryFutureExt};
 use http::{Method, Request, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use manas_access_control::model::{KResolvedAccessControl, KResolvedHostAccessControl};
+use manas_http::body::Body;
 use manas_http::uri::invariant::NormalAbsoluteHttpUri;
 use manas_repo::{
     policy::uri::RepoUriPolicy,

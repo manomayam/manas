@@ -8,6 +8,9 @@ use futures::future::BoxFuture;
 use http::{Request, Response};
 use tower::Service;
 
+#[cfg(feature = "hyper")]
+pub mod adapter;
+
 pub mod impl_;
 pub mod namespaced;
 

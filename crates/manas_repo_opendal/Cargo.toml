@@ -42,7 +42,7 @@ async-stream = "0.3.5"
 smallvec = "1.13.2"
 serde = { version = "1.0.203", features = ["derive"] }
 serde_with = { version = "3.8.3", features = ["time_0_3"] }
-headers = "0.3.9"
+headers = "0.4.0"
 serde_json = "1.0.120"
 anyhow = "1.0.86"
 either = "1.13.0"
@@ -63,18 +63,17 @@ rdf_vocabularies = { version = "0.2.0", features = [
     "ns-dcterms",
 ] }
 sophia_api = "0.8.0"
-dashmap = "5.5.3"
+dashmap = "6.0.1"
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
 ] }
 async-once-cell = "0.5.3"
-http-body = "0.4.6"
-hyper = { version = "0.14.29", features = ["stream"] }
+http-body = "1.0.0"
 manas_space = { version = "0.1.0", path = "../manas_space"}
 vec1 = "1.12.1"
 chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
 mime = "0.3.17"
-itertools = "0.11.0"
+itertools = "0.13.0"
 sophia_turtle = "0.8.0"
 manas_semslot = { version = "0.1.0", path = "../manas_semslot"}
 mime_guess = { version = "2.0.5"}
@@ -84,7 +83,7 @@ rust-embed = { version = "8.4.0", optional = true }
 
 # feature: test-utils
 claims = { version = "0.7.1", optional = true }
-rstest = { version = "0.18.2", optional = true }
+rstest = { version = "0.21.0", optional = true }
 build-fs-tree = { version = "0.6.0", optional = false }
 async-recursion = { version = "1.1.1", optional = false }
 hex = "0.4.3"
@@ -110,7 +109,7 @@ access-prp = ["dep:manas_access_control", "dep:acp"]
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.2"
+rstest = "0.21.0"
 tracing-test = "0.2.5"
 manas_semslot = { version = "0.1.0", path = "../manas_semslot", features = ["test-utils"] }
 

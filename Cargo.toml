@@ -32,7 +32,7 @@ members = [
     "crates/manas_server/recipes/single_fs_wac",
     "crates/manas_server/recipes/single_fs_noauth",
     "crates/manas_server/recipes/single_s3_wac",
-    "crates/manas"
+    # "crates/manas"
     # "crates/manas_tauri"
 ]
 

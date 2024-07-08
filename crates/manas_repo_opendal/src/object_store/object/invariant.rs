@@ -9,7 +9,7 @@ use futures::{stream::BoxStream, StreamExt, TryFutureExt, TryStreamExt};
 use gdp_rs::{binclassified::BinaryClassified, Proven};
 use manas_http::{
     header::common::media_type::MediaType,
-    representation::impl_::common::data::bytes_stream::BoxBytesStream,
+    representation::impl_::common::data::bytes_stream::BoxBytesStream, BoxError,
 };
 use opendal::{EntryMode, Lister, Writer};
 use tracing::{error, warn};
@@ -101,7 +101,7 @@ impl<'id, OstSetup: ODRObjectStoreSetup> ODRFileObjectExt<OstSetup>
                 .reader_with(self.backend_entry.path())
                 .range(range)
                 .await?
-                .err_into::<anyhow::Error>(),
+                .err_into::<BoxError>(),
         ) as BoxStream<_>)
     }
 
@@ -111,7 +111,7 @@ impl<'id, OstSetup: ODRObjectStoreSetup> ODRFileObjectExt<OstSetup>
                 .operator()
                 .reader(self.backend_entry.path())
                 .await?
-                .err_into::<anyhow::Error>(),
+                .err_into::<BoxError>(),
         ) as BoxStream<_>)
     }
 

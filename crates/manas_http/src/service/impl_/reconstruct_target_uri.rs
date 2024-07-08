@@ -11,15 +11,16 @@ use futures::future::{self, Either, Ready};
 use headers::{Header, HeaderMapExt, Host};
 use http::{uri::Scheme, HeaderName, Request, Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
 use iri_string::types::{UriAbsoluteStr, UriAbsoluteString, UriStr};
 use tower::Service;
 use tracing::{debug, error, info};
 
 use crate::{
+    body::Body,
     header::{
         forwarded::Forwarded, x_forwarded_host::XForwardedHost, x_forwarded_proto::XForwardedProto,
     },
+    problem::ApiErrorExt,
     uri::invariant::AbsoluteHttpUri,
 };
 
@@ -176,7 +177,7 @@ where
             )
             .message("Invalid request target")
             .finish()
-            .into_hyper_response())))
+            .into_http_response())))
         }
     }
 }

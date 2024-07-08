@@ -10,7 +10,7 @@ use std::{
 use futures::{future::BoxFuture, FutureExt};
 use http::{Request, Response};
 use http_api_problem::ApiError;
-use hyper::Body;
+use manas_http::body::Body;
 use manas_http::service::BoxHttpResponseFuture;
 use tower::{Service, ServiceExt};
 

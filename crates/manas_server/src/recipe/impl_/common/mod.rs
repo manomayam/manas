@@ -1,19 +1,23 @@
 //! I provide few common utils for recipe implementations.
 //!
 
-use std::sync::Arc;
+use std::{net::SocketAddr, sync::Arc};
 
-use axum_server::{service::MakeServiceRef, tls_rustls::RustlsConfig};
+use axum_server::{service::MakeService, tls_rustls::RustlsConfig};
 use futures::TryFutureExt;
 use http::{Method, Request};
-use hyper::{server::conn::AddrStream, Body};
+use hyper::body::Incoming;
 use manas_authentication::common::{
     credentials::impl_::basic::BasicRequestCredentials,
     req_authenticator::impl_::BasicRequestAuthenticator,
 };
-use manas_http::service::{
-    impl_::{NormalValidateTargetUri, ReconstructTargetUri, UriReconstructionParams},
-    HttpService,
+use manas_http::{
+    body::Body,
+    service::{
+        adapter::AdaptIncomingBody,
+        impl_::{NormalValidateTargetUri, ReconstructTargetUri, UriReconstructionParams},
+        HttpService,
+    },
 };
 use manas_storage::service::cors::LiberalCors;
 use tower::{make::Shared, Layer};
@@ -24,33 +28,28 @@ use self::config::RcpServerConfig;
 
 pub mod config;
 
-/// Alias trait for [`MakeServiceRef`] with sendable futures.
-pub trait SendMakeServiceRef:
-    MakeServiceRef<AddrStream, Request<Body>, MakeFuture = Self::MakeFuture_>
+/// Alias trait for [`MakeService`] with sendable futures.
+pub trait SendMakeService:
+    MakeService<SocketAddr, Request<Incoming>, MakeFuture: Send + 'static>
 {
-    /// Type of future yielded by this service maker.
-    type MakeFuture_: Send + 'static;
 }
 
-impl<S> SendMakeServiceRef for S
-where
-    S: MakeServiceRef<AddrStream, Request<Body>>,
-    S::MakeFuture: Send + 'static,
+impl<S> SendMakeService for S where
+    S: MakeService<SocketAddr, Request<Incoming>, MakeFuture: Send + 'static>
 {
-    type MakeFuture_ = S::MakeFuture;
 }
 
 /// Resolve service maker for given podset service.
 pub fn resolve_svc_maker(
     podset_svc: impl HttpService<Body, Body> + Clone,
     uri_reconstruction_params: UriReconstructionParams,
-) -> impl SendMakeServiceRef {
-    Shared::new(CatchPanic::new(LiberalCors::new(
+) -> impl SendMakeService {
+    Shared::new(AdaptIncomingBody::new(CatchPanic::new(LiberalCors::new(
         ReconstructTargetUri::new(
             uri_reconstruction_params,
             NormalValidateTargetUri::new(podset_svc),
         ),
-    )))
+    ))))
 }
 
 /// Resolve service maker for given podset service.
@@ -58,7 +57,7 @@ pub fn resolve_svc_maker(
 pub fn resolve_authenticating_svc_maker(
     podset_svc: impl HttpService<Body, Body> + Clone,
     uri_reconstruction_params: UriReconstructionParams,
-) -> impl SendMakeServiceRef {
+) -> impl SendMakeService {
     resolve_svc_maker(manas_authentication::challenge_response_framework::service::HttpCRAuthenticationLayer::<
         _,
         _,
@@ -81,7 +80,7 @@ pub fn resolve_authenticating_svc_maker(
 /// Serve the recipe.
 pub async fn serve_recipe(
     config: RcpServerConfig,
-    make_svc: impl SendMakeServiceRef,
+    make_svc: impl SendMakeService,
 ) -> Result<(), std::io::Error> {
     // If tls config is provided.
     if let Some(tls_config) = config.tls {

@@ -4,8 +4,11 @@
 
 use std::{convert::Infallible, sync::Arc, task::Poll};
 
-use hyper::{Body, Request, Response, StatusCode};
-use manas_http::service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture};
+use http::{Request, Response, StatusCode};
+use manas_http::{
+    body::Body,
+    service::{namespaced::NamespacedHttpService, BoxHttpResponseFuture},
+};
 use manas_space::resource::uri::SolidResourceUri;
 use tower::{Service, ServiceExt};
 use tracing::{error, info, instrument};

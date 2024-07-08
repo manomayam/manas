@@ -29,7 +29,7 @@ rio_api = { version = "0.8.4", optional = true, features = ["generalized"] }
 sophia_rio = { version = "0.8.0", optional = true }
 mime = { version = "0.3.17", optional = true }
 rand = { version = "0.8.5", optional = true }
-itertools = { version = "0.11.0", optional = true }
+itertools = { version = "0.13.0", optional = true }
 rio_turtle = { version = "0.8.4", optional = true, features = ["generalized"] }
 
 # feature: compat-chrono

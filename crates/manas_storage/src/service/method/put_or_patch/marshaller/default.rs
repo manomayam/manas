@@ -7,7 +7,8 @@ use std::{convert::Infallible, sync::Arc, task::Poll};
 use headers::{ETag, HeaderMapExt};
 use http::{Response, StatusCode};
 use http_api_problem::ApiError;
-use hyper::Body;
+use manas_http::body::Body;
+use manas_http::problem::ApiErrorExt;
 use manas_http::{representation::metadata::KDerivedETag, service::BoxHttpResponseFuture};
 use tower::Service;
 use typed_record::{TypedRecord, TypedRecordKey};
@@ -136,7 +137,7 @@ where
             }
         }
 
-        error.into_hyper_response()
+        error.into_http_response()
     }
 }
 

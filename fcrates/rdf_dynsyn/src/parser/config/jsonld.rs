@@ -36,12 +36,15 @@ where
     fn load(&mut self, url: ArcIri) -> LoaderFut<'_> {
         Box::pin(
             // See https://github.com/rust-lang/rust/issues/114447
-            Loader::<ArcIri, Location<ArcIri>>::load_with(self, unsafe { &mut *addr_of_mut!(VOC) }, url).map_err(
-                |e| {
-                    error!("Error in loading the document. {}", e);
-                    Box::new(e) as Box<DynDisplay>
-                },
-            ),
+            Loader::<ArcIri, Location<ArcIri>>::load_with(
+                self,
+                unsafe { &mut *addr_of_mut!(VOC) },
+                url,
+            )
+            .map_err(|e| {
+                error!("Error in loading the document. {}", e);
+                Box::new(e) as Box<DynDisplay>
+            }),
         )
     }
 }
@@ -500,10 +503,8 @@ mod http_loader {
                 let document = String::from_utf8(bytes.to_vec())
                     .map_err(JsonDocumentParseError::InvalidEncoding)
                     .and_then(|content| {
-                        Value::parse_str(&content, |span| {
-                            locspan::Location::new(uri.clone(), span)
-                        })
-                        .map_err(JsonDocumentParseError::Json)
+                        Value::parse_str(&content, |span| locspan::Location::new(uri.clone(), span))
+                            .map_err(JsonDocumentParseError::Json)
                     })
                     .map_err(|e| {
                         error!("Invalid document content. {}", e);

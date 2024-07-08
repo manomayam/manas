@@ -96,7 +96,7 @@ impl<BD> BinaryRepresentation<BD> {
 impl async_convert::TryFrom<BinaryRepresentation<BytesStream>>
     for BinaryRepresentation<BytesInmem>
 {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(rep: BinaryRepresentation<BytesStream>) -> Result<Self, Self::Error> {
         Ok(BinaryRepresentation {
@@ -108,7 +108,7 @@ impl async_convert::TryFrom<BinaryRepresentation<BytesStream>>
 
 #[async_trait]
 impl async_convert::TryFrom<BinaryRepresentation> for BinaryRepresentation<BytesInmem> {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(rep: BinaryRepresentation) -> Result<Self, Self::Error> {
         match rep.into_either() {

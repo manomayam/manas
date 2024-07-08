@@ -16,7 +16,6 @@ manas_http = { version = "0.1.1", path = "../manas_http", features = [
 manas_space = { version = "0.1.0", path = "../manas_space" }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
 futures = "0.3.30"
-hyper = "0.14.29"
 tower = {version = "0.4.13", features=["util"]}
 dyn-clone = "1.0.17"
 if_chain = "1.0.2"
@@ -26,8 +25,8 @@ vec1 = "1.12.1"
 iri-string = "0.7.2"
 thiserror = "1.0.61"
 once_cell = "1.19.0"
-headers = "0.3.9"
-http = "0.2.12"
+headers = "0.4.0"
+http = "1.1.0"
 mime = "0.3.17"
 rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
@@ -46,20 +45,21 @@ typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", feature
     "ext-http",
 ] }
 unwrap-infallible = "0.1.5"
-itertools = "0.11.0"
+itertools = "0.13.0"
 sophia_api = "0.8.0"
 manas_authentication = { version = "0.1.0", path = "../manas_authentication" }
 
 # feature: test-utils
 claims = { version = "0.7.1", optional = true }
-rstest = { version = "0.18.2", optional = true }
+rstest = { version = "0.21.0", optional = true }
+http-body = "1.0.0"
 
 [features]
 test-utils = ["dep:rstest", "dep:claims", "manas_space/test-utils"]
 
 [dev-dependencies]
 claims = "0.7.1"
-rstest = "0.18.2"
+rstest = "0.21.0"
 
 [package.metadata.docs.rs]
 all-features = true

@@ -4,13 +4,15 @@
 use async_convert::async_trait;
 use ecow::EcoVec;
 use futures::{stream::BoxStream, TryStreamExt};
-use hyper::body::SizeHint;
+use http_body::SizeHint;
 use rdf_utils::model::{dataset::CompatDataset, quad::ArcQuad};
+
+use crate::BoxError;
 
 use super::quads_inmem::{EcoQuadsInmem, QuadsInmem};
 
 /// Type alias for a boxed fallible quads stream.
-pub type BoxQuadsStream = BoxStream<'static, Result<ArcQuad, anyhow::Error>>;
+pub type BoxQuadsStream = BoxStream<'static, Result<ArcQuad, BoxError>>;
 
 /// Quads stream data.
 pub struct QuadsStream {
@@ -42,7 +44,7 @@ impl From<EcoQuadsInmem> for QuadsStream {
 
 #[async_trait]
 impl async_convert::TryFrom<QuadsStream> for EcoQuadsInmem {
-    type Error = anyhow::Error;
+    type Error = BoxError;
 
     async fn try_from(data: QuadsStream) -> Result<Self, Self::Error> {
         Ok(QuadsInmem::new(CompatDataset(

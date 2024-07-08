@@ -120,7 +120,7 @@ impl<Setup: ODRSetup> ODRContainerIndexInputs<Setup> {
                         // Skip if there is any error.
                         error!("Error in listing odr object. Error:\n {}", e);
                         // Yield error.
-                        yield Err(anyhow::Error::from(e));
+                        yield Err(e.into());
                         continue
                     }
                 };
