@@ -19,6 +19,12 @@ use iri_string::{
 };
 use unicase::Ascii;
 
+// Reexports
+pub use iri_string;
+
+#[cfg(feature = "invariants")]
+pub use {frunk_core, gdp_rs};
+
 #[cfg(feature = "invariants")]
 pub mod invariant;
 #[cfg(feature = "invariants")]

@@ -50,3 +50,11 @@ pub mod wac_allow;
 
 #[cfg(feature = "www-authenticate")]
 pub mod www_authenticate;
+
+
+// Re exports
+#[cfg(feature = "media-type")]
+pub use mime;
+
+#[cfg(any(feature = "link", feature = "location"))]
+pub use iri_string;
