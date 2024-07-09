@@ -3,7 +3,7 @@
 
 use std::ops::Deref;
 
-use either::Either;
+pub use either::Either;
 
 use crate::{
     predicate::{PurePredicate, SyncEvaluablePredicate},

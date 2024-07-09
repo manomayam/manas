@@ -2,10 +2,14 @@
 
 use std::{borrow::Cow, marker::PhantomData};
 
-use frunk_core::{
-    hlist::{HCons, HNil, Plucker, Sculptor},
-    traits::IntoReverse,
+pub use frunk_core::{
+    hlist::{HCons, HNil},
     HList,
+};
+
+use frunk_core::{
+    hlist::{Plucker, Sculptor},
+    traits::IntoReverse,
 };
 
 use crate::{

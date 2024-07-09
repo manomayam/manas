@@ -1,8 +1,7 @@
 //! This crate defines trait for asynchronous name lockers,
 //! that can run an async task with advisory-lock on a given name.
 //!
-//! It also provides a default inmemory implementation
-//! using dashmap.
+//! It also provides a default inmemory implementation.
 //!
 
 #![warn(missing_docs)]
@@ -11,7 +10,7 @@
 
 use std::hash::Hash;
 
-use futures::{future::BoxFuture, stream::BoxStream, Future, Stream};
+pub use futures::{future::BoxFuture, stream::BoxStream, Future, Stream};
 
 pub mod impl_;
 

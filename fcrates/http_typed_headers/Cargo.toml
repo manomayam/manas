@@ -54,7 +54,7 @@ accept-method = ["media-type"]
 ##! Enables `Link` typed header.
 link = ["dep:iri-string"]
 ##! Enables `Location` typed header.
-location = ["dep:iri-string", "itertools"]
+location = ["dep:iri-string", "dep:itertools"]
 ##! Enables `Forwarded`, `X-Forwarded-*` typed headers.
 forwarded = []
 ##! Enables `Prefer` typed header.

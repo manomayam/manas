@@ -19,6 +19,10 @@ serde = { version = "1.0.203", optional = true }
 [features]
 serde = ["dep:serde"]
 
+[dev-dependencies]
+iri-string = "0.7.2"
+thiserror = "1.0.61"
+
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "doc_cfg"]
