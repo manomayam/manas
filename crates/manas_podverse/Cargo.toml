@@ -30,7 +30,7 @@ tracing = { version = "0.1.40", features = ["attributes"] }
 
 # feature: impl-podset-templated
 dashmap = { version = "6.0.1", optional = true }
-moka = { version = "0.12.7", features = ["future"], optional = true }
+moka = { version = "0.12.8", features = ["future"], optional = true }
 http = "1.1.0"
 
 
