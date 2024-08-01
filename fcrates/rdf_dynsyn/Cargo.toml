@@ -62,7 +62,7 @@ reqwest = { version = "0.12.5", optional = true, default-features = false }
 reqwest-middleware = { version = "0.3.2", optional = true }
 http_typed_headers = { version = "0.1.0", path = "../http_typed_headers", default-features = false, features = ["accept", "location", "link"], optional = true }
 headers = { version = "0.4.0", optional = true }
-iref = { version = "2.2", optional = true }
+iref = { version = "3.2", optional = true }
 
 [features]
 ##! Enables async wrapper parsers and serializers.
