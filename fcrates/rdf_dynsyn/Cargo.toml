@@ -48,7 +48,7 @@ tokio-util = { version = "0.7.11", optional = true, features = [
 tokio-stream = { version = "0.1.15", optional = true }
 
 # feature: jsonld
-json-ld = { version = "^0.15.1", optional = true}
+json-ld = { version = "^0.21.1", optional = true}
 sophia_jsonld = { version = "0.8.0", optional = true}
 locspan = { version = "^0.7.16", optional = true }
 json-syntax = { version = "^0.9.6", optional = true }
