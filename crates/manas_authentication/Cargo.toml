@@ -33,7 +33,7 @@ futures = { version = "0.3.30", optional = true }
 tower = { version = "0.4.13", optional = true }
 
 # feature: solid-oidc
-moka = { version = "0.12.7", optional = true, default-features = false, features = [
+moka = { version = "0.12.8", optional = true, default-features = false, features = [
     "future",
 ] }
 rdf_vocabularies = { version = "0.2.0", features = [
