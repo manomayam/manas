@@ -103,14 +103,24 @@ mod predicate {
         /// JWK Contains a private key.
         #[error("JWK Contains a private key.")]
         ContainsPrivateKey,
+        /// JWK is using an unsupported key type (oct)
+        /// Unsupported by underlying picky::jose::jwk crate
+        #[error("JWK is using an unsupported key type.")]
+        UsingUnsupportedKeyType,
     }
 
     impl<K: Borrow<Jwk>> SyncEvaluablePredicate<K> for IsValidDPoPProofJwk {
         type EvalError = InvalidDPoPProofJwk;
 
-        fn evaluate_for(_jwk: &K) -> Result<(), Self::EvalError> {
+        fn evaluate_for(jwk: &K) -> Result<(), Self::EvalError> {
             // TODO. Filter out any private keys.
-            Ok(())
+            let borrow_jwk: &Jwk = jwk.borrow();
+            match borrow_jwk.key {
+                picky::jose::jwk::JwkKeyType::Ed(_) => Ok(()),
+                picky::jose::jwk::JwkKeyType::Ec(_) => Ok(()),
+                picky::jose::jwk::JwkKeyType::Rsa(_) => Ok(()),
+                picky::jose::jwk::JwkKeyType::Oct => Err(InvalidDPoPProofJwk::UsingUnsupportedKeyType),
+            }
         }
     }
 
