@@ -4,13 +4,15 @@
 use std::{fmt::Debug, marker::PhantomData};
 
 use sophia_api::{
-    graph::{GTerm, GTripleSource},
-    term::{matcher::Any, FromTerm, Term},
+    graph::{GResult, GTerm, Graph},
+    term::{FromTerm, Term, matcher::Any},
     triple::Triple,
 };
 use unwrap_infallible::UnwrapInfallible;
 
 use super::graph::{InfallibleGraph, InfallibleMutableGraph};
+
+type GTripleSource<'a, G> = Box<dyn Iterator<Item = GResult<G, <G as Graph>::Triple<'a>>> + 'a>;
 
 /// A trait for rdf subject handles.
 pub trait Handle: Debug + Sized {
@@ -181,7 +183,11 @@ pub trait HandleExt: Handle {
         TP: Term,
     {
         UnwrappingIterator {
-            inner: graph.triples_matching([self.as_term().borrow_term()], [p.borrow_term()], Any),
+            inner: Box::new(graph.triples_matching(
+                [self.as_term().borrow_term()],
+                [p.borrow_term()],
+                Any,
+            )),
         }
     }
 
@@ -194,7 +200,11 @@ pub trait HandleExt: Handle {
         TP: Term,
     {
         ObjectIterator {
-            inner: graph.triples_matching([self.as_term().borrow_term()], [p.borrow_term()], Any),
+            inner: Box::new(graph.triples_matching(
+                [self.as_term().borrow_term()],
+                [p.borrow_term()],
+                Any,
+            )),
         }
     }
 
@@ -213,7 +223,11 @@ pub trait HandleExt: Handle {
         TP: Term,
     {
         OwnedObjectHandleIterator {
-            inner: graph.triples_matching([self.as_term().borrow_term()], [p.borrow_term()], Any),
+            inner: Box::new(graph.triples_matching(
+                [self.as_term().borrow_term()],
+                [p.borrow_term()],
+                Any,
+            )),
             _phantom: PhantomData,
         }
     }

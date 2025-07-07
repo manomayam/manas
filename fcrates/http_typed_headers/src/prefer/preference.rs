@@ -89,7 +89,7 @@ impl Preference {
         buffer.push('=');
         self.token_value.push_encoded_str(buffer);
 
-        if self.params.len() > 0 {
+        if !self.params.is_empty() {
             buffer.push_str("; ");
             self.params.push_encoded_str(buffer);
         }

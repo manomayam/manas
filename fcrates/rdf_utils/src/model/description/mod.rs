@@ -100,7 +100,7 @@ pub trait DescriptionExt: Description {
     /// Get object of first triple about the subject with given
     /// predicate.
     #[inline]
-    fn get_first<'g, TP>(&'g self, p: &'g TP) -> Option<GTerm<Self::Graph>>
+    fn get_first<'g, TP>(&'g self, p: &'g TP) -> Option<GTerm<'g, Self::Graph>>
     where
         TP: Term,
     {

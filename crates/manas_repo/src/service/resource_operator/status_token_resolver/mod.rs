@@ -29,10 +29,10 @@ pub struct ResourceStatusTokenResponse<R: Repo> {
 /// ## Operation contract:
 ///
 /// - Service must return [`ResourceStatusTokenResponse`]
-/// corresponding to resource uri in the request.
+///   corresponding to resource uri in the request.
 ///
 /// - Through out it's lifetime it MUST maintain same shared
-/// repo context pointer.
+///   repo context pointer.
 pub trait ResourceStatusTokenResolver:
     Service<
         ResourceStatusTokenRequest,

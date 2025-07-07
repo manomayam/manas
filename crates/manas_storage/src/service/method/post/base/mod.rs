@@ -4,8 +4,8 @@
 
 use std::{sync::Arc, task::Poll};
 
-use dyn_problem::{type_::INTERNAL_ERROR, Problem, ProblemBuilderExt};
-use futures::{future::BoxFuture, TryFutureExt};
+use dyn_problem::{Problem, ProblemBuilderExt, type_::INTERNAL_ERROR};
+use futures::{TryFutureExt, future::BoxFuture};
 use headers::HeaderMapExt;
 use http::{Method, Request, StatusCode};
 use http_api_problem::ApiError;
@@ -22,10 +22,11 @@ use manas_http::{
     },
 };
 use manas_repo::{
+    RepoExt,
     policy::uri::RepoUriPolicy,
     service::resource_operator::{
         common::{
-            preconditions::{impl_::http::HttpPreconditions, KEvaluatedRepValidators},
+            preconditions::{KEvaluatedRepValidators, impl_::http::HttpPreconditions},
             problem::{
                 ACCESS_DENIED, INVALID_RDF_SOURCE_REPRESENTATION,
                 INVALID_USER_SUPPLIED_CONTAINED_RES_METADATA,
@@ -38,17 +39,17 @@ use manas_repo::{
         },
         creator::{ResourceCreateRequest, ResourceCreateResponse, ResourceCreateTokenSet},
     },
-    RepoExt,
 };
 use manas_space::resource::{
     kind::SolidResourceKind, slot_rel_type::SlotRelationType, uri::SolidResourceUri,
 };
 use manas_specs::{
-    protocol::{REQ_SERVER_POST_TARGET_NOT_FOUND, REQ_SERVER_PROTECT_CONTAINED_RESOURCE_METADATA},
     SpecProblem,
+    protocol::{REQ_SERVER_POST_TARGET_NOT_FOUND, REQ_SERVER_PROTECT_CONTAINED_RESOURCE_METADATA},
 };
 use name_locker::{LockKind, NameLocker};
-use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use rand::distr::Alphanumeric;
+use rand::{Rng, rng};
 use rdf_utils::model::term::CompatTerm;
 use rdf_vocabularies::ns;
 use sophia_api::term::Term;
@@ -57,6 +58,7 @@ use tracing::{debug, error, info};
 use typed_record::{ClonableTypedRecord, TypedRecord};
 
 use crate::{
+    SgCredentials, SgRepo, SgResourceCreator, SgResourceStatusToken, SolidStorage,
     service::method::common::snippet::{
         op_req::KOpReqExtensions,
         req_headers::{
@@ -65,7 +67,6 @@ use crate::{
         },
         status_token::resolve_status_token,
     },
-    SgCredentials, SgRepo, SgResourceCreator, SgResourceStatusToken, SolidStorage,
 };
 
 /// Type of response of the `BasePostService`.
@@ -190,7 +191,7 @@ where
         // header as defined in [RFC5023].
         let slug = req_parts.headers.typed_get::<Slug>().unwrap_or_else(|| {
             // Generate random string
-            thread_rng()
+            rng()
                 .sample_iter(&Alphanumeric)
                 .take(16)
                 .map(char::from)

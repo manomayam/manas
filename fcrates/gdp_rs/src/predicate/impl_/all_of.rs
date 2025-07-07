@@ -100,7 +100,8 @@ where
     where
         P: Predicate<S>,
     {
-        Proven::new_unchecked(self.into_subject())
+        // Safety: Caller must ensure that predicate holds.
+        unsafe { Proven::new_unchecked(self.into_subject()) }
     }
 }
 

@@ -4,7 +4,7 @@
 //!
 
 #![warn(missing_docs)]
-#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
 
 pub mod policy;
@@ -145,7 +145,7 @@ pub mod mock {
                 .expect("Claimed valid root res uri str");
 
             let mock_owner_id =
-                WebId::try_from(format!("{}#owner", root_res_uri_str).as_str()).unwrap();
+                WebId::try_from(format!("{root_res_uri_str}#owner").as_str()).unwrap();
 
             BasicSolidStorageSpace::new(root_res_uri.clone(), root_res_uri, mock_owner_id)
         }

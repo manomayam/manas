@@ -36,7 +36,7 @@ impl FromStr for AppliedPref {
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         let preference = Preference::from_str(value)?;
-        if preference.params.len() != 0 {
+        if !preference.params.is_empty() {
             return Err(InvalidEncodedAppliedPref::InvalidExtraParams);
         }
         Ok(Self(preference))

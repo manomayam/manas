@@ -13,7 +13,7 @@ use sophia_api::prelude::IriRef;
 
 static PROTOCOL_TTL_STR: &str = include_str!("ed.ttl");
 
-fn gen() -> Result<String, anyhow::Error> {
+fn generate() -> Result<String, anyhow::Error> {
     let spec_graph = SpecGraph {
         id: IriRef::new_unchecked(Arc::from("https://solidproject.org/ED/protocol")),
         title: "Solid Protocol".into(),
@@ -44,7 +44,7 @@ fn gen() -> Result<String, anyhow::Error> {
 }
 
 fn main() {
-    let spec_mod = gen().expect("Error in generating spec mod for solid protocol.");
+    let spec_mod = generate().expect("Error in generating spec mod for solid protocol.");
 
-    println!("{}", spec_mod);
+    println!("{spec_mod}");
 }

@@ -307,7 +307,7 @@ impl BasicRepresentation<BytesInmem> {
         .await
         .map_err(|e| {
             error!("Error in spawning serialization task: {e}");
-            io::Error::new(io::ErrorKind::Other, e)
+            io::Error::other(e)
         })??;
 
         let content_type = SYNTAX_TO_MEDIA_TYPE_CORRESPONDENCE[&syntax.into_subject()]

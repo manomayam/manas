@@ -57,7 +57,7 @@ pub use ecow_graph_impl::*;
 mod ecow_graph_impl {
     use ecow::EcoVec;
     use sophia_api::{
-        graph::{CollectibleGraph, GTripleSource, MgResult},
+        graph::{CollectibleGraph, GResult, MgResult},
         source::{StreamError::SourceError, StreamResult, TripleSource},
         term::FromTerm,
         triple::{TBorrowTerm, Triple},
@@ -66,12 +66,15 @@ mod ecow_graph_impl {
     use super::*;
 
     impl<T: Triple> Graph for CompatGraph<EcoVec<T>> {
-        type Triple<'x> = [TBorrowTerm<'x, T>; 3] where Self: 'x;
+        type Triple<'x>
+            = [TBorrowTerm<'x, T>; 3]
+        where
+            Self: 'x;
 
         type Error = Infallible;
 
         #[inline]
-        fn triples(&self) -> GTripleSource<Self> {
+        fn triples(&self) -> impl Iterator<Item = GResult<Self, Self::Triple<'_>>> + '_ {
             self.0[..].triples()
         }
     }

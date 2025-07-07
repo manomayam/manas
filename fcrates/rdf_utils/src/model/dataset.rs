@@ -55,7 +55,7 @@ pub use ecow_dataset_impl::*;
 mod ecow_dataset_impl {
     use ecow::EcoVec;
     use sophia_api::{
-        dataset::{CollectibleDataset, DQuadSource, MdResult},
+        dataset::{CollectibleDataset, DResult, MdResult},
         quad::{QBorrowTerm, Quad, Spog},
         source::{QuadSource, StreamError::SourceError, StreamResult},
         term::FromTerm,
@@ -64,12 +64,15 @@ mod ecow_dataset_impl {
     use super::*;
 
     impl<Q: Quad> Dataset for CompatDataset<EcoVec<Q>> {
-        type Quad<'x> = Spog<QBorrowTerm<'x, Q>> where Self: 'x;
+        type Quad<'x>
+            = Spog<QBorrowTerm<'x, Q>>
+        where
+            Self: 'x;
 
         type Error = Infallible;
 
         #[inline]
-        fn quads(&self) -> DQuadSource<Self> {
+        fn quads(&self) -> impl Iterator<Item = DResult<Self, Self::Quad<'_>>> + '_ {
             self.0[..].quads()
         }
     }

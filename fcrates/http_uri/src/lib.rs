@@ -2,7 +2,7 @@
 //!
 
 #![warn(missing_docs)]
-#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
 
 use std::{
@@ -367,7 +367,7 @@ impl sophia_api::term::Term for HttpUri {
     #[inline]
     fn iri(&self) -> Option<sophia_api::term::IriRef<sophia_api::MownStr>> {
         Some(sophia_api::term::IriRef::new_unchecked(
-            sophia_api::MownStr::from_str(self.as_str()),
+            sophia_api::MownStr::from_ref(self.as_str()),
         ))
     }
 }
@@ -475,8 +475,7 @@ mod tests_normal_check {
     ) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly "
         );
     }
 
@@ -493,8 +492,7 @@ mod tests_normal_check {
     ) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -508,8 +506,7 @@ mod tests_normal_check {
     ) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -526,8 +523,7 @@ mod tests_normal_check {
     fn http_uri_un_normal_with_dot_segments_will_be_non_normal(#[case] uri_str: &'static str) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -538,8 +534,7 @@ mod tests_normal_check {
     fn http_uri_with_explicit_default_port_will_be_non_normal(#[case] uri_str: &'static str) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -549,8 +544,7 @@ mod tests_normal_check {
     fn http_uri_with_non_trailing_empty_segment_will_be_non_normal(#[case] uri_str: &'static str) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -560,8 +554,7 @@ mod tests_normal_check {
     fn http_uri_with_empty_path_will_be_non_normal(#[case] uri_str: &'static str) {
         assert!(
             !check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 
@@ -605,8 +598,7 @@ mod tests_normal_check {
     fn normalized_http_uri_will_be_normal(#[case] uri_str: &'static str) {
         assert!(
             check_if_http_normal(uri_str),
-            "normalcy of uri \"{}\" is computed incorrectly ",
-            uri_str
+            "normalcy of uri \"{uri_str}\" is computed incorrectly ",
         );
     }
 }

@@ -11,8 +11,8 @@ use crate::service::resource_operator::reader::message::rep_preferences::range_n
 /// An implementation of [`RangeNegotiator`] which
 ///
 /// - resolves complete range as preferred range if
-/// negotiated content-type is different from that of source
-/// rep content-type.
+///   negotiated content-type is different from that of source
+///   rep content-type.
 ///
 /// - Delegates to outer negotiator otherwise.
 ///

@@ -189,6 +189,7 @@ impl<Setup: SolidOidcDpopSchemeSetup> SolidOidcDpopScheme<Setup> {
     }
 
     /// Verify uri security asper stp.
+    #[allow(clippy::result_large_err)]
     fn verify_stp_security(&self, webid: &WebId, iss: &AbsoluteHttpUri) -> CRResolutionResult<()> {
         // Verify webid security as per stp.
         let _webid_secure = SecureWebId::<Setup::SecureTransportPolicy>::try_new(webid.clone())
@@ -317,6 +318,7 @@ impl<Setup: SolidOidcDpopSchemeSetup> SolidOidcDpopScheme<Setup> {
     }
 
     /// Verify dpop-proof.
+    #[allow(clippy::result_large_err)]
     fn verify_dpop_proof(
         &self,
         uri: AbsoluteHttpUri,

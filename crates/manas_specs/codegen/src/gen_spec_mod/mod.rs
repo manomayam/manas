@@ -243,7 +243,7 @@ impl<G: Graph> SpecGraph<G> {
         .iter()
         .find_map(|(level, rid_suffix)| {
             if Term::eq(level, req_level_id) {
-                Some(format!("RequirementLevel::{}", rid_suffix))
+                Some(format!("RequirementLevel::{rid_suffix}"))
             } else {
                 None
             }

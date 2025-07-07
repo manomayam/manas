@@ -41,7 +41,8 @@ impl DPoPProofAlg {
     /// Caller must ensure that alg is dpop-compatible.
     #[inline]
     pub unsafe fn new_unchecked(alg: JwsAlg) -> Self {
-        Self(Proven::new_unchecked(alg))
+        // SAFETY: We are passing of unsafety.
+        Self(unsafe { Proven::new_unchecked(alg) })
     }
 }
 

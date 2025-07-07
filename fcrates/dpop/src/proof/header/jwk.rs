@@ -15,7 +15,7 @@ use self::predicate::IsValidDPoPProofJwk;
 /// From [rfc draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-dpop#section-4.2):
 ///
 /// >  representing the public key chosen by the client, in JSON Web Key (JWK) RFC7517 format,
-/// as defined in Section 4.1.3 of RFC7515. MUST NOT contain a private key..
+/// > as defined in Section 4.1.3 of RFC7515. MUST NOT contain a private key..
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct DPoPProofJwk<'inner>(Proven<Cow<'inner, Jwk>, IsValidDPoPProofJwk>);
@@ -73,7 +73,8 @@ impl<'inner> DPoPProofJwk<'inner> {
     /// Caller must ensure that jwk is dpop-compatible.
     #[inline]
     pub unsafe fn new_unchecked(jwk: Cow<'inner, Jwk>) -> Self {
-        Self(Proven::new_unchecked(jwk))
+        // SAFETY: We are passing of unsafety
+        Self(unsafe { Proven::new_unchecked(jwk) })
     }
 }
 

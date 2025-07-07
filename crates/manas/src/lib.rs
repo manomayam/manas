@@ -46,8 +46,8 @@
 //! - [`manas_repo`](https://docs.rs/manas_repo): Defines trait for defining backend repositories and their services. This trait is plugging point for supporting custom backend repositories.
 //!
 //! - [`mans_repo_opendal`](https://docs.rs/manas_repo_opendal): Provides default repository implementation on top of [OpenDAL](https://docs.rs/opendal/latest/opendal/) object store abstraction layer.
-//!    Through OpenDAL, it supports backends such as  `fs`, `s3-compatible`, `gcs`, `azblob`, etc. out of the box. While also allowing to take advantage of it's layer interface for enabling retry, tracing, etc.
-//!    Through implementing OpenDAL's [`Accessor`](https://docs.rs/opendal/latest/opendal/trait.Accessor.html), one can plug to this repository implementation for any object-store like backends, instead of reimplementing entire repository interface.
+//!   Through OpenDAL, it supports backends such as  `fs`, `s3-compatible`, `gcs`, `azblob`, etc. out of the box. While also allowing to take advantage of it's layer interface for enabling retry, tracing, etc.
+//!   Through implementing OpenDAL's [`Accessor`](https://docs.rs/opendal/latest/opendal/trait.Accessor.html), one can plug to this repository implementation for any object-store like backends, instead of reimplementing entire repository interface.
 //!
 //! - [`mans_repo_layers`](https://docs.rs/manas_repo_opendal_layers): Provides few layering repo implementations, that can be  layered over any repos to provide functionality like patching, validation, content-negotiation, etc.
 //!

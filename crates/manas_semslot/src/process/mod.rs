@@ -496,8 +496,7 @@ mod tests_mutex_process {
             (None, None) => (),
             (Some(p), Some(e)) => assert_matches_slot_path_encode_steps(&p, &e),
             (l, r) => panic!(
-                "mutex process expectation not satisfied. Got {:?}, expected {:?}",
-                l, r
+                "mutex process expectation not satisfied. Got {l:?}, expected {r:?}",
             ),
         }
     }

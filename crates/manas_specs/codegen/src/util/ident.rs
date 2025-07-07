@@ -22,7 +22,7 @@ pub fn sanitize_ident(ident: &str) -> String {
 
     // Ensure first char is not numeric.
     if ident.chars().next().unwrap().is_numeric() {
-        ident = format!("N_{}", ident);
+        ident = format!("N_{ident}");
     }
 
     // Ensure it is not a rust keyword.

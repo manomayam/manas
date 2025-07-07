@@ -18,11 +18,11 @@ use chrono::{LocalResult, TimeZone, Utc};
 use either::Either;
 use manas_http::header::common::media_type::MediaType;
 use opendal::{
-    raw::{
-        oio::{self, Entry, List},
-        Accessor, AccessorInfo, BytesRange, OpList, OpRead, OpStat, RpList, RpRead, RpStat,
-    },
     Builder, Capability, EntryMode, Error, ErrorKind, Metadata, Result, Scheme,
+    raw::{
+        Access, AccessorInfo, BytesRange, OpList, OpRead, OpStat, RpList, RpRead, RpStat,
+        oio::{self, Entry, List},
+    },
 };
 use rust_embed::RustEmbed;
 
@@ -63,20 +63,12 @@ impl<Assets> Embedded<Assets> {
 
 impl<Assets: RustEmbed + Send + Sync + 'static> Builder for Embedded<Assets> {
     const SCHEME: Scheme = Scheme::Custom("Embedded");
+    type Config = ();
 
-    type Accessor = EmbeddedAccessor<Assets>;
-
-    fn from_map(mut map: HashMap<String, String>) -> Self {
-        Self {
-            name: map.remove("name"),
-            ..Default::default()
-        }
-    }
-
-    fn build(&mut self) -> Result<Self::Accessor> {
+    fn build(mut self) -> Result<impl Access> {
         self.name
             .take()
-            .map(|name| EmbeddedAccessor::new(name))
+            .map(|name| EmbeddedAccess::<Assets>::new(name))
             .ok_or_else(|| Error::new(ErrorKind::ConfigInvalid, "No name specified."))
     }
 }
@@ -84,12 +76,12 @@ impl<Assets: RustEmbed + Send + Sync + 'static> Builder for Embedded<Assets> {
 /// An implementation of opendal service that reads objects
 /// from binary embedded directory.
 #[derive(Clone)]
-pub struct EmbeddedAccessor<Assets: RustEmbed> {
+pub struct EmbeddedAccess<Assets: RustEmbed> {
     name: String,
     _phantom: PhantomData<fn() -> Assets>,
 }
 
-impl<Assets: RustEmbed> std::fmt::Debug for EmbeddedAccessor<Assets> {
+impl<Assets: RustEmbed> std::fmt::Debug for EmbeddedAccess<Assets> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Embedded")
             .field("name", &self.name)
@@ -97,7 +89,7 @@ impl<Assets: RustEmbed> std::fmt::Debug for EmbeddedAccessor<Assets> {
     }
 }
 
-impl<Assets: RustEmbed> EmbeddedAccessor<Assets> {
+impl<Assets: RustEmbed> EmbeddedAccess<Assets> {
     /// Get a new [`Embedded`] service with given name.
     #[inline]
     pub fn new(name: String) -> Self {
@@ -124,7 +116,7 @@ fn apply_range(mut bs: Bytes, br: BytesRange) -> Bytes {
     }
 }
 
-impl<Assets: RustEmbed + 'static> EmbeddedAccessor<Assets> {
+impl<Assets: RustEmbed + 'static> EmbeddedAccess<Assets> {
     fn ns_info(path: &NsPath<'_>) -> Option<Metadata> {
         Assets::iter()
             .any(|f| f.starts_with(path.as_str()))
@@ -158,7 +150,7 @@ impl<Assets: RustEmbed + 'static> EmbeddedAccessor<Assets> {
 }
 
 #[async_trait]
-impl<Assets: RustEmbed + Send + Sync + 'static> Accessor for EmbeddedAccessor<Assets> {
+impl<Assets: RustEmbed + Send + Sync + 'static> Access for EmbeddedAccess<Assets> {
     type Reader = oio::Cursor;
     type BlockingReader = ();
     type Writer = ();
@@ -258,9 +250,9 @@ impl<Assets: RustEmbed + Send + Sync + 'static> List for NsList<Assets> {
             let path = ClassifiedPath::new(NormalPath::try_new(path.as_ref()).ok()?);
 
             let metadata = match &path.0 {
-                Either::Left(ns_path) => EmbeddedAccessor::<Assets>::ns_info(ns_path),
+                Either::Left(ns_path) => EmbeddedAccess::<Assets>::ns_info(ns_path),
                 Either::Right(file_path) => {
-                    EmbeddedAccessor::<Assets>::file_info(file_path).map(|(metadata, _)| metadata)
+                    EmbeddedAccess::<Assets>::file_info(file_path).map(|(metadata, _)| metadata)
                 }
             }?;
 

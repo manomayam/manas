@@ -24,14 +24,14 @@ pub mod util;
 /// for specified cases.
 ///
 /// - [`INCOMPATIBLE_PATCH_SOURCE_CONTENT_TYPE`](manas_repo::service::resource_operator::common::rep_patcher::INCOMPATIBLE_PATCH_SOURCE_CONTENT_TYPE):
-/// If target representation content-type is not compatible with
-/// the patcher.
+///   If target representation content-type is not compatible with
+///   the patcher.
 ///
 /// - [`INVALID_ENCODED_SOURCE_REP`](manas_repo::service::resource_operator::common::rep_patcher::INVALID_ENCODED_SOURCE_REP):
-/// If target rep is invalid encoded.
+///   If target rep is invalid encoded.
 ///
 /// - [`PATCH_SEMANTICS_ERROR`](manas_repo::service::resource_operator::common::rep_patcher::PATCH_SEMANTICS_ERROR):
-/// If any semantic error in patch application.
+///   If any semantic error in patch application.
 pub trait DirectRepPatcher<StSpace, Rep>:
     RepPatcher
     + Service<

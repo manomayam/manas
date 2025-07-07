@@ -9,7 +9,7 @@ use regex::Regex;
 /// Regex to match a `token68` value.
 static TOKEN68_RE: Lazy<Regex> = Lazy::new(|| {
     let t68char_non_alpha_numeric = regex::escape("-._~+/");
-    Regex::new(&(format!("^[{}0-9a-zA-Z]+=*$", t68char_non_alpha_numeric)))
+    Regex::new(&(format!("^[{t68char_non_alpha_numeric}0-9a-zA-Z]+=*$")))
         .expect("regex is claimed valid")
 });
 

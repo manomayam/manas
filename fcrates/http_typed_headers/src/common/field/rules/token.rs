@@ -8,7 +8,7 @@ use regex::Regex;
 
 static TOKEN_RE: Lazy<Regex> = Lazy::new(|| {
     let tchar_non_alpha_numeric = regex::escape("!#$%&'*+-.^_`|~");
-    let token_pattern = format!("^[{}0-9a-zA-Z]+$", tchar_non_alpha_numeric);
+    let token_pattern = format!("^[{tchar_non_alpha_numeric}0-9a-zA-Z]+$");
     Regex::new(&token_pattern).expect("regex is claimed valid")
 });
 
@@ -17,7 +17,7 @@ static TOKEN_RE: Lazy<Regex> = Lazy::new(|| {
 /// > Tokens are short textual identifiers that do not include whitespace or delimiters.
 /// ```txt
 /// token = 1*tchar
-
+///
 /// tchar = "!" / "#" / "$" / "%" / "&" / "'" / "*"
 ///                 / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
 ///                 / DIGIT / ALPHA

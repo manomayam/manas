@@ -1,8 +1,7 @@
 [package]
 name = "manas_repo_layers"
 version = "0.1.0"
-rust = "1.79.0"
-edition = "2021"
+edition = "2024"
 description = "This crate provides implementations for few common repo layers that integrate into manas eco system."
 repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
@@ -17,31 +16,31 @@ manas_http = { version = "0.1.1", path = "../manas_http", features = [
 ] }
 manas_space = { version = "0.1.0", path = "../manas_space" }
 dyn_problem = { version = "0.1.1", path = "../../fcrates/dyn_problem", features = ["alias-future"]}
-futures = "0.3.30"
-tower = {version = "0.4.13", features=["util"]}
-thiserror = "1.0.61"
-once_cell = "1.19.0"
-headers = "0.4.0"
-http = "1.1.0"
+futures = "0.3.31"
+tower = {version = "0.5.2", features=["util"]}
+thiserror = "2.0.12"
+once_cell = "1.21.3"
+headers = "0.4.1"
+http = "1.3.1"
 mime = "0.3.17"
 rdf_dynsyn = { version = "0.4.0", path = "../../fcrates/rdf_dynsyn", features = [
     "async",
 ] }
-tracing = { version = "0.1.40", features = ["attributes"] }
+tracing = { version = "0.1.41", features = ["attributes"] }
 async-convert = "1.0.0"
 capped_stream = { version = "0.1.1", path = "../../fcrates/capped_stream" }
-frunk_core = "0.4.2"
+frunk_core = "0.4.4"
 typed_record = { version = "0.1.1", path = "../../fcrates/typed_record", features = [
     "ext-anymap",
 ] }
 rdf_utils = { version = "0.3.1", path = "../../fcrates/rdf_utils"}
 manas_repo = { version = "0.1.0", path = "../manas_repo" }
 if_chain = "1.0.2"
-tokio = { version = "1.38.0", features = ["rt"] }
-sophia_api = "0.8.0"
+tokio = { version = "1.45.1", features = ["rt"] }
+sophia_api = "0.9.0"
 # anyhow = "1.0.86"
 
-rdf_vocabularies = { version = "0.2.0", features = [
+rdf_vocabularies = { version = "0.2.1", git = "https://github.com/manomayam/rdf_vocabularies.git", features = [
     "ns-rdf",
     "ns-stat",
     "ns-dcterms",

@@ -9,7 +9,7 @@
 //!
 
 #![warn(missing_docs)]
-#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
 
 pub mod type_;
@@ -64,18 +64,18 @@ impl Display for Problem {
     // NOTE: adapted from [`Display::fmt`] of `ApiError`, with `status` removed.
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match (self.title().as_ref(), self.detail_message()) {
-            (Some(title), Some(detail)) => return write!(f, " - {} - {}", title, detail),
-            (Some(title), None) => return write!(f, " - {}", title),
-            (None, Some(detail)) => return write!(f, " - {}", detail),
+            (Some(title), Some(detail)) => return write!(f, " - {title} - {detail}"),
+            (Some(title), None) => return write!(f, " - {title}"),
+            (None, Some(detail)) => return write!(f, " - {detail}"),
             (None, None) => (),
         }
 
         if let Some(type_url) = self.type_url().as_ref() {
-            return write!(f, " of type {}", type_url);
+            return write!(f, " of type {type_url}");
         }
 
         if let Some(instance) = self.instance().as_ref() {
-            return write!(f, " on {}", instance);
+            return write!(f, " on {instance}");
         }
 
         Ok(())

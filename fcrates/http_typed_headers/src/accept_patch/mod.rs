@@ -119,8 +119,7 @@ mod tests {
                 media_type.essence_str(),
                 assert_ok!(MediaType::from_str(assert_ok!(header_values[i].to_str())))
                     .essence_str(),
-                "Mismatched essence for media_type at `\"{}`\"",
-                i
+                "Mismatched essence for media_type at `\"{i}`\""
             );
         }
     }

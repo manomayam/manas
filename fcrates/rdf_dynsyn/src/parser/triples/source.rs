@@ -4,8 +4,8 @@ use rio_api::parser::TriplesParser as RioTriplesParser;
 use rio_turtle::{NTriplesParser as RioNTriplesParser, TurtleParser as RioTurtleParser};
 #[cfg(feature = "rdf-xml")]
 use rio_xml::RdfXmlParser as RioRdfXmlParser;
-use sophia_api::source::{StreamResult, TripleSource};
-use sophia_rio::parser::StrictRioSource;
+use sophia_api::source::{Source, StreamResult, TripleSource};
+use sophia_rio::parser::StrictRioTripleSource;
 
 use crate::{model::DynSynTriple, parser::error::DynSynParseError};
 
@@ -14,30 +14,30 @@ use crate::{model::DynSynTriple, parser::error::DynSynParseError};
 #[allow(clippy::large_enum_variant)]
 #[allow(clippy::enum_variant_names)]
 pub(crate) enum InnerTripleSource<R: BufRead> {
-    FNTriples(StrictRioSource<RioNTriplesParser<R>>),
-    FTurtle(StrictRioSource<RioTurtleParser<R>>),
+    FNTriples(StrictRioTripleSource<RioNTriplesParser<R>>),
+    FTurtle(StrictRioTripleSource<RioTurtleParser<R>>),
     #[cfg(feature = "rdf-xml")]
-    FRdfXml(StrictRioSource<RioRdfXmlParser<R>>),
+    FRdfXml(StrictRioTripleSource<RioRdfXmlParser<R>>),
 }
 
-impl<R: BufRead> From<StrictRioSource<RioNTriplesParser<R>>> for InnerTripleSource<R> {
+impl<R: BufRead> From<StrictRioTripleSource<RioNTriplesParser<R>>> for InnerTripleSource<R> {
     #[inline]
-    fn from(qs: StrictRioSource<RioNTriplesParser<R>>) -> Self {
+    fn from(qs: StrictRioTripleSource<RioNTriplesParser<R>>) -> Self {
         Self::FNTriples(qs)
     }
 }
 
-impl<R: BufRead> From<StrictRioSource<RioTurtleParser<R>>> for InnerTripleSource<R> {
+impl<R: BufRead> From<StrictRioTripleSource<RioTurtleParser<R>>> for InnerTripleSource<R> {
     #[inline]
-    fn from(qs: StrictRioSource<RioTurtleParser<R>>) -> Self {
+    fn from(qs: StrictRioTripleSource<RioTurtleParser<R>>) -> Self {
         Self::FTurtle(qs)
     }
 }
 
 #[cfg(feature = "rdf-xml")]
-impl<R: BufRead> From<StrictRioSource<RioRdfXmlParser<R>>> for InnerTripleSource<R> {
+impl<R: BufRead> From<StrictRioTripleSource<RioRdfXmlParser<R>>> for InnerTripleSource<R> {
     #[inline]
-    fn from(qs: StrictRioSource<RioRdfXmlParser<R>>) -> Self {
+    fn from(qs: StrictRioTripleSource<RioRdfXmlParser<R>>) -> Self {
         Self::FRdfXml(qs)
     }
 }
@@ -51,14 +51,13 @@ impl<R: BufRead> DynSynTripleSource<R> {
     ///
     fn try_for_some_adapted_rio_triple<Parser, SinkErr, F>(
         // underlying triple source
-        ts: &mut StrictRioSource<Parser>,
+        ts: &mut StrictRioTripleSource<Parser>,
         mut f: F,
     ) -> StreamResult<bool, DynSynParseError, SinkErr>
     where
         Parser: RioTriplesParser,
         Parser::Error: Error + Send + Sync + 'static,
-        SinkErr: Error,
-
+        SinkErr: Error + Send + Sync + 'static,
         F: FnMut(DynSynTriple<'_>) -> Result<(), SinkErr>,
     {
         TripleSource::try_for_some_triple(ts, |t| f(DynSynTriple(t.into())))
@@ -66,18 +65,18 @@ impl<R: BufRead> DynSynTripleSource<R> {
     }
 }
 
-impl<R> TripleSource for DynSynTripleSource<R>
+impl<R> Source for DynSynTripleSource<R>
 where
     R: BufRead,
 {
     type Error = DynSynParseError;
 
-    type Triple<'x> = DynSynTriple<'x>;
+    type Item<'x> = DynSynTriple<'x>;
 
-    fn try_for_some_triple<E, F>(&mut self, f: F) -> StreamResult<bool, Self::Error, E>
+    fn try_for_some_item<E, F>(&mut self, f: F) -> StreamResult<bool, Self::Error, E>
     where
-        E: Error,
-        F: FnMut(Self::Triple<'_>) -> Result<(), E>,
+        E: Error + Send + Sync + 'static,
+        F: FnMut(Self::Item<'_>) -> Result<(), E>,
     {
         match &mut self.0 {
             InnerTripleSource::FNTriples(ts) => Self::try_for_some_adapted_rio_triple(ts, f),

@@ -25,7 +25,7 @@ pub mod put_or_patch;
 /// [`MethodService`] handles requests on resources in a storage space in two phases.
 ///
 /// 1. Configured base method svc takes hyper request, processes it,
-/// and returns custom success response or an `ApiError`.
+///    and returns custom success response or an `ApiError`.
 ///
 /// 2. Then marshaller marshals either success response of base svc or api error into hyper response infallibly.
 ///
@@ -33,14 +33,14 @@ pub mod put_or_patch;
 /// at different stages of request.
 ///
 /// 1. If one wants to customize  base request handling and base response, then they
-/// can layer over base method service, and plug resultant.
+///    can layer over base method service, and plug resultant.
 ///
 /// 2. If one want to customize how base response is marshalled,
-/// then they can create custom marshaller by layering over existing ones.
+///    then they can create custom marshaller by layering over existing ones.
 ///
 /// 3. If one want to customize final hyper response or initial hyper request,
-/// then they can layer over this service to create custom
-/// method services.
+///    then they can layer over this service to create custom
+///    method services.
 #[derive(Debug, Clone)]
 pub struct MethodService<BaseMethodSvc, Marshaller> {
     /// Base method service

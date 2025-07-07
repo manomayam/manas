@@ -14,7 +14,7 @@ use super::common::base64url_encoded::{Base64UrlEncodingRule, IsValidBase64UrlEn
 /// From spec:
 ///
 /// >  jkt: The value of the jkt member MUST be the base64url encoding (as defined in RFC7515)
-/// of the JWK SHA-256 Thumbprint (according to RFC7638) of the public key (in JWK format)
+/// > of the JWK SHA-256 Thumbprint (according to RFC7638) of the public key (in JWK format)
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct Jkt(Proven<String, IsValidBase64UrlEncodedValue>);

@@ -1,3 +1,4 @@
+// TODO must switch to sophia_sparql_client
 //! Query processing over RDF graphs and datasets.
 //!
 //! **Important**: this is a preliminary and incomplete implementation.
@@ -7,13 +8,15 @@ use std::{collections::HashMap, iter::once};
 
 use resiter::map::*;
 use sophia_api::{
-    graph::{GResult, GTripleSource},
+    graph::GResult,
     prelude::Graph,
-    term::{matcher::TermMatcher, FromTerm, Term, TermKind},
+    term::{FromTerm, Term, TermKind, matcher::TermMatcher},
     triple::Triple,
 };
 
 use crate::model::term::ArcTerm;
+
+type GTripleSource<'a, G> = Box<dyn Iterator<Item = GResult<G, <G as Graph>::Triple<'a>>> + 'a>;
 
 trait TermExt: Term {
     /// Shim for 0.7 compat
@@ -177,7 +180,7 @@ where
     let s = &tm[0];
     let p = &tm[1];
     let o = &tm[2];
-    g.triples_matching(s, p, o)
+    Box::new(g.triples_matching(s, p, o))
 }
 
 enum Binding {
@@ -227,7 +230,7 @@ mod test {
     use std::collections::HashSet;
 
     use sophia_api::{
-        ns::{rdf, Namespace},
+        ns::{Namespace, rdf},
         prelude::{Iri, MutableGraph},
         term::VarName,
     };

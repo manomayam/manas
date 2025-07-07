@@ -2,7 +2,7 @@ use std::io::BufReader;
 
 use async_compat::CompatExt;
 use bytes::Bytes;
-use futures::{stream::BoxStream, AsyncRead, TryStream};
+use futures::{AsyncRead, TryStream, stream::BoxStream};
 use sophia_api::{
     parser::QuadParser,
     prelude::Iri,
@@ -17,7 +17,8 @@ use tracing::error;
 
 use super::{factory::DynSynQuadParserFactory, sync::DynSynQuadParser};
 use crate::{
-    parser::error::DynSynParseError, syntax::invariant::quads_parsable::QuadsParsableSyntax,
+    model::DynSynQuad, parser::error::DynSynParseError,
+    syntax::invariant::quads_parsable::QuadsParsableSyntax,
     util::stream::bytes_stream_to_async_reader,
 };
 
@@ -45,7 +46,7 @@ impl DynSynAsyncQuadParser {
             let mut receiver_closed = false;
 
             while !receiver_closed {
-                let r = quad_source.for_some_quad(&mut |q| {
+                let r = quad_source.for_some_quad(&mut |q: DynSynQuad| {
                     if quads_tx
                         .blocking_send(Ok((
                             [q.s().into_term(), q.p().into_term(), q.o().into_term()],

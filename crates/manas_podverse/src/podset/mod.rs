@@ -35,7 +35,7 @@ pub trait PodSet: Send + Sync + 'static {
     /// - [`TARGET_NOT_IN_NAMESPACE`], if request target is not in namespace of the podset.
     ///
     /// - [`TARGET_IN_UNPROVISIONED_POD_NAMESPACE`], If request target
-    /// is in namespace of an unprovisioned pod, that belongs to podset's namespace.
+    ///   is in namespace of an unprovisioned pod, that belongs to podset's namespace.
     fn resolve_target_pod(
         &self,
         req_target: &SolidResourceUri,

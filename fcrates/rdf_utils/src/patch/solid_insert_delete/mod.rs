@@ -360,20 +360,20 @@ where
     ///
     /// Req:
     /// - Start from the RDF dataset in the target document,
-    /// or an empty RDF dataset if the target resource does
-    /// not exist yet.
+    ///   or an empty RDF dataset if the target resource does
+    ///   not exist yet.
     ///
     /// - If ?conditions is non-empty, find all (possibly
-    /// empty) variable mappings such that all of the
-    /// resulting triples occur in the dataset.
+    ///   empty) variable mappings such that all of the
+    ///   resulting triples occur in the dataset.
     ///
     /// - If no such mapping exists, or if multiple mappings
-    /// exist, the server MUST respond with a 409 status
-    /// code. [Source]
+    ///   exist, the server MUST respond with a 409 status
+    ///   code. [Source]
     ///
     /// - The resulting variable mapping is propagated to
-    /// the ?deletions and ?insertions formulae to obtain two
-    /// sets of resulting triples.
+    ///   the ?deletions and ?insertions formulae to obtain two
+    ///   sets of resulting triples.
     fn resolve_patch<TD>(
         &self,
         target_dataset: &TD,

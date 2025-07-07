@@ -5,11 +5,11 @@ use std::{borrow::Borrow, fmt::Debug, rc::Rc, sync::Arc};
 
 use once_cell::sync::Lazy;
 use sophia_api::{
+    MownStr,
     ns::{rdf, xsd},
     prelude::IriRef,
     term::{BnodeId, FromTerm, LanguageTag, Term, TermKind, TryFromTerm, VarName},
     triple::Triple,
-    MownStr,
 };
 
 static RDF_LANG_STRING: Lazy<Box<str>> =
@@ -37,7 +37,10 @@ pub enum BasicTerm<S: Borrow<str>> {
 use BasicTerm::*;
 
 impl<S: Borrow<str> + Debug> Term for BasicTerm<S> {
-    type BorrowTerm<'x> = &'x Self where Self: 'x;
+    type BorrowTerm<'x>
+        = &'x Self
+    where
+        Self: 'x;
 
     fn kind(&self) -> TermKind {
         match self {
@@ -50,14 +53,14 @@ impl<S: Borrow<str> + Debug> Term for BasicTerm<S> {
     }
     fn iri(&self) -> Option<IriRef<MownStr>> {
         if let Iri(iri) = self {
-            Some(IriRef::new_unchecked(MownStr::from_str(iri.as_str())))
+            Some(IriRef::new_unchecked(MownStr::from_ref(iri.as_str())))
         } else {
             None
         }
     }
     fn bnode_id(&self) -> Option<BnodeId<MownStr>> {
         if let BlankNode(bnid) = self {
-            Some(BnodeId::new_unchecked(MownStr::from_str(bnid.as_str())))
+            Some(BnodeId::new_unchecked(MownStr::from_ref(bnid.as_str())))
         } else {
             None
         }
@@ -70,21 +73,21 @@ impl<S: Borrow<str> + Debug> Term for BasicTerm<S> {
     }
     fn datatype(&self) -> Option<IriRef<MownStr>> {
         match self {
-            LiteralDatatype(_, iri) => Some(IriRef::new_unchecked(MownStr::from_str(iri.as_str()))),
-            LiteralLanguage(..) => Some(IriRef::new_unchecked(MownStr::from_str(&RDF_LANG_STRING))),
+            LiteralDatatype(_, iri) => Some(IriRef::new_unchecked(MownStr::from_ref(iri.as_str()))),
+            LiteralLanguage(..) => Some(IriRef::new_unchecked(MownStr::from_ref(&RDF_LANG_STRING))),
             _ => None,
         }
     }
     fn language_tag(&self) -> Option<LanguageTag<MownStr>> {
         if let LiteralLanguage(_, tag) = self {
-            Some(LanguageTag::new_unchecked(MownStr::from_str(tag.as_str())))
+            Some(LanguageTag::new_unchecked(MownStr::from_ref(tag.as_str())))
         } else {
             None
         }
     }
     fn variable(&self) -> Option<VarName<MownStr>> {
         if let Variable(name) = self {
-            Some(VarName::new_unchecked(MownStr::from_str(name.as_str())))
+            Some(VarName::new_unchecked(MownStr::from_ref(name.as_str())))
         } else {
             None
         }
@@ -201,7 +204,8 @@ pub type ArcBlankNode = BnodeId<Arc<str>>;
 pub struct CompatTerm<T>(pub T);
 
 impl Term for CompatTerm<u64> {
-    type BorrowTerm<'x> = Self
+    type BorrowTerm<'x>
+        = Self
     where
         Self: 'x;
 
@@ -222,7 +226,7 @@ impl Term for CompatTerm<u64> {
 
     #[inline]
     fn datatype(&self) -> Option<IriRef<MownStr>> {
-        Some(IriRef::new_unchecked(MownStr::from_str(&XSD_INTEGER)))
+        Some(IriRef::new_unchecked(MownStr::from_ref(&XSD_INTEGER)))
     }
 
     #[inline]
@@ -241,8 +245,9 @@ mod chrono_terms_impl {
         Lazy::new(|| xsd::dateTime.iri().unwrap().unwrap().into());
 
     impl Term for CompatTerm<DateTime<Utc>> {
-        type BorrowTerm<'x> = &'x Self
-            where
+        type BorrowTerm<'x>
+            = &'x Self
+        where
             Self: 'x;
 
         #[inline]
@@ -262,7 +267,7 @@ mod chrono_terms_impl {
 
         #[inline]
         fn datatype(&self) -> Option<IriRef<MownStr>> {
-            Some(IriRef::new_unchecked(MownStr::from_str(&XSD_DATE_TIME)))
+            Some(IriRef::new_unchecked(MownStr::from_ref(&XSD_DATE_TIME)))
         }
 
         #[inline]
@@ -286,8 +291,9 @@ mod iri_string_terms_impl {
         }
     }
 
-    impl<'a> Term for CompatTerm<&'a UriReferenceStr> {
-        type BorrowTerm<'x> = Self
+    impl Term for CompatTerm<&UriReferenceStr> {
+        type BorrowTerm<'x>
+            = Self
         where
             Self: 'x;
 
@@ -303,12 +309,13 @@ mod iri_string_terms_impl {
 
         #[inline]
         fn iri(&self) -> Option<IriRef<MownStr>> {
-            Some(IriRef::new_unchecked(MownStr::from_str(self.0.as_str())))
+            Some(IriRef::new_unchecked(MownStr::from_ref(self.0.as_str())))
         }
     }
 
-    impl<'a> Term for CompatTerm<&'a IriReferenceStr> {
-        type BorrowTerm<'x> = Self
+    impl Term for CompatTerm<&IriReferenceStr> {
+        type BorrowTerm<'x>
+            = Self
         where
             Self: 'x;
 
@@ -324,7 +331,7 @@ mod iri_string_terms_impl {
 
         #[inline]
         fn iri(&self) -> Option<IriRef<MownStr>> {
-            Some(IriRef::new_unchecked(MownStr::from_str(self.0.as_str())))
+            Some(IriRef::new_unchecked(MownStr::from_ref(self.0.as_str())))
         }
     }
 }

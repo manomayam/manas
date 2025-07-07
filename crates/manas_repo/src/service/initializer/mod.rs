@@ -20,10 +20,9 @@ pub mod impl_;
 /// Service MUST return errors with following problem types in
 /// specified cases.
 ///
-/// - [`INVALID_STORAGE_ROOT_URI`]: If
-/// storage root uri specified in context deemed invalid for any
-/// policy reason.
-
+/// - [`INVALID_STORAGE_ROOT_URI`] : If
+///   storage root uri specified in context deemed invalid for any
+///   policy reason.
 pub trait RepoInitializer:
     RepoContextual
     + Service<(), Response = bool, Error = Problem, Future = ProbFuture<'static, bool>>

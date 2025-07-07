@@ -137,7 +137,6 @@ impl DynSynTripleSerializerFactory {
 /// --------------------------------------------
 ///                                  tests
 /// --------------------------------------------
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashSet;

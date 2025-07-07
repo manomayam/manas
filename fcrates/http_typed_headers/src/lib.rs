@@ -7,7 +7,7 @@
 // )]
 
 #![warn(missing_docs)]
-#![cfg_attr(doc_cfg, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![deny(unused_qualifications)]
 
 pub use headers::{Header, HeaderMap, HeaderMapExt, HeaderName, HeaderValue};

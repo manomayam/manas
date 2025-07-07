@@ -42,8 +42,8 @@ pub struct UriReconstructionParams {
 /// From [rfc9110](https://www.rfc-editor.org/rfc/rfc9110.html#section-7.1):
 ///
 /// > Upon receipt of a client's request, a server reconstructs
-/// the target URI from the received components in accordance with
-/// their local configuration and incoming connection context.
+/// > the target URI from the received components in accordance with
+/// > their local configuration and incoming connection context.
 #[derive(Debug, Clone)]
 pub struct ReconstructTargetUri<S>
 where

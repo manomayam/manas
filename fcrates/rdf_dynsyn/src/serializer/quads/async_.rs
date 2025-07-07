@@ -49,7 +49,7 @@ where
                 "Error in running serialization task to completion. Error:\n {}",
                 e
             );
-            StreamError::SinkError(io::Error::new(io::ErrorKind::Other, e))
+            StreamError::SinkError(io::Error::other(e))
         })?
     }
 
@@ -80,7 +80,7 @@ where
     pub async fn serialize<Q, E, QS>(self, quads: QS) -> StreamResult<Self, E, io::Error>
     where
         Q: Quad + Send + 'static,
-        E: Send + 'static + std::error::Error,
+        E: Send + Sync + 'static + std::error::Error,
         QS: Stream<Item = Result<Q, E>> + Send + 'static + Unpin,
     {
         let quads_blocking_iterator =

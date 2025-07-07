@@ -52,7 +52,7 @@ where
                 "Error in running serialization task to completion. Error:\n {}",
                 e
             );
-            StreamError::SinkError(io::Error::new(io::ErrorKind::Other, e))
+            StreamError::SinkError(io::Error::other(e))
         })?
     }
 
@@ -97,7 +97,7 @@ where
     pub async fn serialize<Q, E, TS>(self, triples: TS) -> StreamResult<Self, E, io::Error>
     where
         Q: Triple + Send + 'static,
-        E: Send + 'static + std::error::Error,
+        E: Send + Sync + 'static + std::error::Error,
         TS: Stream<Item = Result<Q, E>> + Send + 'static + Unpin,
     {
         let triples_blocking_iterator =

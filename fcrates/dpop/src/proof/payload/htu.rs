@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 /// From spec:
 ///
 /// >  htu: The HTTP target URI (Section 7.1 of RFC9110), without
-/// query and fragment parts, of the request to which the JWT is attached.
+/// > query and fragment parts, of the request to which the JWT is attached.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
 #[allow(clippy::type_complexity)]

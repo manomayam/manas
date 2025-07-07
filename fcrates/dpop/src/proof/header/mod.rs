@@ -87,7 +87,8 @@ impl<'inner> DPoPProofHeader<'inner> {
     /// Caller must ensure that header is dpop-compatible.
     #[inline]
     pub unsafe fn new_unchecked(header: Cow<'inner, JwsHeader>) -> Self {
-        Self(Proven::new_unchecked(header))
+        // SAFETY: We are passing of unsafety
+        Self(unsafe { Proven::new_unchecked(header) })
     }
 
     /// Get an identical borrowed [`DPoPProofHeader`].

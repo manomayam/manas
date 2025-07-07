@@ -1,15 +1,14 @@
 [package]
 name = "manas_server_single_fs_noauth"
 version = "0.1.0"
-rust = "1.79.0"
-edition = "2021"
+edition = "2024"
 description = "This binary crate provides a solid server with fs backend, without authentication requirements."
 repository = "https://github.com/manomayam/manas"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
 manas_server = { version = "0.1.0", path = "../..", features = ["backend-fs"] }
-tokio = { version = "1.38.0", features = ["rt", "rt-multi-thread"] }
+tokio = { version = "1.45.1", features = ["rt", "rt-multi-thread"] }
 
 
 [package.metadata.docs.rs]

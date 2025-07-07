@@ -16,6 +16,7 @@ use sophia_jsonld::JsonLdParser;
 use crate::parser::config::jsonld::DynDocumentLoaderFactory;
 
 /// A sum-type that wraps around different quad-parsers from sophia.
+#[allow(clippy::large_enum_variant)]
 enum InnerQuadParser {
     NQuads(NQuadsParser),
     TriG(TriGParser),

@@ -31,7 +31,7 @@ impl<S, C, A> Clone for Conditional<S, C, A> {
 
 impl<S, C, A> std::fmt::Debug for Conditional<S, C, A> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("AllOf").finish()
+        f.debug_struct("Conditional").finish()
     }
 }
 
@@ -66,6 +66,7 @@ where
     /// Callers must promise that CPA (conditional proof assumption) holds.
     #[inline]
     pub unsafe fn promise_condition(self) -> Proven<S, C> {
-        Proven::new_unchecked(self.into_subject())
+        // Safety: Caller must ensure that condition holds
+        unsafe { Proven::new_unchecked(self.into_subject()) }
     }
 }

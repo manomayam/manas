@@ -1,9 +1,9 @@
 //! This module implements types for representing http fields.
 //!
 //!  > HTTP uses "fields" to provide data in the form of
-//! extensible name/value pairs with a registered key namespace.
-//! Fields are sent and received within the header and trailer
-//! sections of messages.
+//! > extensible name/value pairs with a registered key namespace.
+//! > Fields are sent and received within the header and trailer
+//! > sections of messages.
 //!
 
 pub mod name;

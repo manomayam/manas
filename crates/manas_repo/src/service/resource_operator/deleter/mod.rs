@@ -18,11 +18,11 @@ pub mod impl_;
 /// ## Service contract:
 ///
 /// - MUST delete target resource with given uri, and it;s
-/// entire aux tree.
+///   entire aux tree.
 ///
 /// - If deleted resource is a contained resource, MUST update
-/// container representation by removing corresponding
-/// containment triple.
+///   container representation by removing corresponding
+///   containment triple.
 ///
 /// ### Errors:
 ///
@@ -30,16 +30,16 @@ pub mod impl_;
 /// specified cases.
 ///
 /// - [`UNSUPPORTED_OPERATION`](super::common::problem::UNSUPPORTED_OPERATION):
-/// If operation is not supported.
+///   If operation is not supported.
 ///
 /// - [`PRECONDITIONS_NOT_SATISFIED`](super::common::problem::PRECONDITIONS_NOT_SATISFIED):
-/// If preconditions not satisfied.
+///   If preconditions not satisfied.
 ///
 /// - [`DELETE_TARGETS_STORAGE_ROOT`]:
-/// If target resource is a storage root or it's acl.
+///   If target resource is a storage root or it's acl.
 ///
 /// - [DELETE_TARGETS_NON_EMPTY_CONTAINER`]:
-/// If target resource is a container and is non empty.
+///   If target resource is a container and is non empty.
 ///
 pub trait ResourceDeleter:
     Default

@@ -57,7 +57,7 @@ impl Separator for SemiColon {
 }
 
 impl<'v, Sep: Separator> FlatCsv<'v, Sep> {
-    pub(crate) fn iter(&self) -> impl Iterator<Item = &'v str> {
+    pub(crate) fn iter(&self) -> impl Iterator<Item = &'v str> + use<'v, Sep> {
         self.value
             .to_str()
             .ok()

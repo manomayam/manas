@@ -8,8 +8,8 @@ use std::{
     sync::Arc,
 };
 
-use dyn_problem::{define_anon_problem_types, Problem};
-use futures::{stream::FuturesUnordered, TryFutureExt, TryStreamExt};
+use dyn_problem::{Problem, define_anon_problem_types};
+use futures::{TryFutureExt, TryStreamExt, stream::FuturesUnordered};
 use rdf_utils::model::{description::DescriptionExt, graph::InfallibleGraph, term::ArcTerm};
 use rdf_vocabularies::ns;
 use sophia_api::term::Term;
@@ -278,8 +278,8 @@ where
     /// > - at least one value of each defined attribute matches the Context.
     ///
     /// > ACP engines MUST match the context attributes defined
-    /// by this specification according to IRI equality and
-    /// literal term equality.
+    /// > by this specification according to IRI equality and
+    /// > literal term equality.
     async fn is_satisfied_matcher(
         &self,
         matcher: DMatcher<G, WG>,
@@ -326,10 +326,7 @@ where
                         break;
                     }
                     Err(e) => {
-                        info!(
-                            "Unknown error in resolving attribute value match. Error:\n {}",
-                            e
-                        );
+                        info!("Unknown error in resolving attribute value match. Error:\n {e}",);
                         last_error = Some(e);
                     }
                     _ => {}
@@ -345,10 +342,7 @@ where
                         .finish());
                 }
 
-                info!(
-                    "None of attribute values matched against context. attribute: {:?}",
-                    attribute
-                );
+                info!("None of attribute values matched against context. attribute: {attribute:?}");
                 return Ok(false);
             }
         }

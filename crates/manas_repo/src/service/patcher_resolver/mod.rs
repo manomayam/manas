@@ -18,7 +18,7 @@ pub mod impl_;
 /// error cases.
 ///
 /// - [`UNKNOWN_PATCH_DOC_CONTENT_TYPE`]: If patch doc
-/// content-type is unknown to resolver.
+///   content-type is unknown to resolver.
 ///
 /// - [`INVALID_ENCODED_PATCH`]: If patch doc encoding is invalid.
 pub trait RepPatcherResolver:

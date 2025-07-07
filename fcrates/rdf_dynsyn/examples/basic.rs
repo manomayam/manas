@@ -55,7 +55,7 @@ pub fn try_main() -> Result<(), Box<dyn std::error::Error>> {
     let mut serializer = serializer_factory.new_stringifier(tgt_doc_syntax.try_proven()?);
     let serialized_doc = serializer.serialize_graph(&graph)?.as_str();
 
-    println!("The resulting graph\n{}", serialized_doc);
+    println!("The resulting graph\n{serialized_doc}");
 
     Ok(())
 }

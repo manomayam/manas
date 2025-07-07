@@ -2,7 +2,7 @@ use std::io::BufReader;
 
 use async_compat::CompatExt;
 use bytes::Bytes;
-use futures::{stream::BoxStream, AsyncRead, TryStream};
+use futures::{AsyncRead, TryStream, stream::BoxStream};
 use sophia_api::{
     parser::TripleParser,
     prelude::Iri,
@@ -17,7 +17,8 @@ use tracing::error;
 
 use super::{factory::DynSynTripleParserFactory, sync::DynSynTripleParser};
 use crate::{
-    parser::error::DynSynParseError, syntax::invariant::triples_parsable::TriplesParsableSyntax,
+    model::DynSynTriple, parser::error::DynSynParseError,
+    syntax::invariant::triples_parsable::TriplesParsableSyntax,
     util::stream::bytes_stream_to_async_reader,
 };
 
@@ -42,7 +43,7 @@ impl DynSynAsyncTripleParser {
             let mut receiver_closed = false;
 
             while !receiver_closed {
-                let r = triple_source.for_some_triple(&mut |t| {
+                let r = triple_source.for_some_triple(&mut |t: DynSynTriple| {
                     if triples_tx
                         .blocking_send(Ok([
                             t.s().into_term(),

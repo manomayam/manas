@@ -18,6 +18,7 @@ use crate::parser::config::jsonld::DynDocumentLoaderFactory;
 
 /// This is a sum-type that wraps around different
 /// quad-serializers from sophia.
+#[allow(clippy::large_enum_variant)]
 pub(crate) enum InnerQuadSerializer<W: io::Write> {
     NQuads(NqSerializer<W>),
     Trig(TrigSerializer<W>),
@@ -48,7 +49,6 @@ impl<W: io::Write> Debug for InnerQuadSerializer<W> {
 /// For each supported serialization syntax, it also supports
 /// corresponding formatting options that sophia supports.
 ///
-
 pub struct DynSynQuadSerializer<W: io::Write>(InnerQuadSerializer<W>);
 
 impl<W: io::Write> DynSynQuadSerializer<W> {
@@ -138,7 +138,6 @@ impl DynSynQuadSerializerFactory {
 /// --------------------------------------------
 ///                                  tests
 /// --------------------------------------------
-
 #[cfg(test)]
 mod tests {
     use std::collections::HashSet;

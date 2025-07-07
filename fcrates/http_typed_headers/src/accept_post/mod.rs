@@ -82,8 +82,7 @@ mod tests {
             assert_eq!(
                 media_type.essence_str(),
                 assert_ok!(Mime::from_str(assert_ok!(header_values[i].to_str()))).essence_str(),
-                "Mismatched essence for media_range at `\"{}`\"",
-                i
+                "Mismatched essence for media_range at `\"{i}`\""
             );
         }
     }

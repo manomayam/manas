@@ -4,17 +4,17 @@ use std::marker::PhantomData;
 
 use manas_http::uri::invariant::NormalAbsoluteHttpUri;
 use manas_space::{
+    SolidStorageSpace,
     policy::aux::AuxPolicy,
     resource::{slot_id::SolidResourceSlotId, uri::SolidResourceUri},
-    SolidStorageSpace,
 };
 
 use self::{
     aux::AuxLinkEncodingScheme,
     decoder::{
-        decode_from_hierarchical_uri_path, InvalidHierarchicalEncodedResourceSlot, SLASH_CHAR,
+        InvalidHierarchicalEncodedResourceSlot, SLASH_CHAR, decode_from_hierarchical_uri_path,
     },
-    encoder::{encode_to_hierarchical_relative_uri_path, InvalidHierarchicalEncodeProcess},
+    encoder::{InvalidHierarchicalEncodeProcess, encode_to_hierarchical_relative_uri_path},
 };
 use crate::{process::SlotPathEncodeProcess, scheme::SemanticSlotEncodingScheme};
 
@@ -127,8 +127,7 @@ where
                     .strip_suffix(SLASH_CHAR)
                     .and_then(|v| NormalAbsoluteHttpUri::try_new_from(v).ok())
                     .or_else(|| {
-                        NormalAbsoluteHttpUri::try_new_from(format!("{}/", res_uri_str).as_str())
-                            .ok()
+                        NormalAbsoluteHttpUri::try_new_from(format!("{res_uri_str}/").as_str()).ok()
                     })
             })
             .flatten()?;

@@ -26,7 +26,7 @@ where
         _lock_kind: LockKind,
     ) -> BoxFuture<'static, Output>
     where
-        Task: futures::Future<Output = Output> + Send + 'static,
+        Task: Future<Output = Output> + Send + 'static,
     {
         Box::pin(task)
     }

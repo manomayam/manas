@@ -153,7 +153,7 @@ impl DefaultOidcIssuerJwksResolver {
 
     /// Get `.well-known` openid configuration uri for given oidc issuer.
     /// > OpenID Providers supporting Discovery MUST make a JSON document available
-    /// at the path formed by concatenating the string /.well-known/openid-configuration to the Issuer.
+    /// > at the path formed by concatenating the string /.well-known/openid-configuration to the Issuer.
     fn get_wellknown_openid_config_uri(iss: &AbsoluteHttpUri) -> AbsoluteHttpUri {
         AbsoluteHttpUri::try_new_from(
             format!(

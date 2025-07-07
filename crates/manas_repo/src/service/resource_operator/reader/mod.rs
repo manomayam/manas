@@ -19,15 +19,15 @@ mod message;
 /// ## Operation contract:
 ///
 /// - Service must return [`ResourceReadResponse`]
-/// corresponding to resource uri.
+///   corresponding to resource uri.
 ///
 /// - When non-container rep-range-negotiator requests for
-/// complete representation, service MUST return complete
-/// representation.
+///   complete representation, service MUST return complete
+///   representation.
 ///
 /// - When non-container rep-range-negotiator requests for
-/// partial representation, service SHOULD return partial
-/// representation.
+///   partial representation, service SHOULD return partial
+///   representation.
 ///
 /// ### Errors:
 ///
@@ -35,14 +35,14 @@ mod message;
 /// specified cases.
 ///
 /// - [`UNSUPPORTED_OPERATION`](super::common::problem::UNSUPPORTED_OPERATION): If
-/// operation is not supported.
+///   operation is not supported.
 ///
 /// - [`PRECONDITIONS_NOT_SATISFIED`](super::common::problem::PRECONDITIONS_NOT_SATISFIED): If
-/// preconditions are not satisfied.
+///   preconditions are not satisfied.
 ///
 /// - [`RANGE_NOT_SATISFIABLE`]:
-/// If service chose to honour requested rep-range preference,
-/// and requested range is not satisfiable.
+///   If service chose to honour requested rep-range preference,
+///   and requested range is not satisfiable.
 ///
 pub trait FlexibleResourceReader<R, Rep>:
     Service<
